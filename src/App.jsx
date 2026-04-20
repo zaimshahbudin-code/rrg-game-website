@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { auth, db, isFirebaseConfigured } from './firebase';
 import {
@@ -1747,7 +1747,7 @@ const getRrgHint = (player, card, level) => {
     : `Selepas putaran, x akhir ialah ${transformRrgPoint(player, card).x}. Cari y sendiri.`;
 };
 
-const SectionRRGs = ({ lang }) => {
+const SectionRRGs = () => {
   const [playerCount, setPlayerCount] = useState(4);
   const [players, setPlayers] = useState(() => Array.from({ length: 4 }, (_, i) => ({
     id: i + 1,
@@ -2243,100 +2243,104 @@ const RRGCanvasGame = () => {
     syncHud(game);
   }, [showPopup, syncHud]);
 
-  const findPreviousPlayer = (game) => {
+  const findPreviousPlayer = useCallback((game) => {
     for (let step = 1; step < game.players.length; step++) {
       const index = (game.currentPlayer - step + game.players.length) % game.players.length;
       if (!game.players[index].finished) return game.players[index];
     }
     return null;
-  };
+  }, []);
 
-  const findNextTargetPlayer = (game) => {
+  const findNextTargetPlayer = useCallback((game) => {
     for (let step = 1; step < game.players.length; step++) {
       const index = (game.currentPlayer + step) % game.players.length;
       if (!game.players[index].finished) return game.players[index];
     }
     return null;
-  };
+  }, []);
 
-  const applyActionCard = (game, player, actionCard, depth = 0) => {
-    const effect = actionCard.effect || {};
-    const notes = [actionCard.text];
-    if (effect.score) {
-      player.score += effect.score;
-      notes.push(`${effect.score > 0 ? '+' : ''}RM${effect.score}.`);
-    }
-    if (effect.transferFromAll) {
-      let total = 0;
-      game.players.forEach((other) => {
-        if (other.id !== player.id && !other.finished) {
-          other.score -= effect.transferFromAll;
-          total += effect.transferFromAll;
-        }
-      });
-      player.score += total;
-      notes.push(`${player.name} menerima RM${total} daripada pemain lain.`);
-    }
-    if (effect.payAll) {
-      let total = 0;
-      game.players.forEach((other) => {
-        if (other.id !== player.id && !other.finished) {
-          other.score += effect.payAll;
-          total += effect.payAll;
-        }
-      });
-      player.score -= total;
-      notes.push(`${player.name} membayar RM${total} kepada pemain lain.`);
-    }
-    if (effect.transferFromPrevious) {
-      const previous = findPreviousPlayer(game);
-      if (previous) {
-        previous.score -= effect.transferFromPrevious;
-        player.score += effect.transferFromPrevious;
-        notes.push(`${previous.name} memberi RM${effect.transferFromPrevious}.`);
+  const applyActionCard = useCallback((game, player, actionCard, depth = 0) => {
+    const applyCard = (card, currentDepth) => {
+      const effect = card.effect || {};
+      const notes = [card.text];
+      if (effect.score) {
+        player.score += effect.score;
+        notes.push(`${effect.score > 0 ? '+' : ''}RM${effect.score}.`);
       }
-    }
-    if (effect.freezeOthers) {
-      game.players.forEach((other) => {
-        if (other.id !== player.id && !other.finished) other.skipTurns += effect.freezeOthers;
-      });
-      notes.push('Semua pemain lain hilang satu giliran.');
-    }
-    if (effect.freezeNext) {
-      const target = findNextTargetPlayer(game);
-      if (target) {
-        target.skipTurns += effect.freezeNext;
-        notes.push(`${target.name} dibekukan satu giliran.`);
+      if (effect.transferFromAll) {
+        let total = 0;
+        game.players.forEach((other) => {
+          if (other.id !== player.id && !other.finished) {
+            other.score -= effect.transferFromAll;
+            total += effect.transferFromAll;
+          }
+        });
+        player.score += total;
+        notes.push(`${player.name} menerima RM${total} daripada pemain lain.`);
       }
-    }
-    if (effect.extraTurn) {
-      player.extraTurns += effect.extraTurn;
-      notes.push(`${player.name} mendapat ${effect.extraTurn} giliran tambahan.`);
-    }
-    if (effect.skipSelf) {
-      player.skipTurns += effect.skipSelf;
-      notes.push(`${player.name} akan hilang ${effect.skipSelf} giliran.`);
-    }
-    if (effect.resetStart) {
-      player.trail.push({ x: player.x, y: player.y, time: performance.now() });
-      player.x = 0;
-      player.y = 0;
-      notes.push(`${player.name} kembali ke Bukit Kristal (0, 0).`);
-    }
-    if (effect.rotate360) {
-      game.effects.push({ type: 'correct', x: player.x, y: player.y, startedAt: performance.now() });
-      notes.push('Token diputar 360° dan kekal pada koordinat yang sama.');
-    }
-    if (effect.drawRewardAgain && depth < 1) {
-      const nextReward = randomFrom(RRG_REWARD_CARDS.filter(card => !card.effect?.drawRewardAgain));
-      showCardDraw(nextReward.deck, nextReward);
-      game.lastActionCard = nextReward;
-      notes.push(`Kad ganjaran tambahan: ${applyActionCard(game, player, nextReward, depth + 1)}`);
-    }
-    return notes.join(' ');
-  };
+      if (effect.payAll) {
+        let total = 0;
+        game.players.forEach((other) => {
+          if (other.id !== player.id && !other.finished) {
+            other.score += effect.payAll;
+            total += effect.payAll;
+          }
+        });
+        player.score -= total;
+        notes.push(`${player.name} membayar RM${total} kepada pemain lain.`);
+      }
+      if (effect.transferFromPrevious) {
+        const previous = findPreviousPlayer(game);
+        if (previous) {
+          previous.score -= effect.transferFromPrevious;
+          player.score += effect.transferFromPrevious;
+          notes.push(`${previous.name} memberi RM${effect.transferFromPrevious}.`);
+        }
+      }
+      if (effect.freezeOthers) {
+        game.players.forEach((other) => {
+          if (other.id !== player.id && !other.finished) other.skipTurns += effect.freezeOthers;
+        });
+        notes.push('Semua pemain lain hilang satu giliran.');
+      }
+      if (effect.freezeNext) {
+        const target = findNextTargetPlayer(game);
+        if (target) {
+          target.skipTurns += effect.freezeNext;
+          notes.push(`${target.name} dibekukan satu giliran.`);
+        }
+      }
+      if (effect.extraTurn) {
+        player.extraTurns += effect.extraTurn;
+        notes.push(`${player.name} mendapat ${effect.extraTurn} giliran tambahan.`);
+      }
+      if (effect.skipSelf) {
+        player.skipTurns += effect.skipSelf;
+        notes.push(`${player.name} akan hilang ${effect.skipSelf} giliran.`);
+      }
+      if (effect.resetStart) {
+        player.trail.push({ x: player.x, y: player.y, time: performance.now() });
+        player.x = 0;
+        player.y = 0;
+        notes.push(`${player.name} kembali ke Bukit Kristal (0, 0).`);
+      }
+      if (effect.rotate360) {
+        game.effects.push({ type: 'correct', x: player.x, y: player.y, startedAt: performance.now() });
+        notes.push('Token diputar 360° dan kekal pada koordinat yang sama.');
+      }
+      if (effect.drawRewardAgain && currentDepth < 1) {
+        const nextReward = randomFrom(RRG_REWARD_CARDS.filter(card => !card.effect?.drawRewardAgain));
+        showCardDraw(nextReward.deck, nextReward);
+        game.lastActionCard = nextReward;
+        notes.push(`Kad ganjaran tambahan: ${applyCard(nextReward, currentDepth + 1)}`);
+      }
+      return notes.join(' ');
+    };
 
-  const resolveItem = (game, player, destination) => {
+    return applyCard(actionCard, depth);
+  }, [findNextTargetPlayer, findPreviousPlayer, showCardDraw]);
+
+  const resolveItem = useCallback((game, player, destination) => {
     const item = getRrgItemAt(destination);
     let effectType = 'correct';
     let note = 'Tiada item pada persilangan grid ini.';
@@ -2375,7 +2379,7 @@ const RRGCanvasGame = () => {
     game.effects.push({ type: effectType, x: destination.x, y: destination.y, startedAt: performance.now() });
     playRrgSound(effectType);
     return { effectType, note };
-  };
+  }, [applyActionCard, showCardDraw]);
 
   const submitAnswer = useCallback(() => {
     const game = gameRef.current;
@@ -2400,7 +2404,7 @@ const RRGCanvasGame = () => {
     const emoji = effectType === 'boom' ? '💣' : effectType === 'coin' ? '💰' : '✅';
     showPopup(emoji, 'Jawapan Tepat!', note);
     endTurn(game, `${player.name} berjaya bergerak ke (${destination.x}, ${destination.y}). ${note}`);
-  }, [endTurn, showPopup]);
+  }, [endTurn, resolveItem, showPopup]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -3491,7 +3495,7 @@ const USERS_STORAGE_KEY = 'fyp_math_registered_users';
 const readStoredUsers = () => {
   try {
     return JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
-  } catch (error) {
+  } catch {
     return [];
   }
 };
@@ -3520,8 +3524,9 @@ const getFirebaseAuthMessage = (error) => {
 
 const LoginPage = ({ onLogin }) => {
   const [isRegister, setIsRegister] = useState(false);
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [loginData, setLoginData] = useState(() => ({ email: localStorage.getItem('rrg_remembered_email') || '', password: '' }));
   const [registerData, setRegisterData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+  const [rememberLogin, setRememberLogin] = useState(() => Boolean(localStorage.getItem('rrg_remembered_email')));
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -3529,6 +3534,11 @@ const LoginPage = ({ onLogin }) => {
   const getDisplayName = (email) => {
     const prefix = email.split('@')[0] || 'Pelajar';
     return prefix.charAt(0).toUpperCase() + prefix.slice(1);
+  };
+
+  const updateRememberedEmail = (email) => {
+    if (rememberLogin) localStorage.setItem('rrg_remembered_email', email);
+    else localStorage.removeItem('rrg_remembered_email');
   };
 
   const handleLocalLogin = (email, password) => {
@@ -3541,6 +3551,7 @@ const LoginPage = ({ onLogin }) => {
     }
 
     saveStoredUsers(users.map((item) => item.email === email ? { ...item, lastLoginAt: new Date().toISOString() } : item));
+    updateRememberedEmail(email);
     onLogin({ name: user.name || getDisplayName(email), email: user.email, role: 'Pelajar', database: 'localStorage' });
   };
 
@@ -3566,7 +3577,33 @@ const LoginPage = ({ onLogin }) => {
       lastLoginAt: serverTimestamp(),
     }, { merge: true });
 
+    updateRememberedEmail(email);
     onLogin({ uid: credential.user.uid, name, email, role: profile.role || 'Pelajar', database: 'firebase' });
+  };
+
+  const handleForgotPassword = async () => {
+    const email = normalizeEmail(loginData.email);
+    if (!email) {
+      setError('Masukkan emel dahulu sebelum reset kata laluan.');
+      return;
+    }
+    if (!isFirebaseConfigured) {
+      setError('Reset kata laluan hanya tersedia selepas Firebase aktif.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setSuccess('Link reset kata laluan sudah dihantar. Sila semak inbox emel anda.');
+    } catch (firebaseError) {
+      setError(getFirebaseAuthMessage(firebaseError));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleLogin = async (event) => {
@@ -3689,8 +3726,8 @@ const LoginPage = ({ onLogin }) => {
               <span>Transformasi Isometri</span>
               <small className="auth-db-pill">{isFirebaseConfigured ? 'Firebase' : 'Demo DB'}</small>
             </div>
-            <h1>Log Masuk</h1>
-            <p className="auth-subtitle">Masukkan emel dan kata laluan yang telah didaftarkan untuk teruskan ke modul pembelajaran anda.</p>
+            <h1>Login Here</h1>
+            <p className="auth-subtitle">Masuk untuk sambung nota, kuiz dan misi RRG anda.</p>
 
             <div className="auth-input-group">
               <input
@@ -3712,10 +3749,27 @@ const LoginPage = ({ onLogin }) => {
               />
             </div>
 
-            <button type="button" className="auth-link-button">Lupa kata laluan?</button>
+            <div className="auth-option-row">
+              <label className="auth-remember">
+                <input
+                  type="checkbox"
+                  checked={rememberLogin}
+                  onChange={(event) => setRememberLogin(event.target.checked)}
+                />
+                <span>Remember me</span>
+              </label>
+              <button type="button" className="auth-link-button" onClick={handleForgotPassword}>Forgot password?</button>
+            </div>
             {error && !isRegister && <p className="auth-error">{error}</p>}
             {success && !isRegister && <p className="auth-success">{success}</p>}
             <button type="submit" className="auth-primary-button" disabled={isSubmitting}>{isSubmitting && !isRegister ? 'Memproses...' : 'Login'}</button>
+
+            <div className="auth-divider"><span>or use your account</span></div>
+            <div className="auth-social-row" aria-label="Social sign in options">
+              <span aria-hidden="true">f</span>
+              <span aria-hidden="true">G</span>
+              <span aria-hidden="true">in</span>
+            </div>
 
             <p className="auth-mobile-switch">
               Belum ada akaun? <button type="button" onClick={showRegister}>Daftar</button>
@@ -3730,8 +3784,8 @@ const LoginPage = ({ onLogin }) => {
               <span>Akaun Pelajar</span>
               <small className="auth-db-pill">{isFirebaseConfigured ? 'Firebase' : 'Demo DB'}</small>
             </div>
-            <h1>Daftar Akaun</h1>
-            <p className="auth-subtitle">{isFirebaseConfigured ? 'Cipta akaun baru. Maklumat pendaftaran akan disimpan dalam Firebase Auth dan Firestore.' : 'Cipta akaun baru. Maklumat demo akan disimpan dalam database browser peranti ini.'}</p>
+            <h1>Register Here</h1>
+            <p className="auth-subtitle">{isFirebaseConfigured ? 'Cipta akaun baru dan sahkan emel sebelum login.' : 'Cipta akaun demo dalam browser peranti ini.'}</p>
 
             <div className="auth-input-group">
               <input
@@ -3775,6 +3829,13 @@ const LoginPage = ({ onLogin }) => {
             {error && isRegister && <p className="auth-error">{error}</p>}
             <button type="submit" className="auth-primary-button" disabled={isSubmitting}>{isSubmitting && isRegister ? 'Mendaftar...' : 'Register'}</button>
 
+            <div className="auth-divider"><span>or register with</span></div>
+            <div className="auth-social-row" aria-label="Social register options">
+              <span aria-hidden="true">f</span>
+              <span aria-hidden="true">G</span>
+              <span aria-hidden="true">in</span>
+            </div>
+
             <p className="auth-mobile-switch">
               Dah ada akaun? <button type="button" onClick={showLogin}>Login</button>
             </p>
@@ -3782,15 +3843,18 @@ const LoginPage = ({ onLogin }) => {
         </div>
 
         <div className="auth-overlay">
+          <video className="auth-overlay-video" autoPlay muted loop playsInline aria-hidden="true">
+            <source src="/assets/auth/transformasi-bg.mp4" type="video/mp4" />
+          </video>
           <div className="auth-overlay-content">
             <div className="auth-overlay-icon">
               {isRegister ? <LogIn className="w-7 h-7" /> : <UserRound className="w-7 h-7" />}
             </div>
-            <h2>{isRegister ? 'Selamat kembali!' : 'Hai, selamat datang!'}</h2>
+            <h2>{isRegister ? 'Welcome Back' : 'Start Your Journey Now'}</h2>
             <p>
               {isRegister
-                ? 'Sudah ada akaun? Login semula untuk sambung nota, kuiz dan misi transformasi anda.'
-                : 'Kalau belum ada akaun, daftar dulu. Kalau dah ada, terus login untuk masuk ke dashboard.'}
+                ? 'Login semula untuk sambung pembelajaran dan misi transformasi anda.'
+                : 'Daftar akaun pelajar untuk mula belajar transformasi isometri.'}
             </p>
             <button type="button" className="auth-ghost-button" onClick={isRegister ? showLogin : showRegister}>
               {isRegister ? 'Login Sekarang' : 'Daftar Sekarang'}

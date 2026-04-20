@@ -1,4 +1,5 @@
-import { initializeApp } from 'firebase/app';
+import { getApp, getApps, initializeApp } from 'firebase/app';
+import { getAnalytics, isSupported } from 'firebase/analytics';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
@@ -9,11 +10,26 @@ const firebaseConfig = {
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-export const isFirebaseConfigured = Object.values(firebaseConfig).every(Boolean);
+const requiredFirebaseConfig = [
+  firebaseConfig.apiKey,
+  firebaseConfig.authDomain,
+  firebaseConfig.projectId,
+  firebaseConfig.storageBucket,
+  firebaseConfig.messagingSenderId,
+  firebaseConfig.appId,
+];
 
-const app = isFirebaseConfigured ? initializeApp(firebaseConfig) : null;
+export const isFirebaseConfigured = requiredFirebaseConfig.every(Boolean);
+
+const app = isFirebaseConfigured
+  ? getApps().length ? getApp() : initializeApp(firebaseConfig)
+  : null;
 
 export const auth = app ? getAuth(app) : null;
 export const db = app ? getFirestore(app) : null;
+export const analyticsPromise = app && firebaseConfig.measurementId && typeof window !== 'undefined'
+  ? isSupported().then((supported) => (supported ? getAnalytics(app) : null)).catch(() => null)
+  : Promise.resolve(null);

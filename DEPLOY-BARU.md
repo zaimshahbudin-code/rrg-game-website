@@ -32,6 +32,27 @@ git push -u origin main
 4. Masukkan Environment Variables Firebase jika mahu login online. Rujuk `.env.example`.
 5. Dalam Vercel Settings > Git, pastikan `Require Verified Commits` dimatikan jika commit belum verified.
 
+## Cara deploy di Firebase Hosting
+
+1. Dalam Firebase Console, buka project `rrg-game-website`.
+2. Authentication > Sign-in method > enable `Email/Password`.
+3. Firestore Database > Create database.
+4. Di terminal:
+
+```bash
+cd /Users/ahmadzaim/RRG-Game-Website
+npm install
+npm run build
+firebase login
+firebase deploy
+```
+
+Jika belum ada Firebase CLI:
+
+```bash
+npm install -g firebase-tools
+```
+
 ## Local test
 
 ```bash

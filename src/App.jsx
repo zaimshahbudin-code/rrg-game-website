@@ -11,15 +11,155 @@ import {
   LogIn, ShieldCheck, UserRound, KeyRound, LogOut
 } from 'lucide-react';
 
+const TUTORIAL_STEP_IDLE_CLASS = 'bg-slate-100 text-slate-700 hover:bg-slate-200';
+
+const NOTE_LAYOUT_THEMES = {
+  ocean: {
+    key: 'ocean',
+    label: { en: 'Ocean', ms: 'Laut' },
+    swatch: 'from-sky-500 to-cyan-400',
+    buttonIdle: 'border-sky-100 bg-white text-slate-700 hover:border-sky-200 hover:bg-sky-50',
+    buttonActive: 'border-sky-300 bg-sky-50 text-sky-800 shadow-sm',
+    sectionRule: 'border-sky-100',
+    sectionBadge: 'bg-sky-100 text-sky-700',
+    matrixChip: 'border-sky-300 bg-sky-100/70 text-sky-900',
+    infoPanel: 'bg-sky-50',
+    infoTitle: 'text-sky-900',
+    infoText: 'text-sky-800',
+    animationCard: 'bg-gradient-to-br from-sky-50 to-cyan-100 border-sky-200',
+    animationLabel: 'text-sky-600',
+    stepperWrap: 'bg-slate-50 border-sky-100',
+    stepperTitle: 'text-sky-800',
+    stepActive: 'bg-sky-600 text-white font-bold shadow-md',
+    svg: {
+      primary: '#2563eb',
+      primarySoft: 'rgba(37, 99, 235, 0.28)',
+      primaryDark: '#1d4ed8',
+      secondary: '#0ea5e9',
+      secondaryDark: '#0369a1',
+      accent: '#f59e0b',
+      accentDark: '#d97706',
+      danger: '#ef4444',
+      dangerDark: '#b91c1c',
+      mirror: '#0891b2',
+      mirrorDark: '#0f766e',
+      light: '#e0f2fe',
+      contrast: '#0f172a',
+    },
+  },
+  mint: {
+    key: 'mint',
+    label: { en: 'Mint', ms: 'Pudina' },
+    swatch: 'from-emerald-500 to-teal-400',
+    buttonIdle: 'border-emerald-100 bg-white text-slate-700 hover:border-emerald-200 hover:bg-emerald-50',
+    buttonActive: 'border-emerald-300 bg-emerald-50 text-emerald-800 shadow-sm',
+    sectionRule: 'border-emerald-100',
+    sectionBadge: 'bg-emerald-100 text-emerald-700',
+    matrixChip: 'border-emerald-300 bg-emerald-100/70 text-emerald-900',
+    infoPanel: 'bg-emerald-50',
+    infoTitle: 'text-emerald-900',
+    infoText: 'text-emerald-800',
+    animationCard: 'bg-gradient-to-br from-emerald-50 to-teal-100 border-emerald-200',
+    animationLabel: 'text-emerald-600',
+    stepperWrap: 'bg-slate-50 border-emerald-100',
+    stepperTitle: 'text-emerald-800',
+    stepActive: 'bg-emerald-600 text-white font-bold shadow-md',
+    svg: {
+      primary: '#059669',
+      primarySoft: 'rgba(5, 150, 105, 0.28)',
+      primaryDark: '#047857',
+      secondary: '#14b8a6',
+      secondaryDark: '#0f766e',
+      accent: '#f59e0b',
+      accentDark: '#d97706',
+      danger: '#ef4444',
+      dangerDark: '#b91c1c',
+      mirror: '#10b981',
+      mirrorDark: '#047857',
+      light: '#ccfbf1',
+      contrast: '#052e2b',
+    },
+  },
+  sunset: {
+    key: 'sunset',
+    label: { en: 'Sunset', ms: 'Senja' },
+    swatch: 'from-orange-500 to-rose-400',
+    buttonIdle: 'border-orange-100 bg-white text-slate-700 hover:border-orange-200 hover:bg-orange-50',
+    buttonActive: 'border-orange-300 bg-orange-50 text-orange-800 shadow-sm',
+    sectionRule: 'border-orange-100',
+    sectionBadge: 'bg-orange-100 text-orange-700',
+    matrixChip: 'border-orange-300 bg-orange-100/70 text-orange-900',
+    infoPanel: 'bg-orange-50',
+    infoTitle: 'text-orange-900',
+    infoText: 'text-orange-800',
+    animationCard: 'bg-gradient-to-br from-orange-50 to-rose-100 border-orange-200',
+    animationLabel: 'text-orange-600',
+    stepperWrap: 'bg-slate-50 border-orange-100',
+    stepperTitle: 'text-orange-800',
+    stepActive: 'bg-orange-500 text-white font-bold shadow-md',
+    svg: {
+      primary: '#f97316',
+      primarySoft: 'rgba(249, 115, 22, 0.28)',
+      primaryDark: '#c2410c',
+      secondary: '#fb7185',
+      secondaryDark: '#e11d48',
+      accent: '#facc15',
+      accentDark: '#ca8a04',
+      danger: '#e11d48',
+      dangerDark: '#be123c',
+      mirror: '#fb7185',
+      mirrorDark: '#be123c',
+      light: '#ffedd5',
+      contrast: '#431407',
+    },
+  },
+  royal: {
+    key: 'royal',
+    label: { en: 'Royal', ms: 'Diraja' },
+    swatch: 'from-violet-500 to-indigo-500',
+    buttonIdle: 'border-violet-100 bg-white text-slate-700 hover:border-violet-200 hover:bg-violet-50',
+    buttonActive: 'border-violet-300 bg-violet-50 text-violet-800 shadow-sm',
+    sectionRule: 'border-violet-100',
+    sectionBadge: 'bg-violet-100 text-violet-700',
+    matrixChip: 'border-violet-300 bg-violet-100/70 text-violet-900',
+    infoPanel: 'bg-violet-50',
+    infoTitle: 'text-violet-900',
+    infoText: 'text-violet-800',
+    animationCard: 'bg-gradient-to-br from-violet-50 to-indigo-100 border-violet-200',
+    animationLabel: 'text-violet-600',
+    stepperWrap: 'bg-slate-50 border-violet-100',
+    stepperTitle: 'text-violet-800',
+    stepActive: 'bg-violet-600 text-white font-bold shadow-md',
+    svg: {
+      primary: '#7c3aed',
+      primarySoft: 'rgba(124, 58, 237, 0.28)',
+      primaryDark: '#5b21b6',
+      secondary: '#6366f1',
+      secondaryDark: '#4338ca',
+      accent: '#f59e0b',
+      accentDark: '#d97706',
+      danger: '#ef4444',
+      dangerDark: '#b91c1c',
+      mirror: '#8b5cf6',
+      mirrorDark: '#6d28d9',
+      light: '#ede9fe',
+      contrast: '#312e81',
+    },
+  },
+};
+
+const DEFAULT_NOTE_LAYOUT_THEME = NOTE_LAYOUT_THEMES.ocean;
+
 // =====================================================================
 // 1. KOMPONEN NOTA & STEPPER (SEKSYEN 1)
 // =====================================================================
 
-const TranslasiStepper = ({ lang }) => {
+const TranslasiStepper = ({ lang, theme = DEFAULT_NOTE_LAYOUT_THEME }) => {
   const [step, setStep] = useState(1);
+  const palette = theme || DEFAULT_NOTE_LAYOUT_THEME;
   return (
-    <div className="bg-slate-50 border-2 border-indigo-100 rounded-xl p-4 md:p-6 mt-6 shadow-inner">
-      <h3 className="font-bold text-indigo-800 mb-4 flex items-center gap-2">
+    <div className={`border-2 rounded-xl p-4 md:p-6 mt-6 shadow-inner ${palette.stepperWrap}`}>
+      <h3 className={`font-bold mb-4 flex items-center gap-2 ${palette.stepperTitle}`}>
         <MousePointerClick size={18} /> {lang === 'en' ? 'Tutorial: How to Draw a Translation Image' : 'Tutorial: Cara Melukis Imej Translasi'}
       </h3>
       <div className="flex flex-col md:flex-row gap-6 items-center">
@@ -27,16 +167,16 @@ const TranslasiStepper = ({ lang }) => {
           <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
             <p className="text-sm font-semibold text-slate-600 mb-3">{lang === 'en' ? 'Click the steps below:' : 'Tekan langkah di bawah:'}</p>
             <div className="flex flex-col gap-2">
-              <button onClick={() => setStep(1)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 1 ? 'bg-indigo-600 text-white font-bold shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>
+              <button onClick={() => setStep(1)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 1 ? palette.stepActive : TUTORIAL_STEP_IDLE_CLASS}`}>
                 1. {lang === 'en' ? 'Choose a reference vertex (Example: Point A).' : 'Pilih satu bucu rujukan (Contoh: Titik A).'}
               </button>
-              <button onClick={() => setStep(2)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 2 ? 'bg-indigo-600 text-white font-bold shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>
+              <button onClick={() => setStep(2)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 2 ? palette.stepActive : TUTORIAL_STEP_IDLE_CLASS}`}>
                 2. {lang === 'en' ? 'Move along x-axis (e.g., right 4 units).' : 'Gerak paksi-x (contoh: ke kanan 4 petak).'}
               </button>
-              <button onClick={() => setStep(3)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 3 ? 'bg-indigo-600 text-white font-bold shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>
+              <button onClick={() => setStep(3)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 3 ? palette.stepActive : TUTORIAL_STEP_IDLE_CLASS}`}>
                 3. {lang === 'en' ? "Move along y-axis (e.g., down 3 units). Mark A'." : "Gerak paksi-y (contoh: ke bawah 3 petak). Tandakan A'."}
               </button>
-              <button onClick={() => setStep(4)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 4 ? 'bg-indigo-600 text-white font-bold shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>
+              <button onClick={() => setStep(4)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 4 ? palette.stepActive : TUTORIAL_STEP_IDLE_CLASS}`}>
                 4. {lang === 'en' ? 'Repeat for other vertices & complete the image.' : 'Ulang langkah untuk bucu lain & lengkapkan imej.'}
               </button>
             </div>
@@ -49,36 +189,36 @@ const TranslasiStepper = ({ lang }) => {
               <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#e2e8f0" strokeWidth="0.5"/>
             </pattern>
             <rect width="100" height="100" fill="url(#gridT)" />
-            <circle cx="20" cy="40" r="2" fill="#1e40af" />
-            <text x="13" y="38" fontSize="6" fill="#1e40af" fontWeight="bold">A</text>
-            <polygon points="20,40 40,40 20,60" fill="rgba(59, 130, 246, 0.4)" stroke="#1e40af" strokeWidth="1" />
+            <circle cx="20" cy="40" r="2" fill={palette.svg.primaryDark} />
+            <text x="13" y="38" fontSize="6" fill={palette.svg.primaryDark} fontWeight="bold">A</text>
+            <polygon points="20,40 40,40 20,60" fill={palette.svg.primarySoft} stroke={palette.svg.primaryDark} strokeWidth="1" />
 
-            {step >= 1 && <circle cx="20" cy="40" r="4" fill="none" stroke="#f59e0b" strokeWidth="1.5" className="animate-pulse" />}
+            {step >= 1 && <circle cx="20" cy="40" r="4" fill="none" stroke={palette.svg.accent} strokeWidth="1.5" className="animate-pulse" />}
             {step >= 2 && (
               <g>
-                <path d="M 20 40 L 60 40" fill="none" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="3,2" markerEnd="url(#arrowH)" />
-                <text x="32" y="38" fontSize="4" fill="#d97706" fontWeight="bold">{lang === 'en' ? '+4 x-axis' : '+4 paksi-x'}</text>
+                <path d="M 20 40 L 60 40" fill="none" stroke={palette.svg.secondary} strokeWidth="1.5" strokeDasharray="3,2" markerEnd="url(#arrowH)" />
+                <text x="32" y="38" fontSize="4" fill={palette.svg.secondaryDark} fontWeight="bold">{lang === 'en' ? '+4 x-axis' : '+4 paksi-x'}</text>
               </g>
             )}
             {step >= 3 && (
               <g>
-                <path d="M 60 40 L 60 70" fill="none" stroke="#ef4444" strokeWidth="1.5" strokeDasharray="3,2" markerEnd="url(#arrowV)" />
-                <text x="62" y="55" fontSize="4" fill="#dc2626" fontWeight="bold">{lang === 'en' ? '-3 y-axis' : '-3 paksi-y'}</text>
-                <circle cx="60" cy="70" r="2" fill="#b91c1c" />
-                <text x="63" y="73" fontSize="6" fill="#b91c1c" fontWeight="bold">A'</text>
+                <path d="M 60 40 L 60 70" fill="none" stroke={palette.svg.danger} strokeWidth="1.5" strokeDasharray="3,2" markerEnd="url(#arrowV)" />
+                <text x="62" y="55" fontSize="4" fill={palette.svg.dangerDark} fontWeight="bold">{lang === 'en' ? '-3 y-axis' : '-3 paksi-y'}</text>
+                <circle cx="60" cy="70" r="2" fill={palette.svg.dangerDark} />
+                <text x="63" y="73" fontSize="6" fill={palette.svg.dangerDark} fontWeight="bold">A'</text>
               </g>
             )}
             {step >= 4 && (
               <g>
-                <polygon points="60,70 80,70 60,90" fill="rgba(239, 68, 68, 0.4)" stroke="#b91c1c" strokeWidth="1" strokeDasharray="2,1" />
+                <polygon points="60,70 80,70 60,90" fill="rgba(239, 68, 68, 0.28)" stroke={palette.svg.dangerDark} strokeWidth="1" strokeDasharray="2,1" />
                 <path d="M 40 40 L 80 70" fill="none" stroke="#94a3b8" strokeWidth="0.5" strokeDasharray="2,2" />
                 <path d="M 20 60 L 60 90" fill="none" stroke="#94a3b8" strokeWidth="0.5" strokeDasharray="2,2" />
               </g>
             )}
 
             <defs>
-              <marker id="arrowH" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto"><polygon points="0,0 4,2 0,4" fill="#f59e0b" /></marker>
-              <marker id="arrowV" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto"><polygon points="0,0 4,2 0,4" fill="#ef4444" /></marker>
+              <marker id="arrowH" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto"><polygon points="0,0 4,2 0,4" fill={palette.svg.secondary} /></marker>
+              <marker id="arrowV" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto"><polygon points="0,0 4,2 0,4" fill={palette.svg.danger} /></marker>
             </defs>
           </svg>
         </div>
@@ -87,11 +227,12 @@ const TranslasiStepper = ({ lang }) => {
   );
 };
 
-const PantulanStepper = ({ lang }) => {
+const PantulanStepper = ({ lang, theme = DEFAULT_NOTE_LAYOUT_THEME }) => {
   const [step, setStep] = useState(1);
+  const palette = theme || DEFAULT_NOTE_LAYOUT_THEME;
   return (
-    <div className="bg-slate-50 border-2 border-teal-100 rounded-xl p-4 md:p-6 mt-6 shadow-inner">
-      <h3 className="font-bold text-teal-800 mb-4 flex items-center gap-2">
+    <div className={`border-2 rounded-xl p-4 md:p-6 mt-6 shadow-inner ${palette.stepperWrap}`}>
+      <h3 className={`font-bold mb-4 flex items-center gap-2 ${palette.stepperTitle}`}>
         <MousePointerClick size={18} /> {lang === 'en' ? 'Tutorial: How to Draw a Reflection Image' : 'Tutorial: Cara Melukis Imej Pantulan'}
       </h3>
       <div className="flex flex-col md:flex-row gap-6 items-center">
@@ -99,16 +240,16 @@ const PantulanStepper = ({ lang }) => {
           <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
             <p className="text-sm font-semibold text-slate-600 mb-3">{lang === 'en' ? 'Click the steps below:' : 'Tekan langkah di bawah:'}</p>
             <div className="flex flex-col gap-2">
-              <button onClick={() => setStep(1)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 1 ? 'bg-teal-600 text-white font-bold shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>
+              <button onClick={() => setStep(1)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 1 ? palette.stepActive : TUTORIAL_STEP_IDLE_CLASS}`}>
                 1. {lang === 'en' ? 'Identify the reflection axis (Mirror Line).' : 'Kenal pasti paksi pantulan (Garis Cermin).'}
               </button>
-              <button onClick={() => setStep(2)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 2 ? 'bg-teal-600 text-white font-bold shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>
+              <button onClick={() => setStep(2)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 2 ? palette.stepActive : TUTORIAL_STEP_IDLE_CLASS}`}>
                 2. {lang === 'en' ? 'Draw a perpendicular line from vertex (A) to the mirror.' : 'Lukis garis serenjang dari bucu (A) ke cermin.'}
               </button>
-              <button onClick={() => setStep(3)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 3 ? 'bg-teal-600 text-white font-bold shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>
+              <button onClick={() => setStep(3)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 3 ? palette.stepActive : TUTORIAL_STEP_IDLE_CLASS}`}>
                 3. {lang === 'en' ? "Measure the same distance to the other side. Mark (A')." : "Ukur jarak yang sama ke sebelah sana. Tandakan (A')."}
               </button>
-              <button onClick={() => setStep(4)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 4 ? 'bg-teal-600 text-white font-bold shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>
+              <button onClick={() => setStep(4)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 4 ? palette.stepActive : TUTORIAL_STEP_IDLE_CLASS}`}>
                 4. {lang === 'en' ? 'Repeat for other points and draw the final shape.' : 'Ulang untuk titik lain dan lukis bentuk akhir.'}
               </button>
             </div>
@@ -122,34 +263,34 @@ const PantulanStepper = ({ lang }) => {
             </pattern>
             <rect width="100" height="100" fill="url(#gridP)" />
 
-            <polygon points="20,30 40,30 20,60" fill="rgba(59, 130, 246, 0.4)" stroke="#1e40af" strokeWidth="1" />
-            <circle cx="40" cy="30" r="2" fill="#1e40af" />
-            <text x="35" y="27" fontSize="6" fill="#1e40af" fontWeight="bold">A</text>
+            <polygon points="20,30 40,30 20,60" fill={palette.svg.primarySoft} stroke={palette.svg.primaryDark} strokeWidth="1" />
+            <circle cx="40" cy="30" r="2" fill={palette.svg.primaryDark} />
+            <text x="35" y="27" fontSize="6" fill={palette.svg.primaryDark} fontWeight="bold">A</text>
 
             {step >= 1 && (
               <g>
-                <line x1="60" y1="10" x2="60" y2="90" stroke="#f59e0b" strokeWidth="2" strokeDasharray="4,2" />
-                <text x="62" y="15" fontSize="4" fill="#d97706" fontWeight="bold">{lang === 'en' ? 'Mirror' : 'Cermin'}</text>
+                <line x1="60" y1="10" x2="60" y2="90" stroke={palette.svg.accent} strokeWidth="2" strokeDasharray="4,2" />
+                <text x="62" y="15" fontSize="4" fill={palette.svg.accentDark} fontWeight="bold">{lang === 'en' ? 'Mirror' : 'Cermin'}</text>
               </g>
             )}
             {step >= 2 && (
               <g>
-                <line x1="40" y1="30" x2="60" y2="30" stroke="#059669" strokeWidth="1.5" strokeDasharray="2,2" />
-                <text x="43" y="27" fontSize="4" fill="#059669" fontWeight="bold">{lang === 'en' ? '2 units' : '2 unit'}</text>
-                <rect x="58" y="30" width="2" height="2" fill="none" stroke="#059669" strokeWidth="0.5" />
+                <line x1="40" y1="30" x2="60" y2="30" stroke={palette.svg.secondary} strokeWidth="1.5" strokeDasharray="2,2" />
+                <text x="43" y="27" fontSize="4" fill={palette.svg.secondaryDark} fontWeight="bold">{lang === 'en' ? '2 units' : '2 unit'}</text>
+                <rect x="58" y="30" width="2" height="2" fill="none" stroke={palette.svg.secondaryDark} strokeWidth="0.5" />
               </g>
             )}
             {step >= 3 && (
               <g>
-                <line x1="60" y1="30" x2="80" y2="30" stroke="#ef4444" strokeWidth="1.5" strokeDasharray="2,2" />
-                <text x="65" y="27" fontSize="4" fill="#ef4444" fontWeight="bold">{lang === 'en' ? '2 units' : '2 unit'}</text>
-                <circle cx="80" cy="30" r="2" fill="#b91c1c" />
-                <text x="82" y="27" fontSize="6" fill="#b91c1c" fontWeight="bold">A'</text>
+                <line x1="60" y1="30" x2="80" y2="30" stroke={palette.svg.danger} strokeWidth="1.5" strokeDasharray="2,2" />
+                <text x="65" y="27" fontSize="4" fill={palette.svg.danger} fontWeight="bold">{lang === 'en' ? '2 units' : '2 unit'}</text>
+                <circle cx="80" cy="30" r="2" fill={palette.svg.dangerDark} />
+                <text x="82" y="27" fontSize="6" fill={palette.svg.dangerDark} fontWeight="bold">A'</text>
               </g>
             )}
             {step >= 4 && (
               <g>
-                <polygon points="100,30 80,30 100,60" fill="rgba(239, 68, 68, 0.4)" stroke="#b91c1c" strokeWidth="1" strokeDasharray="2,1" />
+                <polygon points="100,30 80,30 100,60" fill="rgba(239, 68, 68, 0.28)" stroke={palette.svg.dangerDark} strokeWidth="1" strokeDasharray="2,1" />
                 <line x1="20" y1="30" x2="100" y2="30" stroke="#94a3b8" strokeWidth="0.5" strokeDasharray="2,2" />
                 <line x1="20" y1="60" x2="100" y2="60" stroke="#94a3b8" strokeWidth="0.5" strokeDasharray="2,2" />
               </g>
@@ -239,6 +380,8 @@ const PutaranStepper = ({ lang }) => {
 };
 
 const SectionNota = ({ lang }) => {
+  const [layoutThemeKey, setLayoutThemeKey] = useState('ocean');
+  const layoutTheme = NOTE_LAYOUT_THEMES[layoutThemeKey] || DEFAULT_NOTE_LAYOUT_THEME;
   return (
     <div className="w-full max-w-7xl mx-auto space-y-8 lg:space-y-10">
       {/* 11.1 Transformasi */}
@@ -282,10 +425,39 @@ const SectionNota = ({ lang }) => {
         </div>
       </section>
 
+      <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h3 className="text-lg font-bold text-slate-900">{lang === 'en' ? 'Translation & Reflection Layout Colors' : 'Warna Layout Translasi & Pantulan'}</h3>
+            <p className="text-sm text-slate-600 mt-1">
+              {lang === 'en'
+                ? 'Choose a shared palette so both sections look consistent and easier to read.'
+                : 'Pilih satu palette yang sama supaya kedua-dua bahagian nampak konsisten dan lebih kemas.'}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {Object.values(NOTE_LAYOUT_THEMES).map((theme) => {
+              const active = layoutThemeKey === theme.key;
+              return (
+                <button
+                  key={theme.key}
+                  type="button"
+                  onClick={() => setLayoutThemeKey(theme.key)}
+                  className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-bold transition-all ${active ? theme.buttonActive : theme.buttonIdle}`}
+                >
+                  <span className={`h-3 w-3 rounded-full bg-gradient-to-r ${theme.swatch}`} />
+                  {lang === 'en' ? theme.label.en : theme.label.ms}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* 11.2 Translasi */}
       <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-        <h2 className="text-2xl font-bold text-slate-900 border-b-2 border-indigo-100 pb-3 mb-6 flex items-center gap-2">
-          <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg text-lg">11.2</span> 
+        <h2 className={`text-2xl font-bold text-slate-900 border-b-2 pb-3 mb-6 flex items-center gap-2 ${layoutTheme.sectionRule}`}>
+          <span className={`px-3 py-1 rounded-lg text-lg ${layoutTheme.sectionBadge}`}>11.2</span> 
           {lang === 'en' ? 'Translation (Shift)' : 'Translasi (Pergeseran)'}
         </h2>
         
@@ -298,48 +470,51 @@ const SectionNota = ({ lang }) => {
                 <><strong>Translasi</strong> ialah pemindahan semua titik pada suatu satah mengikut arah dan jarak yang sama. Objek <em>melongsor</em> tanpa dipusingkan dan saiznya kekal.</>
               )}
             </p>
-            <div className="bg-indigo-50 p-4 rounded-lg inline-block">
-              <h4 className="font-bold text-indigo-900 mb-2">{lang === 'en' ? 'Translation Vector' : 'Vektor Translasi'}</h4>
-              <div className="text-sm text-indigo-800 mb-2 flex items-center gap-2">
-                {lang === 'en' ? 'Written as' : 'Ditulis dalam bentuk'} <span className="flex flex-col items-center border-l-2 border-r-2 border-indigo-800 px-1.5 rounded-sm bg-indigo-100/50 leading-tight"><span>a</span><span>b</span></span> 
+            <div className={`p-4 rounded-lg inline-block ${layoutTheme.infoPanel}`}>
+              <h4 className={`font-bold mb-2 ${layoutTheme.infoTitle}`}>{lang === 'en' ? 'Translation Vector' : 'Vektor Translasi'}</h4>
+              <div className={`text-sm mb-2 flex items-center gap-2 ${layoutTheme.infoText}`}>
+                {lang === 'en' ? 'Written as' : 'Ditulis dalam bentuk'}
+                <span className={`flex flex-col items-center border-l-2 border-r-2 px-1.5 rounded-sm leading-tight ${layoutTheme.matrixChip}`}>
+                  <span>a</span><span>b</span>
+                </span>
               </div>
-              <ul className="list-disc pl-5 text-sm text-indigo-800 space-y-1">
+              <ul className={`list-disc pl-5 text-sm space-y-1 ${layoutTheme.infoText}`}>
                 <li><strong>a:</strong> {lang === 'en' ? 'Right (+) or Left (-) x-axis.' : 'Kanan (+) atau Kiri (-) paksi-x.'}</li>
                 <li><strong>b:</strong> {lang === 'en' ? 'Up (+) or Down (-) y-axis.' : 'Atas (+) atau Bawah (-) paksi-y.'}</li>
               </ul>
             </div>
           </div>
           
-          <div className="w-64 h-64 shrink-0 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl border-2 border-indigo-200 flex flex-col items-center justify-center relative overflow-hidden shadow-inner">
-            <div className="absolute top-2 left-2 flex items-center gap-1 text-xs font-bold text-indigo-500 bg-white/70 px-2 py-1 rounded-md"><Activity size={12}/> {lang === 'en' ? 'Concept Animation' : 'Animasi Konsep'}</div>
+          <div className={`w-64 h-64 shrink-0 rounded-xl border-2 flex flex-col items-center justify-center relative overflow-hidden shadow-inner ${layoutTheme.animationCard}`}>
+            <div className={`absolute top-2 left-2 flex items-center gap-1 text-xs font-bold bg-white/70 px-2 py-1 rounded-md ${layoutTheme.animationLabel}`}><Activity size={12}/> {lang === 'en' ? 'Concept Animation' : 'Animasi Konsep'}</div>
             <svg width="200" height="200" viewBox="0 0 100 100">
               <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="#cbd5e1" strokeWidth="0.5"/></pattern>
               <rect width="100" height="100" fill="url(#grid)" />
               <defs>
-                <linearGradient id="gradKereta" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#60a5fa" /><stop offset="100%" stopColor="#2563eb" /></linearGradient>
-                <marker id="arrowT" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto"><polygon points="0,0 4,2 0,4" fill="#10b981" /></marker>
+                <linearGradient id="gradKereta" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor={layoutTheme.svg.secondary} /><stop offset="100%" stopColor={layoutTheme.svg.primary} /></linearGradient>
+                <marker id="arrowT" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto"><polygon points="0,0 4,2 0,4" fill={layoutTheme.svg.accent} /></marker>
               </defs>
-              <path d="M 30 60 L 65 30" fill="none" stroke="#10b981" strokeWidth="2" strokeDasharray="4,4" markerEnd="url(#arrowT)" />
+              <path d="M 30 60 L 65 30" fill="none" stroke={layoutTheme.svg.accent} strokeWidth="2" strokeDasharray="4,4" markerEnd="url(#arrowT)" />
               <g transform="translate(35, -30)" opacity="0.3">
-                <path d="M 15 65 L 15 55 L 20 55 L 25 45 L 35 45 L 40 55 L 45 55 L 45 65 Z" fill="#ef4444" stroke="#dc2626" strokeDasharray="2,2"/>
-                <circle cx="20" cy="65" r="4" fill="#ef4444" /><circle cx="40" cy="65" r="4" fill="#ef4444" />
+                <path d="M 15 65 L 15 55 L 20 55 L 25 45 L 35 45 L 40 55 L 45 55 L 45 65 Z" fill={layoutTheme.svg.danger} stroke={layoutTheme.svg.dangerDark} strokeDasharray="2,2"/>
+                <circle cx="20" cy="65" r="4" fill={layoutTheme.svg.danger} /><circle cx="40" cy="65" r="4" fill={layoutTheme.svg.danger} />
               </g>
               <g>
                 <animateTransform attributeName="transform" type="translate" values="0 0; 0 0; 35 -30; 35 -30; 0 0" keyTimes="0; 0.2; 0.5; 0.7; 1" dur="8s" repeatCount="indefinite" calcMode="spline" keySplines="0 0 1 1; 0.5 0 0.7 1; 0 0 1 1; 0.5 0 0.7 1"/>
-                <path d="M 15 65 L 15 55 L 20 55 L 25 45 L 35 45 L 40 55 L 45 55 L 45 65 Z" fill="url(#gradKereta)" stroke="#1e3a8a" strokeWidth="1"/>
-                <circle cx="20" cy="65" r="4" fill="#1e293b" /><circle cx="40" cy="65" r="4" fill="#1e293b" />
-                <polygon points="25,55 27,48 33,48 35,55" fill="#bae6fd" />
+                <path d="M 15 65 L 15 55 L 20 55 L 25 45 L 35 45 L 40 55 L 45 55 L 45 65 Z" fill="url(#gradKereta)" stroke={layoutTheme.svg.primaryDark} strokeWidth="1"/>
+                <circle cx="20" cy="65" r="4" fill={layoutTheme.svg.contrast} /><circle cx="40" cy="65" r="4" fill={layoutTheme.svg.contrast} />
+                <polygon points="25,55 27,48 33,48 35,55" fill={layoutTheme.svg.light} />
               </g>
             </svg>
           </div>
         </div>
-        <TranslasiStepper lang={lang} />
+        <TranslasiStepper lang={lang} theme={layoutTheme} />
       </section>
 
       {/* 11.3 Pantulan */}
       <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-        <h2 className="text-2xl font-bold text-slate-900 border-b-2 border-teal-100 pb-3 mb-6 flex items-center gap-2">
-          <span className="bg-teal-100 text-teal-700 px-3 py-1 rounded-lg text-lg">11.3</span> 
+        <h2 className={`text-2xl font-bold text-slate-900 border-b-2 pb-3 mb-6 flex items-center gap-2 ${layoutTheme.sectionRule}`}>
+          <span className={`px-3 py-1 rounded-lg text-lg ${layoutTheme.sectionBadge}`}>11.3</span> 
           {lang === 'en' ? 'Reflection' : 'Pantulan (Refleksi)'}
         </h2>
         
@@ -359,30 +534,30 @@ const SectionNota = ({ lang }) => {
             </ul>
           </div>
           
-          <div className="w-64 h-64 shrink-0 bg-gradient-to-br from-teal-50 to-emerald-100 rounded-xl border-2 border-teal-200 flex flex-col items-center justify-center relative overflow-hidden shadow-inner">
-            <div className="absolute top-2 left-2 flex items-center gap-1 text-xs font-bold text-teal-600 bg-white/70 px-2 py-1 rounded-md"><Activity size={12}/> {lang === 'en' ? 'Concept Animation' : 'Animasi Konsep'}</div>
+          <div className={`w-64 h-64 shrink-0 rounded-xl border-2 flex flex-col items-center justify-center relative overflow-hidden shadow-inner ${layoutTheme.animationCard}`}>
+            <div className={`absolute top-2 left-2 flex items-center gap-1 text-xs font-bold bg-white/70 px-2 py-1 rounded-md ${layoutTheme.animationLabel}`}><Activity size={12}/> {lang === 'en' ? 'Concept Animation' : 'Animasi Konsep'}</div>
             <svg width="200" height="200" viewBox="0 0 100 100">
               <rect width="100" height="100" fill="url(#grid)" />
-              <line x1="50" y1="0" x2="50" y2="100" stroke="#f59e0b" strokeWidth="2.5" strokeDasharray="4,4" />
+              <line x1="50" y1="0" x2="50" y2="100" stroke={layoutTheme.svg.accent} strokeWidth="2.5" strokeDasharray="4,4" />
               <defs>
-                <linearGradient id="gradF" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#34d399" /><stop offset="100%" stopColor="#059669" /></linearGradient>
-                <marker id="arrowP" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto"><polygon points="0,0 4,2 0,4" fill="#059669" /></marker>
+                <linearGradient id="gradF" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor={layoutTheme.svg.secondary} /><stop offset="100%" stopColor={layoutTheme.svg.primary} /></linearGradient>
+                <marker id="arrowP" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto"><polygon points="0,0 4,2 0,4" fill={layoutTheme.svg.mirror} /></marker>
               </defs>
-              <line x1="40" y1="25" x2="60" y2="25" stroke="#059669" strokeWidth="1.5" strokeDasharray="3,3" markerEnd="url(#arrowP)" />
-              <line x1="30" y1="65" x2="70" y2="65" stroke="#059669" strokeWidth="1.5" strokeDasharray="3,3" markerEnd="url(#arrowP)" />
+              <line x1="40" y1="25" x2="60" y2="25" stroke={layoutTheme.svg.mirror} strokeWidth="1.5" strokeDasharray="3,3" markerEnd="url(#arrowP)" />
+              <line x1="30" y1="65" x2="70" y2="65" stroke={layoutTheme.svg.mirror} strokeWidth="1.5" strokeDasharray="3,3" markerEnd="url(#arrowP)" />
               <g transform="translate(100, 0) scale(-1, 1)" opacity="0.3">
-                <path d="M 20 20 L 40 20 L 40 30 L 30 30 L 30 40 L 38 40 L 38 50 L 30 50 L 30 80 L 20 80 Z" fill="#ef4444" stroke="#dc2626" strokeDasharray="2,2"/>
+                <path d="M 20 20 L 40 20 L 40 30 L 30 30 L 30 40 L 38 40 L 38 50 L 30 50 L 30 80 L 20 80 Z" fill={layoutTheme.svg.danger} stroke={layoutTheme.svg.dangerDark} strokeDasharray="2,2"/>
               </g>
               <g transform="translate(50, 0)">
                 <animateTransform attributeName="transform" type="scale" values="1 1; 1 1; -1 1; -1 1; 1 1" keyTimes="0; 0.2; 0.5; 0.7; 1" dur="8s" repeatCount="indefinite" additive="sum" calcMode="spline" keySplines="0 0 1 1; 0.5 0 0.7 1; 0 0 1 1; 0.5 0 0.7 1"/>
                 <g transform="translate(-50, 0)">
-                  <path d="M 20 20 L 40 20 L 40 30 L 30 30 L 30 40 L 38 40 L 38 50 L 30 50 L 30 80 L 20 80 Z" fill="url(#gradF)" stroke="#064e3b" strokeWidth="1"/>
+                  <path d="M 20 20 L 40 20 L 40 30 L 30 30 L 30 40 L 38 40 L 38 50 L 30 50 L 30 80 L 20 80 Z" fill="url(#gradF)" stroke={layoutTheme.svg.primaryDark} strokeWidth="1"/>
                 </g>
               </g>
             </svg>
           </div>
         </div>
-        <PantulanStepper lang={lang} />
+        <PantulanStepper lang={lang} theme={layoutTheme} />
       </section>
 
       {/* 11.4 Putaran */}

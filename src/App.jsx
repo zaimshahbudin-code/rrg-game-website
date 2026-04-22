@@ -2542,12 +2542,44 @@ const RRGCanvasGame = () => {
       grass: '/assets/rrgs/grass.png',
       buildings: '/assets/rrgs/bangunan.png',
     };
+    const landmarkAssetSources = {
+      crystal: '/assets/rrgs/landmarks/crystal.png',
+      farm: '/assets/rrgs/landmarks/farm.png',
+      factory: '/assets/rrgs/landmarks/factory.png',
+      waterfall: '/assets/rrgs/landmarks/waterfall.png',
+      clinic: '/assets/rrgs/landmarks/clinic.png',
+      village: '/assets/rrgs/landmarks/village.png',
+      harbor: '/assets/rrgs/landmarks/harbor.png',
+      lighthouse: '/assets/rrgs/landmarks/lighthouse.png',
+      bridge: '/assets/rrgs/landmarks/bridge.png',
+      ranch: '/assets/rrgs/landmarks/ranch.png',
+      market: '/assets/rrgs/landmarks/market.png',
+    };
     const textures = Object.fromEntries(Object.entries(textureSources).map(([key, src]) => {
       const image = new Image();
       image.src = src;
       return [key, image];
     }));
+    const landmarkImages = Object.fromEntries(Object.entries(landmarkAssetSources).map(([key, src]) => {
+      const image = new Image();
+      image.src = src;
+      return [key, image];
+    }));
     const isTextureReady = (image) => image?.complete && image.naturalWidth > 0;
+    const LANDMARK_DRAW_BASE = 94;
+    const landmarkAssetMeta = {
+      crystal: { drawScale: 1.28, shadowScale: 1.14, labelFactor: 0.36 },
+      farm: { drawScale: 1.08, shadowScale: 1.02, labelFactor: 0.33 },
+      factory: { drawScale: 1.14, shadowScale: 1.12, labelFactor: 0.35 },
+      waterfall: { drawScale: 1.12, shadowScale: 1.08, labelFactor: 0.35 },
+      clinic: { drawScale: 1.02, shadowScale: 1.0, labelFactor: 0.33 },
+      village: { drawScale: 1.18, shadowScale: 1.12, labelFactor: 0.36 },
+      harbor: { drawScale: 1.16, shadowScale: 1.16, labelFactor: 0.35 },
+      lighthouse: { drawScale: 1.08, shadowScale: 0.98, labelFactor: 0.35 },
+      bridge: { drawScale: 1.18, shadowScale: 1.2, labelFactor: 0.31 },
+      ranch: { drawScale: 1.1, shadowScale: 1.04, labelFactor: 0.34 },
+      market: { drawScale: 1.08, shadowScale: 1.06, labelFactor: 0.34 },
+    };
     const buildingSpriteMap = {
       farm: { sx: 4, sy: 40, sw: 68, sh: 68, dw: 70, dh: 70 },
       ranch: { sx: 80, sy: 40, sw: 68, sh: 68, dw: 70, dh: 70 },
@@ -2832,16 +2864,57 @@ const RRGCanvasGame = () => {
       return true;
     };
 
+    const drawGeneratedLandmarkAsset = (landmark) => {
+      const image = landmarkImages[landmark.type];
+      if (!isTextureReady(image)) return null;
+      const meta = landmarkAssetMeta[landmark.type] || {};
+      const sizePx = LANDMARK_DRAW_BASE * (meta.drawScale || 1);
+      const floatY = Math.sin(game.time * 1.6 + landmark.x * 0.7) * 1.4;
+      ctx.save();
+      ctx.translate(0, floatY - 5);
+      ctx.shadowColor = 'rgba(15,23,42,0.24)';
+      ctx.shadowBlur = 16;
+      ctx.shadowOffsetY = 10;
+      ctx.drawImage(image, -sizePx / 2, -sizePx + 24, sizePx, sizePx);
+      ctx.restore();
+      return {
+        sizePx,
+        labelOffset: Math.max(30, sizePx * landmark.size * (meta.labelFactor || 0.34)),
+      };
+    };
+
     const drawLandmark = (landmark) => {
       const pos = gridToPixel(landmark.x, landmark.y);
       const s = landmark.size;
+      const assetMeta = landmarkAssetMeta[landmark.type] || {};
       ctx.save();
       ctx.translate(pos.px, pos.py);
       ctx.scale(s, s);
       ctx.fillStyle = 'rgba(0,0,0,0.18)';
       ctx.beginPath();
-      ctx.ellipse(0, 20, 27, 7, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 20, 27 * (assetMeta.shadowScale || 1), 7 * Math.max(1, (assetMeta.shadowScale || 1) * 0.9), 0, 0, Math.PI * 2);
       ctx.fill();
+
+      const generatedMetrics = drawGeneratedLandmarkAsset(landmark);
+      if (generatedMetrics) {
+        ctx.restore();
+        ctx.save();
+        ctx.fillStyle = 'rgba(255,255,255,0.86)';
+        ctx.strokeStyle = 'rgba(15,23,42,0.16)';
+        ctx.lineWidth = 3;
+        ctx.font = 'bold 10px Inter';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const labelY = pos.py + generatedMetrics.labelOffset;
+        const textWidth = ctx.measureText(landmark.label).width + 12;
+        drawRoundRect(ctx, pos.px - textWidth / 2, labelY - 8, textWidth, 16, 5);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#334155';
+        ctx.fillText(landmark.label, pos.px, labelY);
+        ctx.restore();
+        return;
+      }
 
       if (drawBuildingSprite(landmark)) {
         ctx.restore();

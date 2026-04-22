@@ -1645,6 +1645,10 @@ body {
   font-weight: 900;
 }
 
+.rrg-turn-indicator.animating {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 14px 32px rgba(8, 145, 178, 0.26);
+}
+
 .rrg-turn-dot {
   width: 12px;
   height: 12px;
@@ -1838,6 +1842,11 @@ body {
   font-weight: 950;
 }
 
+.rrg-card-dice.rolling {
+  animation: rrg-dice-roll-pulse 620ms cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+  box-shadow: 0 10px 24px rgba(103, 232, 249, 0.26);
+}
+
 .rrg-card-panel h3 {
   margin: 12px 0 6px;
   color: #ffffff;
@@ -1896,6 +1905,40 @@ body {
 .rrg-transform-actions button:nth-child(4) {
   background: linear-gradient(135deg, #38bdf8, #2563eb);
   box-shadow: 0 10px 30px rgba(37, 99, 235, 0.28);
+}
+
+.rrg-transform-actions button.roll-active {
+  animation: rrg-roll-button-glow 640ms ease-in-out infinite;
+}
+
+@keyframes rrg-dice-roll-pulse {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  35% {
+    transform: translateY(-2px) scale(1.04);
+  }
+  70% {
+    transform: translateY(1px) scale(0.99);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes rrg-roll-button-glow {
+  0% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 10px 30px rgba(213, 0, 0, 0.28);
+  }
+  50% {
+    transform: translateY(-1px) scale(1.03);
+    box-shadow: 0 14px 34px rgba(14, 165, 233, 0.38);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 10px 30px rgba(213, 0, 0, 0.28);
+  }
 }
 
 @media (max-width: 900px) {

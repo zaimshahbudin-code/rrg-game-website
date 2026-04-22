@@ -2103,6 +2103,9 @@ const RRGCanvasGame = () => {
     color: RRG_COLORS[index].bg,
     ring: RRG_COLORS[index].ring,
     trail: [],
+    motion: null,
+    motionLift: 0,
+    landingPulseAt: 0,
   }));
 
   const syncHud = useCallback((game, popup = game?.popup || null) => {
@@ -2119,6 +2122,8 @@ const RRGCanvasGame = () => {
       drawCard: game.drawCard,
       lastActionCard: game.lastActionCard,
       gameOver: game.gameOver,
+      animating: !!game.animating,
+      diceRolling: !!game.diceRolling,
     });
   }, []);
 
@@ -2161,11 +2166,59 @@ const RRGCanvasGame = () => {
     }, 1650);
   }, [syncHud]);
 
-  const centerOnPlayer = (game, player) => {
+  const centerOnPlayer = (game, player, instant = false) => {
     const pos = game.gridToPixel(player.x, player.y);
-    game.camX = pos.px;
-    game.camY = pos.py;
+    game.camTargetX = pos.px;
+    game.camTargetY = pos.py;
+    if (instant || !Number.isFinite(game.camX) || !Number.isFinite(game.camY)) {
+      game.camX = pos.px;
+      game.camY = pos.py;
+    }
   };
+
+  const kickCamera = useCallback((game, strength = 12, duration = 380) => {
+    if (!game) return;
+    game.cameraKick = { startedAt: performance.now(), strength, duration };
+  }, []);
+
+  const buildTravelPath = useCallback((from, to) => {
+    const steps = Math.max(Math.abs(to.x - from.x), Math.abs(to.y - from.y), 1);
+    return Array.from({ length: steps }, (_, index) => {
+      const t = (index + 1) / steps;
+      return {
+        x: from.x + (to.x - from.x) * t,
+        y: from.y + (to.y - from.y) * t,
+      };
+    });
+  }, []);
+
+  const animatePlayerMove = useCallback((game, player, destination) => new Promise((resolve) => {
+    const from = { x: player.x, y: player.y };
+    if (from.x === destination.x && from.y === destination.y) {
+      player.landingPulseAt = performance.now();
+      resolve();
+      return;
+    }
+    const path = buildTravelPath(from, destination);
+    player.motion = {
+      path,
+      segmentIndex: 0,
+      from,
+      to: path[0],
+      destination,
+      segmentStartedAt: performance.now(),
+      segmentDuration: Math.max(110, 200 - path.length * 8),
+      onDone: () => {
+        player.landingPulseAt = performance.now();
+        kickCamera(game, 11, 340);
+        resolve();
+      },
+    };
+    game.animating = true;
+    game.message = `${player.name} bergerak ke (${destination.x}, ${destination.y})...`;
+    centerOnPlayer(game, destination);
+    syncHud(game);
+  }), [buildTravelPath, kickCamera, syncHud]);
 
   const endTurn = useCallback((game, message) => {
     const endingPlayer = game.players[game.currentPlayer];
@@ -2199,6 +2252,7 @@ const RRGCanvasGame = () => {
     ];
 
     game.animating = true;
+    game.diceRolling = true;
     let count = 0;
     const interval = window.setInterval(() => {
       game.dice = randomFrom(rolls);
@@ -2211,6 +2265,7 @@ const RRGCanvasGame = () => {
         game.selected = null;
         game.hintLevel = 0;
         game.animating = false;
+        game.diceRolling = false;
         game.message = `${player.name} mendapat ${game.dice.label}: ${game.card.title}. Klik koordinat destinasi pada grid.`;
         showCardDraw(game.dice.deck, game.card);
         showPopup(game.dice.symbol, game.dice.cardName, game.card.text);
@@ -2246,9 +2301,11 @@ const RRGCanvasGame = () => {
     game.drawCard = null;
     game.lastActionCard = null;
     game.effects = [];
+    game.diceRolling = false;
+    game.cameraKick = null;
     window.clearTimeout(game.drawCardTimer);
     game.message = 'Misi bermula di Bukit Kristal. Semua pemain menerima RM100.';
-    centerOnPlayer(game, game.players[0]);
+    centerOnPlayer(game, game.players[0], true);
     showPopup('☢️', 'Misi Bermula', 'Selamatkan diri dari Bukit Kristal menuju Zon Selamat.');
     syncHud(game);
   }, [showPopup, syncHud]);
@@ -2391,15 +2448,16 @@ const RRGCanvasGame = () => {
     return { effectType, note };
   }, [applyActionCard, showCardDraw]);
 
-  const submitAnswer = useCallback(() => {
+  const submitAnswer = useCallback(async () => {
     const game = gameRef.current;
-    if (!game || !game.card || !game.selected || game.gameOver) return;
+    if (!game || !game.card || !game.selected || game.gameOver || game.animating) return;
     const player = game.players[game.currentPlayer];
     const correct = transformRrgPoint(player, game.card);
     const selected = game.selected;
     if (selected.x !== correct.x || selected.y !== correct.y) {
       player.score -= WRONG_COST;
       game.effects.push({ type: 'wrong', x: selected.x, y: selected.y, startedAt: performance.now() });
+      kickCamera(game, 8, 260);
       playRrgSound('wrong');
       showPopup('❌', `Jawapan belum tepat`, `${player.name} kehilangan RM${WRONG_COST}. Giliran tamat.`);
       endTurn(game, `${player.name} memilih (${selected.x}, ${selected.y}) tetapi tidak tepat.`);
@@ -2408,13 +2466,15 @@ const RRGCanvasGame = () => {
 
     const destination = { ...correct };
     player.trail.push({ x: player.x, y: player.y, time: performance.now() });
-    player.x = destination.x;
-    player.y = destination.y;
+    await animatePlayerMove(game, player, destination);
     const { note, effectType } = resolveItem(game, player, destination);
     const emoji = effectType === 'boom' ? '💣' : effectType === 'coin' ? '💰' : '✅';
     showPopup(emoji, 'Jawapan Tepat!', note);
+    syncHud(game);
+    await new Promise((resolve) => window.setTimeout(resolve, 280));
+    game.animating = false;
     endTurn(game, `${player.name} berjaya bergerak ke (${destination.x}, ${destination.y}). ${note}`);
-  }, [endTurn, resolveItem, showPopup]);
+  }, [animatePlayerMove, endTurn, kickCamera, resolveItem, showPopup, syncHud]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -2646,6 +2706,8 @@ const RRGCanvasGame = () => {
       gridToPixel,
       camX: 0,
       camY: 0,
+      camTargetX: 0,
+      camTargetY: 0,
       zoom: 1,
       dragStartX: 0,
       dragStartY: 0,
@@ -2666,11 +2728,13 @@ const RRGCanvasGame = () => {
       drawCard: null,
       lastActionCard: null,
       effects: [],
+      cameraKick: null,
+      diceRolling: false,
       time: 0,
       lastTime: performance.now(),
     };
     gameRef.current = game;
-    centerOnPlayer(game, game.players[0]);
+    centerOnPlayer(game, game.players[0], true);
     syncHud(game);
 
     const resize = () => {
@@ -2687,6 +2751,8 @@ const RRGCanvasGame = () => {
       game.dragStartY = event.clientY;
       game.camStartX = game.camX;
       game.camStartY = game.camY;
+      game.camTargetX = game.camX;
+      game.camTargetY = game.camY;
       game.dragDistance = 0;
     };
     const onPointerMove = (event) => {
@@ -2696,6 +2762,8 @@ const RRGCanvasGame = () => {
       game.dragDistance = Math.max(game.dragDistance, Math.abs(dx) + Math.abs(dy));
       game.camX = game.camStartX - dx / game.zoom;
       game.camY = game.camStartY - dy / game.zoom;
+      game.camTargetX = game.camX;
+      game.camTargetY = game.camY;
     };
     const onPointerUp = (event) => {
       if (!game.isDragging) return;
@@ -3240,9 +3308,23 @@ const RRGCanvasGame = () => {
       game.lastTime = timestamp;
       game.time += dt;
       const dpr = window.devicePixelRatio || 1;
+      game.camX += (game.camTargetX - game.camX) * 0.1;
+      game.camY += (game.camTargetY - game.camY) * 0.1;
+      let cameraOffsetX = 0;
+      let cameraOffsetY = 0;
+      if (game.cameraKick) {
+        const age = (timestamp - game.cameraKick.startedAt) / game.cameraKick.duration;
+        if (age >= 1) {
+          game.cameraKick = null;
+        } else {
+          const power = (1 - age) * game.cameraKick.strength;
+          cameraOffsetX = Math.sin(age * 22) * power;
+          cameraOffsetY = Math.cos(age * 27) * power * 0.46;
+        }
+      }
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.save();
-      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.translate(canvas.width / 2 + cameraOffsetX * dpr, canvas.height / 2 + cameraOffsetY * dpr);
       ctx.scale(game.zoom * dpr, game.zoom * dpr);
       ctx.translate(-game.camX, -game.camY);
 
@@ -3462,8 +3544,41 @@ const RRGCanvasGame = () => {
       }
 
       game.players.forEach((player) => {
-        player.drawX += (player.x - player.drawX) * 0.16;
-        player.drawY += (player.y - player.drawY) * 0.16;
+        const motion = player.motion;
+        if (motion) {
+          const raw = Math.min(1, (timestamp - motion.segmentStartedAt) / motion.segmentDuration);
+          const eased = 1 - ((1 - raw) ** 3);
+          player.drawX = motion.from.x + (motion.to.x - motion.from.x) * eased;
+          player.drawY = motion.from.y + (motion.to.y - motion.from.y) * eased;
+          player.motionLift = Math.sin(raw * Math.PI) * 11;
+          if (player.id === game.players[game.currentPlayer]?.id) {
+            const follow = game.gridToPixel(player.drawX, player.drawY);
+            game.camTargetX = follow.px;
+            game.camTargetY = follow.py;
+          }
+          if (raw >= 1) {
+            player.trail.push({ x: motion.to.x, y: motion.to.y, time: performance.now() });
+            if (motion.segmentIndex >= motion.path.length - 1) {
+              const onDone = motion.onDone;
+              player.x = motion.destination.x;
+              player.y = motion.destination.y;
+              player.drawX = motion.destination.x;
+              player.drawY = motion.destination.y;
+              player.motion = null;
+              player.motionLift = 0;
+              if (onDone) onDone();
+            } else {
+              motion.segmentIndex += 1;
+              motion.from = motion.to;
+              motion.to = motion.path[motion.segmentIndex];
+              motion.segmentStartedAt = timestamp;
+            }
+          }
+        } else {
+          player.drawX += (player.x - player.drawX) * 0.16;
+          player.drawY += (player.y - player.drawY) * 0.16;
+          player.motionLift *= 0.72;
+        }
         player.trail.forEach((trail) => {
           const age = (performance.now() - trail.time) / 2000;
           if (age > 1) return;
@@ -3480,17 +3595,31 @@ const RRGCanvasGame = () => {
       game.players.forEach((player, index) => {
         const offset = RRG_PLAYER_OFFSETS[index % RRG_PLAYER_OFFSETS.length];
         const pos = gridToPixel(player.drawX + offset.x, player.drawY + offset.y);
-        const bounce = index === game.currentPlayer ? Math.sin(game.time * 5) * 3 : 0;
+        const landingAge = player.landingPulseAt ? (timestamp - player.landingPulseAt) / 620 : 99;
+        const landingPulse = landingAge >= 0 && landingAge < 1 ? Math.sin((1 - landingAge) * Math.PI) : 0;
+        const idleBounce = index === game.currentPlayer ? Math.sin(game.time * 5) * 3 : 0;
+        const bounce = idleBounce - (player.motionLift || 0);
+        const tokenSize = 19 * (1 + landingPulse * 0.14);
         if (index === game.currentPlayer) {
           ctx.strokeStyle = player.color;
           ctx.lineWidth = 2;
           ctx.globalAlpha = 0.4 + Math.sin(game.time * 4) * 0.3;
           ctx.beginPath();
-          ctx.arc(pos.px, pos.py + bounce, 28, 0, Math.PI * 2);
+          ctx.arc(pos.px, pos.py + bounce, 28 + landingPulse * 10, 0, Math.PI * 2);
           ctx.stroke();
           ctx.globalAlpha = 1;
         }
-        drawPlayerToken(player, index, pos.px, pos.py, 'object', { size: 19, bounce, label: true });
+        if (landingPulse > 0.02) {
+          ctx.save();
+          ctx.strokeStyle = player.color;
+          ctx.globalAlpha = 0.35 * landingPulse;
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.arc(pos.px, pos.py + bounce, 20 + (1 - landingAge) * 18, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        }
+        drawPlayerToken(player, index, pos.px, pos.py, 'object', { size: tokenSize, bounce, label: true });
       });
 
       game.effects = game.effects.filter((effect) => performance.now() - effect.startedAt < 950);
@@ -3545,7 +3674,7 @@ const RRGCanvasGame = () => {
   }, [showPopup, submitAnswer, syncHud]);
 
   const activePlayer = hud.players[hud.currentPlayer];
-  const diceLabel = hud.dice ? `${hud.dice.symbol} ${hud.dice.label}` : 'Belum roll';
+  const diceLabel = hud.diceRolling ? `${hud.dice?.symbol || '🎲'} Memilih warna...` : hud.dice ? `${hud.dice.symbol} ${hud.dice.label}` : 'Belum roll';
 
   return (
     <div className="rrg-canvas-game">
@@ -3560,13 +3689,13 @@ const RRGCanvasGame = () => {
           <div className="rrg-hud-panel"><span>Posisi</span><b>({activePlayer?.x ?? 0}, {activePlayer?.y ?? 0})</b></div>
         </div>
       </div>
-      <div className="rrg-turn-indicator">
+      <div className={`rrg-turn-indicator ${hud.animating ? 'animating' : ''}`}>
         {hud.players.map((player, index) => <span key={player.id} className={`rrg-turn-dot ${hud.currentPlayer === index ? 'active' : ''}`} style={{ background: player.finished ? '#22c55e' : player.color, color: player.color }} />)}
         <b>{hud.gameOver ? 'Game tamat' : `${activePlayer?.name || 'Pemain'} sedang bermain`}</b>
       </div>
       <div className="rrg-card-panel">
         <div className="rrg-card-title">Kad Transformasi</div>
-        <div className="rrg-card-dice">{diceLabel}</div>
+        <div className={`rrg-card-dice ${hud.diceRolling ? 'rolling' : ''}`}>{diceLabel}</div>
         <h3>{hud.card ? hud.card.title : 'Roll dadu warna'}</h3>
         <p>{hud.card ? hud.card.text : hud.message}</p>
         {hud.card?.cardImage && <img className="rrg-current-card-img" src={hud.card.cardImage} alt={hud.card.title} />}
@@ -3599,10 +3728,10 @@ const RRGCanvasGame = () => {
         </div>
       )}
       <div className="rrg-dice-panel rrg-transform-actions">
-        <button type="button" onClick={rollDice} disabled={!!hud.card || hud.gameOver}>🎲 Roll Warna</button>
-        <button type="button" onClick={buyHint} disabled={!hud.card || hud.hintLevel >= 2 || hud.gameOver || (activePlayer?.score ?? 0) < HINT_COST}>💡 Hint RM{HINT_COST}</button>
-        <button type="button" onClick={submitAnswer} disabled={!hud.card || !hud.selected || hud.gameOver}>✅ Semak</button>
-        <button type="button" onClick={resetGame}>↻ Reset</button>
+        <button type="button" className={hud.diceRolling ? 'roll-active' : ''} onClick={rollDice} disabled={!!hud.card || hud.gameOver || hud.animating}>🎲 Roll Warna</button>
+        <button type="button" onClick={buyHint} disabled={!hud.card || hud.hintLevel >= 2 || hud.gameOver || hud.animating || (activePlayer?.score ?? 0) < HINT_COST}>💡 Hint RM{HINT_COST}</button>
+        <button type="button" onClick={submitAnswer} disabled={!hud.card || !hud.selected || hud.gameOver || hud.animating}>✅ Semak</button>
+        <button type="button" onClick={resetGame} disabled={hud.animating}>↻ Reset</button>
       </div>
       <div className="rrg-minimap"><canvas ref={miniMapRef} width="140" height="140" /></div>
       <div className="rrg-controls-hint">

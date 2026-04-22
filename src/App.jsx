@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 
 const TUTORIAL_STEP_IDLE_CLASS = 'bg-slate-100 text-slate-700 hover:bg-slate-200';
+const TUTORIAL_STEP_ACTIVE_GRADIENT_CLASS = 'bg-gradient-to-r from-sky-600 via-cyan-500 to-emerald-500 text-white font-bold shadow-md';
 
 const NOTE_LAYOUT_THEMES = {
   ocean: {
@@ -30,7 +31,7 @@ const NOTE_LAYOUT_THEMES = {
     animationLabel: 'text-sky-600',
     stepperWrap: 'bg-gradient-to-br from-white via-sky-50 to-cyan-50 border-sky-100',
     stepperTitle: 'text-sky-800',
-    stepActive: 'bg-gradient-to-r from-sky-600 to-cyan-500 text-white font-bold shadow-md',
+    stepActive: TUTORIAL_STEP_ACTIVE_GRADIENT_CLASS,
     svg: {
       primary: '#2563eb',
       primarySoft: 'rgba(37, 99, 235, 0.28)',
@@ -63,7 +64,7 @@ const NOTE_LAYOUT_THEMES = {
     animationLabel: 'text-emerald-600',
     stepperWrap: 'bg-gradient-to-br from-white via-emerald-50 to-teal-50 border-emerald-100',
     stepperTitle: 'text-emerald-800',
-    stepActive: 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-bold shadow-md',
+    stepActive: TUTORIAL_STEP_ACTIVE_GRADIENT_CLASS,
     svg: {
       primary: '#059669',
       primarySoft: 'rgba(5, 150, 105, 0.28)',
@@ -96,7 +97,7 @@ const NOTE_LAYOUT_THEMES = {
     animationLabel: 'text-orange-600',
     stepperWrap: 'bg-gradient-to-br from-white via-orange-50 to-rose-50 border-orange-100',
     stepperTitle: 'text-orange-800',
-    stepActive: 'bg-gradient-to-r from-orange-500 to-rose-500 text-white font-bold shadow-md',
+    stepActive: TUTORIAL_STEP_ACTIVE_GRADIENT_CLASS,
     svg: {
       primary: '#f97316',
       primarySoft: 'rgba(249, 115, 22, 0.28)',
@@ -129,7 +130,7 @@ const NOTE_LAYOUT_THEMES = {
     animationLabel: 'text-violet-600',
     stepperWrap: 'bg-gradient-to-br from-white via-violet-50 to-indigo-50 border-violet-100',
     stepperTitle: 'text-violet-800',
-    stepActive: 'bg-gradient-to-r from-violet-600 to-indigo-500 text-white font-bold shadow-md',
+    stepActive: TUTORIAL_STEP_ACTIVE_GRADIENT_CLASS,
     svg: {
       primary: '#7c3aed',
       primarySoft: 'rgba(124, 58, 237, 0.28)',

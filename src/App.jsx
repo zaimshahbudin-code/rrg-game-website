@@ -2899,18 +2899,18 @@ const RRGCanvasGame = () => {
       if (generatedMetrics) {
         ctx.restore();
         ctx.save();
-        ctx.fillStyle = 'rgba(255,255,255,0.86)';
-        ctx.strokeStyle = 'rgba(15,23,42,0.16)';
-        ctx.lineWidth = 3;
         ctx.font = 'bold 10px Inter';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         const labelY = pos.py + generatedMetrics.labelOffset;
-        const textWidth = ctx.measureText(landmark.label).width + 12;
-        drawRoundRect(ctx, pos.px - textWidth / 2, labelY - 8, textWidth, 16, 5);
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = '#334155';
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = 'rgba(15,23,42,0.34)';
+        ctx.fillStyle = 'rgba(248,250,252,0.98)';
+        ctx.shadowColor = 'rgba(15,23,42,0.28)';
+        ctx.shadowBlur = 6;
+        ctx.shadowOffsetY = 2;
+        ctx.strokeText(landmark.label, pos.px, labelY);
         ctx.fillText(landmark.label, pos.px, labelY);
         ctx.restore();
         return;

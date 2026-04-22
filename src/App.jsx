@@ -2565,20 +2565,71 @@ const RRGCanvasGame = () => {
       image.src = src;
       return [key, image];
     }));
+    const landmarkRenderCache = new WeakMap();
     const isTextureReady = (image) => image?.complete && image.naturalWidth > 0;
     const LANDMARK_DRAW_BASE = 94;
     const landmarkAssetMeta = {
-      crystal: { drawScale: 1.28, shadowScale: 1.14, labelFactor: 0.36 },
-      farm: { drawScale: 1.08, shadowScale: 1.02, labelFactor: 0.33 },
-      factory: { drawScale: 1.14, shadowScale: 1.12, labelFactor: 0.35 },
-      waterfall: { drawScale: 1.12, shadowScale: 1.08, labelFactor: 0.35 },
-      clinic: { drawScale: 1.02, shadowScale: 1.0, labelFactor: 0.33 },
-      village: { drawScale: 1.18, shadowScale: 1.12, labelFactor: 0.36 },
-      harbor: { drawScale: 1.16, shadowScale: 1.16, labelFactor: 0.35 },
-      lighthouse: { drawScale: 1.08, shadowScale: 0.98, labelFactor: 0.35 },
-      bridge: { drawScale: 1.18, shadowScale: 1.2, labelFactor: 0.31 },
-      ranch: { drawScale: 1.1, shadowScale: 1.04, labelFactor: 0.34 },
-      market: { drawScale: 1.08, shadowScale: 1.06, labelFactor: 0.34 },
+      crystal: { drawScale: 1.28, shadowScale: 1.14, labelFactor: 0.36, crop: { left: 0.09, right: 0.09, top: 0.08, bottom: 0.18 }, fadeStart: 0.64 },
+      farm: { drawScale: 1.08, shadowScale: 1.02, labelFactor: 0.33, crop: { left: 0.1, right: 0.1, top: 0.08, bottom: 0.22 }, fadeStart: 0.62 },
+      factory: { drawScale: 1.14, shadowScale: 1.12, labelFactor: 0.35, crop: { left: 0.09, right: 0.09, top: 0.07, bottom: 0.2 }, fadeStart: 0.58, fadeMid: 0.8, maskOuter: 0.58 },
+      waterfall: { drawScale: 1.12, shadowScale: 1.08, labelFactor: 0.35, crop: { left: 0.08, right: 0.08, top: 0.07, bottom: 0.18 }, fadeStart: 0.61, maskOuter: 0.56 },
+      clinic: { drawScale: 1.02, shadowScale: 1.0, labelFactor: 0.33, crop: { left: 0.1, right: 0.1, top: 0.08, bottom: 0.21 }, fadeStart: 0.6 },
+      village: { drawScale: 1.18, shadowScale: 1.12, labelFactor: 0.36, crop: { left: 0.09, right: 0.09, top: 0.07, bottom: 0.22 }, fadeStart: 0.6, maskOuter: 0.58 },
+      harbor: { drawScale: 1.16, shadowScale: 1.16, labelFactor: 0.35, crop: { left: 0.08, right: 0.08, top: 0.07, bottom: 0.2 }, fadeStart: 0.56, fadeMid: 0.78, maskOuter: 0.62 },
+      lighthouse: { drawScale: 1.08, shadowScale: 0.98, labelFactor: 0.35, crop: { left: 0.1, right: 0.1, top: 0.05, bottom: 0.18 }, fadeStart: 0.62 },
+      bridge: { drawScale: 1.18, shadowScale: 1.2, labelFactor: 0.31, crop: { left: 0.07, right: 0.07, top: 0.08, bottom: 0.18 }, fadeStart: 0.55, fadeMid: 0.76, maskOuter: 0.64 },
+      ranch: { drawScale: 1.1, shadowScale: 1.04, labelFactor: 0.34, crop: { left: 0.1, right: 0.1, top: 0.08, bottom: 0.22 }, fadeStart: 0.61 },
+      market: { drawScale: 1.08, shadowScale: 1.06, labelFactor: 0.34, crop: { left: 0.1, right: 0.1, top: 0.07, bottom: 0.2 }, fadeStart: 0.6 },
+    };
+    const getProcessedLandmarkImage = (landmarkType) => {
+      const image = landmarkImages[landmarkType];
+      if (!isTextureReady(image)) return null;
+      const cached = landmarkRenderCache.get(image);
+      if (cached) return cached;
+
+      const meta = landmarkAssetMeta[landmarkType] || {};
+      const crop = meta.crop || {};
+      const width = image.naturalWidth || image.width;
+      const height = image.naturalHeight || image.height;
+      const sx = Math.round(width * (crop.left || 0));
+      const sy = Math.round(height * (crop.top || 0));
+      const sw = Math.max(1, width - sx - Math.round(width * (crop.right || 0)));
+      const sh = Math.max(1, height - sy - Math.round(height * (crop.bottom || 0)));
+
+      const canvas = document.createElement('canvas');
+      canvas.width = sw;
+      canvas.height = sh;
+      const renderCtx = canvas.getContext('2d');
+      renderCtx.drawImage(image, sx, sy, sw, sh, 0, 0, sw, sh);
+
+      renderCtx.globalCompositeOperation = 'destination-in';
+
+      const radial = renderCtx.createRadialGradient(
+        sw * 0.5,
+        sh * 0.45,
+        Math.min(sw, sh) * 0.18,
+        sw * 0.5,
+        sh * 0.5,
+        Math.max(sw, sh) * (meta.maskOuter || 0.56),
+      );
+      radial.addColorStop(0, 'rgba(0,0,0,1)');
+      radial.addColorStop(0.68, 'rgba(0,0,0,1)');
+      radial.addColorStop(1, 'rgba(0,0,0,0)');
+      renderCtx.fillStyle = radial;
+      renderCtx.fillRect(0, 0, sw, sh);
+
+      const bottomFade = renderCtx.createLinearGradient(0, 0, 0, sh);
+      bottomFade.addColorStop(0, 'rgba(0,0,0,1)');
+      bottomFade.addColorStop(meta.fadeStart || 0.6, 'rgba(0,0,0,1)');
+      bottomFade.addColorStop(meta.fadeMid || 0.82, 'rgba(0,0,0,0.5)');
+      bottomFade.addColorStop(1, 'rgba(0,0,0,0)');
+      renderCtx.fillStyle = bottomFade;
+      renderCtx.fillRect(0, 0, sw, sh);
+
+      renderCtx.globalCompositeOperation = 'source-over';
+      const processed = { canvas, width: sw, height: sh };
+      landmarkRenderCache.set(image, processed);
+      return processed;
     };
     const buildingSpriteMap = {
       farm: { sx: 4, sy: 40, sw: 68, sh: 68, dw: 70, dh: 70 },
@@ -2865,21 +2916,22 @@ const RRGCanvasGame = () => {
     };
 
     const drawGeneratedLandmarkAsset = (landmark) => {
-      const image = landmarkImages[landmark.type];
-      if (!isTextureReady(image)) return null;
+      const processedImage = getProcessedLandmarkImage(landmark.type);
+      if (!processedImage) return null;
       const meta = landmarkAssetMeta[landmark.type] || {};
       const sizePx = LANDMARK_DRAW_BASE * (meta.drawScale || 1);
       const floatY = Math.sin(game.time * 1.6 + landmark.x * 0.7) * 1.4;
+      const drawHeight = sizePx * (processedImage.height / processedImage.width);
       ctx.save();
       ctx.translate(0, floatY - 5);
       ctx.shadowColor = 'rgba(15,23,42,0.24)';
       ctx.shadowBlur = 16;
       ctx.shadowOffsetY = 10;
-      ctx.drawImage(image, -sizePx / 2, -sizePx + 24, sizePx, sizePx);
+      ctx.drawImage(processedImage.canvas, -sizePx / 2, -drawHeight + 24, sizePx, drawHeight);
       ctx.restore();
       return {
-        sizePx,
-        labelOffset: Math.max(30, sizePx * landmark.size * (meta.labelFactor || 0.34)),
+        sizePx: Math.max(sizePx, drawHeight),
+        labelOffset: Math.max(30, drawHeight * landmark.size * (meta.labelFactor || 0.34)),
       };
     };
 

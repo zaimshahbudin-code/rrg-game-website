@@ -315,16 +315,16 @@ const PutaranStepper = ({ lang }) => {
           <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
             <p className="text-sm font-semibold text-slate-600 mb-3">{lang === 'en' ? 'Click the steps below:' : 'Tekan langkah di bawah:'}</p>
             <div className="flex flex-col gap-2">
-              <button onClick={() => setStep(1)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 1 ? 'bg-purple-600 text-white font-bold shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>
+              <button onClick={() => setStep(1)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 1 ? TUTORIAL_STEP_ACTIVE_GRADIENT_CLASS : TUTORIAL_STEP_IDLE_CLASS}`}>
                 1. {lang === 'en' ? 'Draw a straight line from vertex (A) to the Center of Rotation.' : 'Sambung garis lurus dari bucu (A) ke Pusat Putaran.'}
               </button>
-              <button onClick={() => setStep(2)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 2 ? 'bg-purple-600 text-white font-bold shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>
+              <button onClick={() => setStep(2)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 2 ? TUTORIAL_STEP_ACTIVE_GRADIENT_CLASS : TUTORIAL_STEP_IDLE_CLASS}`}>
                 2. {lang === 'en' ? 'Measure 90° clockwise from that line.' : 'Ukur 90° ikut arah jam dari garisan tersebut.'}
               </button>
-              <button onClick={() => setStep(3)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 3 ? 'bg-purple-600 text-white font-bold shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>
+              <button onClick={() => setStep(3)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 3 ? TUTORIAL_STEP_ACTIVE_GRADIENT_CLASS : TUTORIAL_STEP_IDLE_CLASS}`}>
                 3. {lang === 'en' ? "Transfer the line at the same distance. Mark (A')." : "Pindah garisan pada jarak yang sama. Tandakan (A')."}
               </button>
-              <button onClick={() => setStep(4)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 4 ? 'bg-purple-600 text-white font-bold shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>
+              <button onClick={() => setStep(4)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 4 ? TUTORIAL_STEP_ACTIVE_GRADIENT_CLASS : TUTORIAL_STEP_IDLE_CLASS}`}>
                 4. {lang === 'en' ? 'Repeat for other points & draw the final image.' : 'Ulang untuk titik lain & lukis imej akhir.'}
               </button>
             </div>

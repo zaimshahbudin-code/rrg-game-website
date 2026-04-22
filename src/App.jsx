@@ -240,22 +240,32 @@ const PutaranStepper = ({ lang }) => {
 
 const SectionNota = ({ lang }) => {
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="w-full max-w-7xl mx-auto space-y-8 lg:space-y-10">
       {/* 11.1 Transformasi */}
       <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
         <h2 className="text-2xl font-bold text-slate-900 border-b-2 border-blue-100 pb-3 mb-6 flex items-center gap-2">
           <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-lg">11.1</span> 
           {lang === 'en' ? 'Introduction to Transformations' : 'Pengenalan Transformasi'}
         </h2>
-        <div className="prose prose-slate max-w-none">
-          <p className="text-lg leading-relaxed text-slate-700">
-            {lang === 'en' ? (
-              <><strong>Transformation</strong> is a movement that changes the position, orientation, or size of an object to produce an image. The original object is called the <strong>Object</strong>, while the resulting shape is called the <strong>Image</strong>.</>
-            ) : (
-              <><strong>Transformasi</strong> ialah suatu pergerakan yang mengubah kedudukan, orientasi atau saiz suatu objek untuk menghasilkan imej. Objek asal dipanggil <strong>Objek</strong>, manakala bentuk yang terhasil dipanggil <strong>Imej</strong>.</>
-            )}
-          </p>
-          <div className="grid md:grid-cols-2 gap-6 mt-6">
+        <div className="grid xl:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.95fr)] gap-8 items-start">
+          <div className="prose prose-slate max-w-none">
+            <p className="text-lg leading-relaxed text-slate-700">
+              {lang === 'en' ? (
+                <><strong>Transformation</strong> is a movement that changes the position, orientation, or size of an object to produce an image. The original object is called the <strong>Object</strong>, while the resulting shape is called the <strong>Image</strong>.</>
+              ) : (
+                <><strong>Transformasi</strong> ialah suatu pergerakan yang mengubah kedudukan, orientasi atau saiz suatu objek untuk menghasilkan imej. Objek asal dipanggil <strong>Objek</strong>, manakala bentuk yang terhasil dipanggil <strong>Imej</strong>.</>
+              )}
+            </p>
+            <div className="mt-6 rounded-xl border border-cyan-100 bg-cyan-50/70 p-5">
+              <h4 className="font-bold text-cyan-900 mb-2">{lang === 'en' ? 'Quick understanding' : 'Fahami dengan cepat'}</h4>
+              <p className="text-sm leading-7 text-cyan-900/80">
+                {lang === 'en'
+                  ? 'When an object moves, flips, or turns without being redrawn from scratch, we compare the original object with its image. This comparison helps us identify the transformation involved.'
+                  : 'Apabila suatu objek digerakkan, dipantulkan atau diputarkan tanpa dilukis semula dari awal, kita membandingkan objek asal dengan imej yang terhasil. Perbandingan ini membantu kita mengenal pasti jenis transformasi yang berlaku.'}
+              </p>
+            </div>
+          </div>
+          <div className="grid sm:grid-cols-2 xl:grid-cols-1 gap-6">
             <div className="bg-green-50 border border-green-200 p-5 rounded-xl">
               <h4 className="font-bold text-green-800 mb-2">{lang === 'en' ? 'Congruence' : 'Kekongruenan'}</h4>
               <p className="text-sm text-green-700">

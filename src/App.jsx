@@ -2281,6 +2281,8 @@ const RRGCanvasGame = () => {
     trail: [],
     motion: null,
     motionLift: 0,
+    motionTilt: 0,
+    motionStretch: 0,
     landingPulseAt: 0,
   }));
 
@@ -2358,14 +2360,35 @@ const RRGCanvasGame = () => {
   }, []);
 
   const buildTravelPath = useCallback((from, to) => {
-    const steps = Math.max(Math.abs(to.x - from.x), Math.abs(to.y - from.y), 1);
-    return Array.from({ length: steps }, (_, index) => {
-      const t = (index + 1) / steps;
-      return {
-        x: from.x + (to.x - from.x) * t,
-        y: from.y + (to.y - from.y) * t,
-      };
-    });
+    const path = [];
+    let x = from.x;
+    let y = from.y;
+    const dx = Math.abs(to.x - x);
+    const dy = Math.abs(to.y - y);
+    const sx = x < to.x ? 1 : x > to.x ? -1 : 0;
+    const sy = y < to.y ? 1 : y > to.y ? -1 : 0;
+    let err = dx - dy;
+
+    while (x !== to.x || y !== to.y) {
+      const e2 = err * 2;
+      if (e2 > -dy) {
+        err -= dy;
+        x += sx;
+      }
+      if (e2 < dx) {
+        err += dx;
+        y += sy;
+      }
+      path.push({ x, y });
+    }
+
+    return path.length ? path : [{ x: to.x, y: to.y }];
+  }, []);
+
+  const getSegmentDuration = useCallback((from, to, totalSegments) => {
+    const diagonal = from.x !== to.x && from.y !== to.y;
+    const cadenceDrop = Math.min(18, Math.max(0, totalSegments - 4) * 2);
+    return Math.max(126, (diagonal ? 182 : 156) - cadenceDrop);
   }, []);
 
   const animatePlayerMove = useCallback((game, player, destination) => new Promise((resolve) => {
@@ -2376,25 +2399,32 @@ const RRGCanvasGame = () => {
       return;
     }
     const path = buildTravelPath(from, destination);
+    const firstTarget = path[0];
+    const fromPixel = game.gridToPixel(from.x, from.y);
+    const toPixel = game.gridToPixel(firstTarget.x, firstTarget.y);
     player.motion = {
       path,
       segmentIndex: 0,
       from,
-      to: path[0],
+      to: firstTarget,
       destination,
       segmentStartedAt: performance.now(),
-      segmentDuration: Math.max(110, 200 - path.length * 8),
+      segmentDuration: getSegmentDuration(from, firstTarget, path.length),
+      diagonal: from.x !== firstTarget.x && from.y !== firstTarget.y,
+      pixelVector: { x: toPixel.px - fromPixel.px, y: toPixel.py - fromPixel.py },
       onDone: () => {
         player.landingPulseAt = performance.now();
         kickCamera(game, 11, 340);
         resolve();
       },
     };
+    player.motionTilt = 0;
+    player.motionStretch = 0;
     game.animating = true;
     game.message = `${player.name} bergerak ke (${destination.x}, ${destination.y})...`;
     centerOnPlayer(game, destination);
     syncHud(game);
-  }), [buildTravelPath, kickCamera, syncHud]);
+  }), [buildTravelPath, getSegmentDuration, kickCamera, syncHud]);
 
   const endTurn = useCallback((game, message) => {
     const endingPlayer = game.players[game.currentPlayer];
@@ -2429,25 +2459,29 @@ const RRGCanvasGame = () => {
 
     game.animating = true;
     game.diceRolling = true;
-    let count = 0;
-    const interval = window.setInterval(() => {
+    window.clearTimeout(game.rollTimer);
+    const cadence = [55, 55, 60, 65, 72, 80, 92, 105, 122, 142, 165, 192, 224, 260];
+    const runRoll = (index = 0) => {
       game.dice = randomFrom(rolls);
       syncHud(game);
-      count += 1;
-      if (count >= 14) {
-        window.clearInterval(interval);
+      if (index >= cadence.length - 1) {
         game.dice = randomFrom(rolls);
         game.card = randomFrom(RRG_TRANSFORM_CARDS[game.dice.key]);
         game.selected = null;
         game.hintLevel = 0;
         game.animating = false;
         game.diceRolling = false;
+        game.rollTimer = null;
         game.message = `${player.name} mendapat ${game.dice.label}: ${game.card.title}. Klik koordinat destinasi pada grid.`;
         showCardDraw(game.dice.deck, game.card);
         showPopup(game.dice.symbol, game.dice.cardName, game.card.text);
         syncHud(game);
+        return;
       }
-    }, 80);
+      game.rollTimer = window.setTimeout(() => runRoll(index + 1), cadence[index]);
+    };
+
+    runRoll();
   }, [showCardDraw, showPopup, syncHud]);
 
   const buyHint = useCallback(() => {
@@ -2479,6 +2513,8 @@ const RRGCanvasGame = () => {
     game.effects = [];
     game.diceRolling = false;
     game.cameraKick = null;
+    window.clearTimeout(game.rollTimer);
+    game.rollTimer = null;
     window.clearTimeout(game.drawCardTimer);
     game.message = 'Misi bermula di Bukit Kristal. Semua pemain menerima RM100.';
     centerOnPlayer(game, game.players[0], true);
@@ -2906,6 +2942,7 @@ const RRGCanvasGame = () => {
       effects: [],
       cameraKick: null,
       diceRolling: false,
+      rollTimer: null,
       time: 0,
       lastTime: performance.now(),
     };
@@ -3322,14 +3359,18 @@ const RRGCanvasGame = () => {
       const bounce = options.bounce ?? 0;
       const alpha = options.alpha ?? 1;
       const isImage = mode === 'image';
+      const scaleX = options.scaleX ?? 1;
+      const scaleY = options.scaleY ?? 1;
+      const shadowScale = options.shadowScale ?? 1;
       ctx.save();
       ctx.translate(x, y + bounce);
       ctx.globalAlpha = alpha;
       ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
       ctx.beginPath();
-      ctx.ellipse(0, size * 0.64, size * 0.72, size * 0.22, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, size * 0.64, size * 0.72 * shadowScale, size * 0.22 * Math.max(0.78, shadowScale * 0.92), 0, 0, Math.PI * 2);
       ctx.fill();
       ctx.rotate(options.rotation ?? 0);
+      ctx.scale(scaleX, scaleY);
       makeTokenPath(ctx, shape, size);
       ctx.fillStyle = isImage ? 'rgba(96, 165, 250, 0.88)' : 'rgba(255, 255, 255, 0.94)';
       ctx.fill();
@@ -3484,8 +3525,9 @@ const RRGCanvasGame = () => {
       game.lastTime = timestamp;
       game.time += dt;
       const dpr = window.devicePixelRatio || 1;
-      game.camX += (game.camTargetX - game.camX) * 0.1;
-      game.camY += (game.camTargetY - game.camY) * 0.1;
+      const camEase = game.isDragging ? 0.28 : game.animating ? 0.16 : 0.1;
+      game.camX += (game.camTargetX - game.camX) * camEase;
+      game.camY += (game.camTargetY - game.camY) * camEase;
       let cameraOffsetX = 0;
       let cameraOffsetY = 0;
       if (game.cameraKick) {
@@ -3723,14 +3765,19 @@ const RRGCanvasGame = () => {
         const motion = player.motion;
         if (motion) {
           const raw = Math.min(1, (timestamp - motion.segmentStartedAt) / motion.segmentDuration);
-          const eased = 1 - ((1 - raw) ** 3);
+          const eased = raw < 0.5
+            ? 4 * raw * raw * raw
+            : 1 - ((-2 * raw + 2) ** 3) / 2;
+          const hop = Math.sin(raw * Math.PI);
           player.drawX = motion.from.x + (motion.to.x - motion.from.x) * eased;
           player.drawY = motion.from.y + (motion.to.y - motion.from.y) * eased;
-          player.motionLift = Math.sin(raw * Math.PI) * 11;
+          player.motionLift = hop * (motion.diagonal ? 13.5 : 10.8);
+          player.motionTilt = (motion.pixelVector.x / CELL) * 0.08 * hop;
+          player.motionStretch = hop * (motion.diagonal ? 0.075 : 0.06);
           if (player.id === game.players[game.currentPlayer]?.id) {
             const follow = game.gridToPixel(player.drawX, player.drawY);
-            game.camTargetX = follow.px;
-            game.camTargetY = follow.py;
+            game.camTargetX = follow.px + motion.pixelVector.x * 0.18;
+            game.camTargetY = follow.py + motion.pixelVector.y * 0.18;
           }
           if (raw >= 1) {
             player.trail.push({ x: motion.to.x, y: motion.to.y, time: performance.now() });
@@ -3742,18 +3789,27 @@ const RRGCanvasGame = () => {
               player.drawY = motion.destination.y;
               player.motion = null;
               player.motionLift = 0;
+              player.motionTilt = 0;
+              player.motionStretch = 0;
               if (onDone) onDone();
             } else {
               motion.segmentIndex += 1;
               motion.from = motion.to;
               motion.to = motion.path[motion.segmentIndex];
               motion.segmentStartedAt = timestamp;
+              motion.segmentDuration = getSegmentDuration(motion.from, motion.to, motion.path.length);
+              motion.diagonal = motion.from.x !== motion.to.x && motion.from.y !== motion.to.y;
+              const fromPixel = game.gridToPixel(motion.from.x, motion.from.y);
+              const toPixel = game.gridToPixel(motion.to.x, motion.to.y);
+              motion.pixelVector = { x: toPixel.px - fromPixel.px, y: toPixel.py - fromPixel.py };
             }
           }
         } else {
           player.drawX += (player.x - player.drawX) * 0.16;
           player.drawY += (player.y - player.drawY) * 0.16;
           player.motionLift *= 0.72;
+          player.motionTilt *= 0.72;
+          player.motionStretch *= 0.7;
         }
         player.trail.forEach((trail) => {
           const age = (performance.now() - trail.time) / 2000;
@@ -3776,7 +3832,18 @@ const RRGCanvasGame = () => {
         const idleBounce = index === game.currentPlayer ? Math.sin(game.time * 5) * 3 : 0;
         const bounce = idleBounce - (player.motionLift || 0);
         const tokenSize = 19 * (1 + landingPulse * 0.14);
+        const motionStretch = player.motionStretch || 0;
+        const landingStretch = landingPulse * 0.035;
+        const scaleX = 1 + motionStretch + landingStretch;
+        const scaleY = Math.max(0.84, 1 - motionStretch * 0.74 - landingStretch * 0.78);
+        const shadowScale = Math.max(0.62, 1 - (player.motionLift || 0) / 28 + landingPulse * 0.08);
+        const rotation = (player.motionTilt || 0) + (index === game.currentPlayer ? Math.sin(game.time * 2.8 + index) * 0.01 : 0);
         if (index === game.currentPlayer) {
+          ctx.fillStyle = player.color;
+          ctx.globalAlpha = 0.08 + Math.sin(game.time * 4) * 0.05;
+          ctx.beginPath();
+          ctx.ellipse(pos.px, pos.py + 16, 24 + landingPulse * 10, 8 + landingPulse * 3, 0, 0, Math.PI * 2);
+          ctx.fill();
           ctx.strokeStyle = player.color;
           ctx.lineWidth = 2;
           ctx.globalAlpha = 0.4 + Math.sin(game.time * 4) * 0.3;
@@ -3787,6 +3854,11 @@ const RRGCanvasGame = () => {
         }
         if (landingPulse > 0.02) {
           ctx.save();
+          ctx.fillStyle = player.color;
+          ctx.globalAlpha = 0.08 * landingPulse;
+          ctx.beginPath();
+          ctx.ellipse(pos.px, pos.py + 16, 18 + (1 - landingAge) * 18, 7 + landingPulse * 4, 0, 0, Math.PI * 2);
+          ctx.fill();
           ctx.strokeStyle = player.color;
           ctx.globalAlpha = 0.35 * landingPulse;
           ctx.lineWidth = 2.5;
@@ -3795,7 +3867,7 @@ const RRGCanvasGame = () => {
           ctx.stroke();
           ctx.restore();
         }
-        drawPlayerToken(player, index, pos.px, pos.py, 'object', { size: tokenSize, bounce, label: true });
+        drawPlayerToken(player, index, pos.px, pos.py, 'object', { size: tokenSize, bounce, label: true, scaleX, scaleY, shadowScale, rotation });
       });
 
       game.effects = game.effects.filter((effect) => performance.now() - effect.startedAt < 950);
@@ -3838,6 +3910,7 @@ const RRGCanvasGame = () => {
     return () => {
       window.clearTimeout(game.popupTimer);
       window.clearTimeout(game.drawCardTimer);
+      window.clearTimeout(game.rollTimer);
       if (game.raf) window.cancelAnimationFrame(game.raf);
       window.removeEventListener('resize', resize);
       window.removeEventListener('keydown', onKeyDown);
@@ -3847,7 +3920,7 @@ const RRGCanvasGame = () => {
       canvas.removeEventListener('mouseleave', onPointerUp);
       canvas.removeEventListener('wheel', onWheel);
     };
-  }, [showPopup, submitAnswer, syncHud]);
+  }, [getSegmentDuration, showPopup, submitAnswer, syncHud]);
 
   const activePlayer = hud.players[hud.currentPlayer];
   const diceLabel = hud.diceRolling ? `${hud.dice?.symbol || '🎲'} Memilih warna...` : hud.dice ? `${hud.dice.symbol} ${hud.dice.label}` : 'Belum roll';

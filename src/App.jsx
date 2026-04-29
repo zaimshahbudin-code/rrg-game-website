@@ -3029,6 +3029,42 @@ const RRGCanvasGame = () => {
     }));
     const landmarkRenderCache = new WeakMap();
     const isTextureReady = (image) => image?.complete && image.naturalWidth > 0;
+    const makeRoadTexture = () => {
+      const roadCanvas = document.createElement('canvas');
+      roadCanvas.width = 192;
+      roadCanvas.height = 192;
+      const roadCtx = roadCanvas.getContext('2d');
+      const base = roadCtx.createLinearGradient(0, 0, 192, 192);
+      base.addColorStop(0, '#b7824b');
+      base.addColorStop(0.46, '#c99558');
+      base.addColorStop(1, '#a96f3d');
+      roadCtx.fillStyle = base;
+      roadCtx.fillRect(0, 0, 192, 192);
+
+      for (let i = 0; i < 900; i++) {
+        const x = (Math.sin(i * 12.9898) * 43758.5453) % 1;
+        const y = (Math.sin(i * 78.233) * 24634.6345) % 1;
+        const px = Math.abs(x) * 192;
+        const py = Math.abs(y) * 192;
+        const tone = 95 + Math.floor(Math.abs(Math.sin(i * 4.37)) * 105);
+        const alpha = 0.035 + Math.abs(Math.cos(i * 2.91)) * 0.055;
+        roadCtx.fillStyle = `rgba(${tone + 42}, ${Math.max(72, tone - 12)}, ${Math.max(38, tone - 42)}, ${alpha})`;
+        roadCtx.fillRect(px, py, 1.1, 1.1);
+      }
+
+      for (let i = 0; i < 54; i++) {
+        const px = Math.abs((Math.sin(i * 31.41) * 1000) % 1) * 192;
+        const py = Math.abs((Math.cos(i * 18.77) * 1000) % 1) * 192;
+        const r = 1.4 + Math.abs(Math.sin(i * 6.21)) * 2.8;
+        roadCtx.fillStyle = i % 3 === 0 ? 'rgba(84, 52, 26, 0.12)' : 'rgba(255, 232, 178, 0.11)';
+        roadCtx.beginPath();
+        roadCtx.ellipse(px, py, r * 1.8, r, Math.sin(i) * Math.PI, 0, Math.PI * 2);
+        roadCtx.fill();
+      }
+
+      return roadCanvas;
+    };
+    const roadTexture = makeRoadTexture();
     const LANDMARK_DRAW_BASE = 94;
     const landmarkAssetMeta = {
       crystal: { drawScale: 1.28, shadowScale: 1.14, labelFactor: 0.36, crop: { left: 0.09, right: 0.09, top: 0.08, bottom: 0.18 }, fadeStart: 0.64 },
@@ -3267,6 +3303,11 @@ const RRGCanvasGame = () => {
 
     const drawSmoothPath = (points) => {
       const pixels = points.map((point) => gridToPixel(point.x, point.y));
+      drawSmoothPixelPath(pixels);
+      return pixels;
+    };
+
+    const drawSmoothPixelPath = (pixels) => {
       ctx.beginPath();
       ctx.moveTo(pixels[0].px, pixels[0].py);
       for (let index = 0; index < pixels.length - 1; index++) {
@@ -3280,29 +3321,50 @@ const RRGCanvasGame = () => {
         const cp2y = p2.py - (p3.py - p1.py) / 6;
         ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.px, p2.py);
       }
-      return pixels;
     };
 
-    const sampleRoadPoints = (points, spacing = 0.32) => {
+    const getOffsetRoadPixels = (points, offset) => points.map((point, index) => {
+      const current = gridToPixel(point.x, point.y);
+      const prev = gridToPixel(points[Math.max(0, index - 1)].x, points[Math.max(0, index - 1)].y);
+      const next = gridToPixel(points[Math.min(points.length - 1, index + 1)].x, points[Math.min(points.length - 1, index + 1)].y);
+      const angle = Math.atan2(next.py - prev.py, next.px - prev.px);
+      return {
+        px: current.px + Math.cos(angle + Math.PI / 2) * offset,
+        py: current.py + Math.sin(angle + Math.PI / 2) * offset,
+      };
+    });
+
+    const drawOffsetRoadPath = (points, offset) => {
+      drawSmoothPixelPath(getOffsetRoadPixels(points, offset));
+    };
+
+    const sampleRoadPixels = (points, spacing = 0.24) => {
       const samples = [];
       for (let index = 0; index < points.length - 1; index++) {
         const from = points[index];
         const to = points[index + 1];
         const distance = Math.hypot(to.x - from.x, to.y - from.y);
         const steps = Math.max(2, Math.ceil(distance / spacing));
+        const fromPixel = gridToPixel(from.x, from.y);
+        const toPixel = gridToPixel(to.x, to.y);
+        const angle = Math.atan2(toPixel.py - fromPixel.py, toPixel.px - fromPixel.px);
         for (let step = 0; step < steps; step++) {
           const t = step / steps;
+          const point = gridToPixel(from.x + (to.x - from.x) * t, from.y + (to.y - from.y) * t);
           samples.push({
-            x: from.x + (to.x - from.x) * t,
-            y: from.y + (to.y - from.y) * t,
-            angle: Math.atan2(to.y - from.y, to.x - from.x),
+            px: point.px,
+            py: point.py,
+            angle,
             seed: (index + 1) * 47 + step * 13,
           });
         }
       }
+      const last = gridToPixel(points.at(-1).x, points.at(-1).y);
+      const beforeLast = gridToPixel(points.at(-2).x, points.at(-2).y);
       samples.push({
-        ...points[points.length - 1],
-        angle: Math.atan2(points.at(-1).y - points.at(-2).y, points.at(-1).x - points.at(-2).x),
+        px: last.px,
+        py: last.py,
+        angle: Math.atan2(last.py - beforeLast.py, last.px - beforeLast.px),
         seed: points.length * 71,
       });
       return samples;
@@ -3316,60 +3378,83 @@ const RRGCanvasGame = () => {
       makeIslandPath(ctx);
       ctx.clip();
 
-      const start = gridToPixel(points[0].x, points[0].y);
-      const end = gridToPixel(points.at(-1).x, points.at(-1).y);
-      const roadGrad = ctx.createLinearGradient(start.px, start.py, end.px, end.py);
-      roadGrad.addColorStop(0, 'rgba(141, 89, 45, 0.34)');
-      roadGrad.addColorStop(0.5, 'rgba(188, 128, 69, 0.46)');
-      roadGrad.addColorStop(1, 'rgba(224, 171, 99, 0.36)');
+      const roadPattern = ctx.createPattern(roadTexture, 'repeat');
 
       ctx.globalCompositeOperation = 'multiply';
-      ctx.strokeStyle = 'rgba(92, 57, 28, 0.16)';
-      ctx.lineWidth = width + 20;
+      ctx.strokeStyle = 'rgba(78, 50, 27, 0.2)';
+      ctx.lineWidth = width + 30;
       drawSmoothPath(points);
       ctx.stroke();
 
-      ctx.strokeStyle = 'rgba(234, 199, 138, 0.22)';
-      ctx.lineWidth = width + 12;
-      drawSmoothPath(points);
-      ctx.stroke();
-
-      ctx.strokeStyle = roadGrad;
-      ctx.lineWidth = width;
+      ctx.strokeStyle = 'rgba(234, 201, 145, 0.28)';
+      ctx.lineWidth = width + 18;
       drawSmoothPath(points);
       ctx.stroke();
 
       ctx.globalCompositeOperation = 'source-over';
-      ctx.strokeStyle = 'rgba(255, 230, 174, 0.18)';
+      ctx.globalAlpha = 0.92;
+      ctx.strokeStyle = roadPattern || 'rgba(183, 122, 64, 0.72)';
+      ctx.lineWidth = width + 2;
+      drawSmoothPath(points);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.strokeStyle = 'rgba(130, 78, 36, 0.26)';
+      ctx.lineWidth = width * 0.92;
+      drawSmoothPath(points);
+      ctx.stroke();
+      ctx.globalCompositeOperation = 'source-over';
+
+      [-width * 0.23, width * 0.23].forEach((offset, trackIndex) => {
+        ctx.strokeStyle = trackIndex === 0 ? 'rgba(82, 50, 25, 0.2)' : 'rgba(98, 61, 31, 0.18)';
+        ctx.lineWidth = 3.2;
+        drawOffsetRoadPath(points, offset);
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(255, 230, 178, 0.09)';
+        ctx.lineWidth = 1.2;
+        drawOffsetRoadPath(points, offset + (offset < 0 ? 2 : -2));
+        ctx.stroke();
+      });
+
+      ctx.strokeStyle = 'rgba(255, 230, 174, 0.16)';
       ctx.lineWidth = Math.max(4, width * 0.32);
       drawSmoothPath(points);
       ctx.stroke();
 
-      const samples = sampleRoadPoints(points);
+      const samples = sampleRoadPixels(points);
       samples.forEach((sample, index) => {
         const wobble = Math.sin(sample.seed * 12.9898) * 0.5 + Math.cos(sample.seed * 7.233) * 0.5;
-        const side = index % 2 === 0 ? -1 : 1;
-        const offset = side * (width * 0.33 + wobble * 3);
-        const px = gridToPixel(sample.x, sample.y);
         const normal = sample.angle + Math.PI / 2;
-        const x = px.px + Math.cos(normal) * offset;
-        const y = px.py - Math.sin(normal) * offset;
-        const radius = 1.5 + Math.abs(wobble) * 1.2;
-        ctx.globalAlpha = 0.12 + Math.abs(wobble) * 0.08;
-        ctx.fillStyle = side < 0 ? '#5f3b1f' : '#fff0b8';
+        const side = index % 2 === 0 ? -1 : 1;
+        const edgeOffset = side * (width * 0.54 + wobble * 4.8);
+        const x = sample.px + Math.cos(normal) * edgeOffset;
+        const y = sample.py + Math.sin(normal) * edgeOffset;
+        const radius = 1.8 + Math.abs(wobble) * 1.5;
+        ctx.globalAlpha = 0.1 + Math.abs(wobble) * 0.1;
+        ctx.fillStyle = side < 0 ? '#604025' : '#f4d79a';
         ctx.beginPath();
-        ctx.ellipse(x, y, radius * 1.8, radius, sample.angle * 0.45, 0, Math.PI * 2);
+        ctx.ellipse(x, y, radius * 2.2, radius, sample.angle, 0, Math.PI * 2);
         ctx.fill();
+
+        if (index % 3 === 0) {
+          const centerOffset = Math.sin(sample.seed * 1.71) * width * 0.25;
+          ctx.globalAlpha = 0.08;
+          ctx.fillStyle = '#4f321b';
+          ctx.beginPath();
+          ctx.ellipse(
+            sample.px + Math.cos(normal) * centerOffset,
+            sample.py + Math.sin(normal) * centerOffset,
+            2.2 + Math.abs(wobble) * 1.4,
+            0.9 + Math.abs(wobble),
+            sample.angle,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+        }
       });
       ctx.globalAlpha = 1;
-
-      ctx.setLineDash([18, 24]);
-      ctx.lineDashOffset = 7;
-      ctx.strokeStyle = 'rgba(94, 55, 27, 0.14)';
-      ctx.lineWidth = 2;
-      drawSmoothPath(points);
-      ctx.stroke();
-      ctx.setLineDash([]);
       ctx.restore();
     };
 

@@ -1828,19 +1828,21 @@ const RRG_PLAYER_OFFSETS = [
 const HINT_COST = 30;
 const WRONG_COST = 20;
 const RRG_ACTION_ZONE_RADIUS = 2.25;
-const clampBoard = (value) => Math.max(-15, Math.min(15, Math.round(value)));
+const RRG_GRID_MIN = -15;
+const RRG_GRID_MAX = 15;
+const clampBoard = (value) => Math.max(RRG_GRID_MIN, Math.min(RRG_GRID_MAX, Math.round(value)));
 const randomFrom = (items) => items[Math.floor(Math.random() * items.length)];
 
-const transformRrgPoint = (point, card) => {
-  if (!card) return point;
-  if (card.type === 'translasi') return { x: clampBoard(point.x + card.dx), y: clampBoard(point.y + card.dy) };
+const getRrgRawTransformPoint = (point, card) => {
+  if (!card) return { x: point.x, y: point.y };
+  if (card.type === 'translasi') return { x: point.x + card.dx, y: point.y + card.dy };
   if (card.type === 'pantulan') {
-    if (card.axis === 'x') return { x: point.x, y: clampBoard(-point.y) };
-    if (card.axis === 'y') return { x: clampBoard(-point.x), y: point.y };
-    if (card.axis === 'yx') return { x: clampBoard(point.y), y: clampBoard(point.x) };
-    if (card.axis === 'ynx') return { x: clampBoard(-point.y), y: clampBoard(-point.x) };
-    if (card.axis === 'xLine') return { x: clampBoard((2 * card.value) - point.x), y: point.y };
-    if (card.axis === 'yLine') return { x: point.x, y: clampBoard((2 * card.value) - point.y) };
+    if (card.axis === 'x') return { x: point.x, y: -point.y };
+    if (card.axis === 'y') return { x: -point.x, y: point.y };
+    if (card.axis === 'yx') return { x: point.y, y: point.x };
+    if (card.axis === 'ynx') return { x: -point.y, y: -point.x };
+    if (card.axis === 'xLine') return { x: (2 * card.value) - point.x, y: point.y };
+    if (card.axis === 'yLine') return { x: point.x, y: (2 * card.value) - point.y };
   }
   if (card.type === 'putaran') {
     const quarterTurns = Math.round((card.angle || 0) / 90) % 4;
@@ -1848,9 +1850,81 @@ const transformRrgPoint = (point, card) => {
     let x = point.x - card.cx;
     let y = point.y - card.cy;
     for (let i = 0; i < turns; i++) [x, y] = [y, -x];
-    return { x: clampBoard(x + card.cx), y: clampBoard(y + card.cy) };
+    return { x: x + card.cx, y: y + card.cy };
   }
-  return point;
+  return { x: point.x, y: point.y };
+};
+
+const transformRrgPoint = (point, card) => {
+  if (!card) return point;
+  const raw = getRrgRawTransformPoint(point, card);
+  return { x: clampBoard(raw.x), y: clampBoard(raw.y) };
+};
+
+const getRrgReflectionLineLabel = (card) => ({
+  x: 'paksi-x',
+  y: 'paksi-y',
+  yx: 'garis y = x',
+  ynx: 'garis y = -x',
+  xLine: `garis x = ${card.value}`,
+  yLine: `garis y = ${card.value}`,
+}[card?.axis] || 'garis pantulan');
+
+const getRrgReflectionGuideSegment = (card) => {
+  if (!card || card.type !== 'pantulan') return null;
+  if (card.axis === 'x') return { from: { x: RRG_GRID_MIN, y: 0 }, to: { x: RRG_GRID_MAX, y: 0 } };
+  if (card.axis === 'y') return { from: { x: 0, y: RRG_GRID_MIN }, to: { x: 0, y: RRG_GRID_MAX } };
+  if (card.axis === 'xLine') return { from: { x: card.value, y: RRG_GRID_MIN }, to: { x: card.value, y: RRG_GRID_MAX } };
+  if (card.axis === 'yLine') return { from: { x: RRG_GRID_MIN, y: card.value }, to: { x: RRG_GRID_MAX, y: card.value } };
+  if (card.axis === 'yx') return { from: { x: RRG_GRID_MIN, y: RRG_GRID_MIN }, to: { x: RRG_GRID_MAX, y: RRG_GRID_MAX } };
+  if (card.axis === 'ynx') return { from: { x: RRG_GRID_MIN, y: RRG_GRID_MAX }, to: { x: RRG_GRID_MAX, y: RRG_GRID_MIN } };
+  return null;
+};
+
+const getRrgReflectionFoot = (point, card) => {
+  if (!card || card.type !== 'pantulan') return null;
+  if (card.axis === 'x') return { x: point.x, y: 0 };
+  if (card.axis === 'y') return { x: 0, y: point.y };
+  if (card.axis === 'xLine') return { x: card.value, y: point.y };
+  if (card.axis === 'yLine') return { x: point.x, y: card.value };
+  if (card.axis === 'yx') {
+    const value = (point.x + point.y) / 2;
+    return { x: value, y: value };
+  }
+  if (card.axis === 'ynx') {
+    const value = (point.x - point.y) / 2;
+    return { x: value, y: -value };
+  }
+  return null;
+};
+
+const getRrgRotationSignedRadians = (card) => {
+  if (!card || card.type !== 'putaran') return 0;
+  const degrees = card.dir === 'cw' ? -(card.angle || 0) : (card.angle || 0);
+  return (degrees * Math.PI) / 180;
+};
+
+const getRrgPositiveRadians = (radians) => ((radians % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+
+const getRrgGuessSignedRadians = (from, destination, card) => {
+  if (!card || card.type !== 'putaran') return 0;
+  const startAngle = Math.atan2(from.y - card.cy, from.x - card.cx);
+  const endAngle = Math.atan2(destination.y - card.cy, destination.x - card.cx);
+  return card.dir === 'cw'
+    ? -getRrgPositiveRadians(startAngle - endAngle)
+    : getRrgPositiveRadians(endAngle - startAngle);
+};
+
+const getRrgMovementMessage = (player, card, destination) => {
+  if (!card) return `${player.name} bergerak ke (${destination.x}, ${destination.y})...`;
+  if (card.type === 'translasi') {
+    return `${player.name} bergerak ikut vektor (${card.dx}, ${card.dy}) ke (${destination.x}, ${destination.y})...`;
+  }
+  if (card.type === 'pantulan') {
+    return `${player.name} dipantulkan pada ${getRrgReflectionLineLabel(card)} ke (${destination.x}, ${destination.y})...`;
+  }
+  const dir = card.dir === 'cw' ? 'ikut jam' : 'lawan jam';
+  return `${player.name} berputar ${card.angle}° ${dir} pada (${card.cx}, ${card.cy}) ke (${destination.x}, ${destination.y})...`;
 };
 
 const isRrgActionZoneItem = (item) => item.kind === 'reward' || item.kind === 'penalty';
@@ -2261,6 +2335,7 @@ const RRGCanvasGame = () => {
     popup: null,
     drawCard: null,
     lastActionCard: null,
+    solutionPreview: null,
     gameOver: false,
   });
 
@@ -2283,6 +2358,7 @@ const RRGCanvasGame = () => {
     motionLift: 0,
     motionTilt: 0,
     motionStretch: 0,
+    motionTransformRotation: 0,
     landingPulseAt: 0,
   }));
 
@@ -2299,6 +2375,7 @@ const RRGCanvasGame = () => {
       popup,
       drawCard: game.drawCard,
       lastActionCard: game.lastActionCard,
+      solutionPreview: game.solutionPreview,
       gameOver: game.gameOver,
       animating: !!game.animating,
       diceRolling: !!game.diceRolling,
@@ -2354,6 +2431,19 @@ const RRGCanvasGame = () => {
     }
   };
 
+  const centerOnPoints = (game, points, instant = false) => {
+    const visiblePoints = points.filter(point => point && Number.isFinite(point.x) && Number.isFinite(point.y));
+    if (!visiblePoints.length) return;
+    const pixels = visiblePoints.map(point => game.gridToPixel(point.x, point.y));
+    const avg = pixels.reduce((sum, point) => ({ px: sum.px + point.px, py: sum.py + point.py }), { px: 0, py: 0 });
+    game.camTargetX = avg.px / pixels.length;
+    game.camTargetY = avg.py / pixels.length;
+    if (instant || !Number.isFinite(game.camX) || !Number.isFinite(game.camY)) {
+      game.camX = game.camTargetX;
+      game.camY = game.camTargetY;
+    }
+  };
+
   const kickCamera = useCallback((game, strength = 12, duration = 380) => {
     if (!game) return;
     game.cameraKick = { startedAt: performance.now(), strength, duration };
@@ -2391,11 +2481,106 @@ const RRGCanvasGame = () => {
     return Math.max(126, (diagonal ? 182 : 156) - cadenceDrop);
   }, []);
 
-  const animatePlayerMove = useCallback((game, player, destination) => new Promise((resolve) => {
+  const getTransformMotionDuration = useCallback((from, destination, card) => {
+    const distance = Math.hypot(destination.x - from.x, destination.y - from.y);
+    if (card?.type === 'putaran') return Math.min(1500, Math.max(780, Math.abs(card.angle || 0) * 4.4 + distance * 44));
+    if (card?.type === 'pantulan') return Math.min(1250, Math.max(620, distance * 96));
+    return Math.min(1180, Math.max(520, distance * 92));
+  }, []);
+
+  const getAxisSegmentDuration = useCallback((from, destination) => {
+    const distance = Math.hypot(destination.x - from.x, destination.y - from.y);
+    return Math.min(920, Math.max(340, distance * 175));
+  }, []);
+
+  const animatePlayerMove = useCallback((game, player, destination, card = null, options = {}) => new Promise((resolve) => {
     const from = { x: player.x, y: player.y };
     if (from.x === destination.x && from.y === destination.y) {
       player.landingPulseAt = performance.now();
       resolve();
+      return;
+    }
+    const startedAt = performance.now();
+    const done = () => {
+      player.landingPulseAt = performance.now();
+      kickCamera(game, 11, 340);
+      resolve();
+    };
+    if (card?.type === 'translasi' || card?.type === 'pantulan' || card?.type === 'putaran') {
+      const fromPixel = game.gridToPixel(from.x, from.y);
+      const toPixel = game.gridToPixel(destination.x, destination.y);
+      if (card.type === 'translasi') {
+        const xStep = { x: destination.x, y: from.y };
+        const path = [];
+        if (xStep.x !== from.x || xStep.y !== from.y) path.push(xStep);
+        if (destination.x !== xStep.x || destination.y !== xStep.y) path.push(destination);
+        const firstTarget = path[0] || destination;
+        const firstPixel = game.gridToPixel(firstTarget.x, firstTarget.y);
+        player.motion = {
+          path,
+          segmentIndex: 0,
+          card,
+          axisStep: true,
+          from,
+          to: firstTarget,
+          destination,
+          rawDestination: getRrgRawTransformPoint(from, card),
+          previewOnly: !!options.previewOnly,
+          returnTo: options.previewOnly ? from : null,
+          segmentStartedAt: startedAt,
+          segmentDuration: getAxisSegmentDuration(from, firstTarget),
+          diagonal: false,
+          pixelVector: { x: firstPixel.px - fromPixel.px, y: firstPixel.py - fromPixel.py },
+          onDone: done,
+        };
+        player.motionTilt = 0;
+        player.motionStretch = 0;
+        player.motionTransformRotation = 0;
+        game.animating = true;
+        game.message = options.previewOnly
+          ? `${player.name} menguji pilihan (${destination.x}, ${destination.y}) ikut paksi-x kemudian paksi-y...`
+          : `${player.name} bergerak ikut vektor (${card.dx}, ${card.dy}): paksi-x dahulu, kemudian paksi-y...`;
+        centerOnPoints(game, [from, xStep, destination]);
+        syncHud(game);
+        return;
+      }
+      const motion = {
+        mode: card.type === 'putaran' ? 'rotation' : 'direct',
+        card,
+        from,
+        to: destination,
+        destination,
+        rawDestination: getRrgRawTransformPoint(from, card),
+        previewOnly: !!options.previewOnly,
+        returnTo: options.previewOnly ? from : null,
+        startedAt,
+        duration: getTransformMotionDuration(from, destination, card),
+        pixelVector: { x: toPixel.px - fromPixel.px, y: toPixel.py - fromPixel.py },
+        onDone: done,
+      };
+      if (card.type === 'putaran') {
+        motion.center = { x: card.cx, y: card.cy };
+        motion.startAngle = Math.atan2(from.y - card.cy, from.x - card.cx);
+        motion.signedAngle = options.previewOnly
+          ? getRrgGuessSignedRadians(from, destination, card)
+          : getRrgRotationSignedRadians(card);
+        motion.radius = Math.hypot(from.x - card.cx, from.y - card.cy);
+      }
+      player.motion = motion;
+      player.motionTilt = 0;
+      player.motionStretch = 0;
+      player.motionTransformRotation = 0;
+      game.animating = true;
+      game.message = options.previewOnly
+        ? `${player.name} menguji pilihan (${destination.x}, ${destination.y})...`
+        : getRrgMovementMessage(player, card, destination);
+      centerOnPoints(game, [
+        from,
+        destination,
+        card.type === 'putaran' ? { x: card.cx, y: card.cy } : null,
+        card.type === 'pantulan' ? getRrgReflectionFoot(from, card) : null,
+      ]);
+      syncHud(game);
       return;
     }
     const path = buildTravelPath(from, destination);
@@ -2412,19 +2597,16 @@ const RRGCanvasGame = () => {
       segmentDuration: getSegmentDuration(from, firstTarget, path.length),
       diagonal: from.x !== firstTarget.x && from.y !== firstTarget.y,
       pixelVector: { x: toPixel.px - fromPixel.px, y: toPixel.py - fromPixel.py },
-      onDone: () => {
-        player.landingPulseAt = performance.now();
-        kickCamera(game, 11, 340);
-        resolve();
-      },
+      onDone: done,
     };
     player.motionTilt = 0;
     player.motionStretch = 0;
+    player.motionTransformRotation = 0;
     game.animating = true;
-    game.message = `${player.name} bergerak ke (${destination.x}, ${destination.y})...`;
-    centerOnPlayer(game, destination);
+    game.message = getRrgMovementMessage(player, card, destination);
+    centerOnPoints(game, [from, destination]);
     syncHud(game);
-  }), [buildTravelPath, getSegmentDuration, kickCamera, syncHud]);
+  }), [buildTravelPath, getAxisSegmentDuration, getSegmentDuration, getTransformMotionDuration, kickCamera, syncHud]);
 
   const endTurn = useCallback((game, message) => {
     const endingPlayer = game.players[game.currentPlayer];
@@ -2459,6 +2641,7 @@ const RRGCanvasGame = () => {
 
     game.animating = true;
     game.diceRolling = true;
+    game.solutionPreview = null;
     window.clearTimeout(game.rollTimer);
     const cadence = [55, 55, 60, 65, 72, 80, 92, 105, 122, 142, 165, 192, 224, 260];
     const runRoll = (index = 0) => {
@@ -2510,6 +2693,7 @@ const RRGCanvasGame = () => {
     game.gameOver = false;
     game.drawCard = null;
     game.lastActionCard = null;
+    game.solutionPreview = null;
     game.effects = [];
     game.diceRolling = false;
     game.cameraKick = null;
@@ -2667,18 +2851,23 @@ const RRGCanvasGame = () => {
     const correct = transformRrgPoint(player, game.card);
     const selected = game.selected;
     if (selected.x !== correct.x || selected.y !== correct.y) {
+      game.message = `${player.name} menguji pilihan (${selected.x}, ${selected.y})...`;
+      syncHud(game);
+      await animatePlayerMove(game, player, selected, game.card, { previewOnly: true });
       player.score -= WRONG_COST;
       game.effects.push({ type: 'wrong', x: selected.x, y: selected.y, startedAt: performance.now() });
       kickCamera(game, 8, 260);
       playRrgSound('wrong');
       showPopup('❌', `Jawapan belum tepat`, `${player.name} kehilangan RM${WRONG_COST}. Giliran tamat.`);
+      game.animating = false;
       endTurn(game, `${player.name} memilih (${selected.x}, ${selected.y}) tetapi tidak tepat.`);
       return;
     }
 
     const destination = { ...correct };
+    game.solutionPreview = null;
     player.trail.push({ x: player.x, y: player.y, time: performance.now() });
-    await animatePlayerMove(game, player, destination);
+    await animatePlayerMove(game, player, destination, game.card);
     const { note, effectType } = resolveItem(game, player, destination);
     const emoji = effectType === 'boom' ? '💣' : effectType === 'coin' ? '💰' : '✅';
     showPopup(emoji, 'Jawapan Tepat!', note);
@@ -2814,18 +3003,19 @@ const RRGCanvasGame = () => {
       grass: '/assets/rrgs/grass.png',
       buildings: '/assets/rrgs/bangunan.png',
     };
+    const landmarkAssetPath = (name) => `/assets/rrgs/landmarks/${name}.png?v=transparent-cut-2`;
     const landmarkAssetSources = {
-      crystal: '/assets/rrgs/landmarks/crystal.png',
-      farm: '/assets/rrgs/landmarks/farm.png',
-      factory: '/assets/rrgs/landmarks/factory.png',
-      waterfall: '/assets/rrgs/landmarks/waterfall.png',
-      clinic: '/assets/rrgs/landmarks/clinic.png',
-      village: '/assets/rrgs/landmarks/village.png',
-      harbor: '/assets/rrgs/landmarks/harbor.png',
-      lighthouse: '/assets/rrgs/landmarks/lighthouse.png',
-      bridge: '/assets/rrgs/landmarks/bridge.png',
-      ranch: '/assets/rrgs/landmarks/ranch.png',
-      market: '/assets/rrgs/landmarks/market.png',
+      crystal: landmarkAssetPath('crystal'),
+      farm: landmarkAssetPath('farm'),
+      factory: landmarkAssetPath('factory'),
+      waterfall: landmarkAssetPath('waterfall'),
+      clinic: landmarkAssetPath('clinic'),
+      village: landmarkAssetPath('village'),
+      harbor: landmarkAssetPath('harbor'),
+      lighthouse: landmarkAssetPath('lighthouse'),
+      bridge: landmarkAssetPath('bridge'),
+      ranch: landmarkAssetPath('ranch'),
+      market: landmarkAssetPath('market'),
     };
     const textures = Object.fromEntries(Object.entries(textureSources).map(([key, src]) => {
       const image = new Image();
@@ -2939,6 +3129,7 @@ const RRGCanvasGame = () => {
       players: makePlayers(),
       drawCard: null,
       lastActionCard: null,
+      solutionPreview: null,
       effects: [],
       cameraKick: null,
       diceRolling: false,
@@ -2981,7 +3172,7 @@ const RRGCanvasGame = () => {
     const onPointerUp = (event) => {
       if (!game.isDragging) return;
       game.isDragging = false;
-      if (game.dragDistance < 6 && game.card && !game.gameOver) {
+      if (game.dragDistance < 6 && game.card && !game.gameOver && !game.animating) {
         game.selected = screenToGrid(event.clientX, event.clientY, game);
         game.message = `Pilihan koordinat: (${game.selected.x}, ${game.selected.y}). Tekan Semak Jawapan.`;
         syncHud(game);
@@ -2993,7 +3184,7 @@ const RRGCanvasGame = () => {
       event.preventDefault();
     };
     const onKeyDown = (event) => {
-      if (!game.card || !game.selected) return;
+      if (!game.card || !game.selected || game.animating) return;
       if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') game.selected.y = clampBoard(game.selected.y + 1);
       if (event.key === 'ArrowDown' || event.key.toLowerCase() === 's') game.selected.y = clampBoard(game.selected.y - 1);
       if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') game.selected.x = clampBoard(game.selected.x - 1);
@@ -3465,6 +3656,289 @@ const RRGCanvasGame = () => {
       ctx.fillText(icon, pos.px, pos.py + bob);
     };
 
+    const drawGuideLabel = (text, point, options = {}) => {
+      const pos = Number.isFinite(point?.px) ? point : gridToPixel(point.x, point.y);
+      const alpha = options.alpha ?? 1;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.font = options.font || 'bold 11px Inter';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const paddingX = 8;
+      const width = Math.max(38, ctx.measureText(text).width + paddingX * 2);
+      const height = 22;
+      const x = pos.px - width / 2;
+      const y = pos.py + (options.offsetY ?? -34) - height / 2;
+      drawRoundRect(ctx, x, y, width, height, 7);
+      ctx.fillStyle = options.background || 'rgba(15, 23, 42, 0.86)';
+      ctx.fill();
+      ctx.strokeStyle = options.border || 'rgba(255, 255, 255, 0.5)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.fillStyle = options.color || '#ffffff';
+      ctx.fillText(text, pos.px, pos.py + (options.offsetY ?? -34));
+      ctx.restore();
+    };
+
+    const drawArrowHead = (start, end, color, alpha = 1, size = 11) => {
+      const angle = Math.atan2(end.py - start.py, end.px - start.px);
+      if (!Number.isFinite(angle)) return;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(end.px, end.py);
+      ctx.lineTo(end.px - Math.cos(angle - 0.52) * size, end.py - Math.sin(angle - 0.52) * size);
+      ctx.lineTo(end.px - Math.cos(angle + 0.52) * size, end.py - Math.sin(angle + 0.52) * size);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    };
+
+    const drawGridLine = (from, to, color, options = {}) => {
+      const start = gridToPixel(from.x, from.y);
+      const end = gridToPixel(to.x, to.y);
+      const distance = Math.hypot(end.px - start.px, end.py - start.py);
+      if (distance < 2) return;
+      ctx.save();
+      ctx.globalAlpha = options.alpha ?? 1;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = options.width ?? 3;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      if (options.dash) ctx.setLineDash(options.dash);
+      ctx.lineDashOffset = options.dashOffset ?? 0;
+      ctx.beginPath();
+      ctx.moveTo(start.px, start.py);
+      ctx.lineTo(end.px, end.py);
+      ctx.stroke();
+      if (options.arrow) drawArrowHead(start, end, color, options.alpha ?? 1, options.arrowSize ?? 11);
+      ctx.restore();
+    };
+
+    const drawPointMarker = (point, color, label, options = {}) => {
+      const pos = gridToPixel(point.x, point.y);
+      const alpha = options.alpha ?? 1;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = options.fill || color;
+      ctx.strokeStyle = options.stroke || '#ffffff';
+      ctx.lineWidth = options.lineWidth ?? 2.5;
+      ctx.beginPath();
+      ctx.arc(pos.px, pos.py, options.radius ?? 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      if (label) {
+        drawGuideLabel(label, pos, {
+          alpha,
+          offsetY: options.labelOffsetY ?? -32,
+          background: options.labelBackground || color,
+          border: 'rgba(255,255,255,0.72)',
+        });
+      }
+      ctx.restore();
+    };
+
+    const drawReflectionLineGuide = (card, alpha = 1) => {
+      const segment = getRrgReflectionGuideSegment(card);
+      if (!segment) return;
+      drawGridLine(segment.from, segment.to, '#10b981', {
+        alpha,
+        width: 4,
+        dash: [16, 10],
+        dashOffset: -game.time * 28,
+      });
+      const mid = { x: (segment.from.x + segment.to.x) / 2, y: (segment.from.y + segment.to.y) / 2 };
+      drawGuideLabel(getRrgReflectionLineLabel(card), mid, {
+        alpha,
+        background: 'rgba(5, 150, 105, 0.9)',
+        offsetY: card.axis === 'x' || card.axis === 'yLine' ? -24 : -34,
+      });
+    };
+
+    const drawRotationArcGuide = (from, card, options = {}) => {
+      const center = { x: card.cx, y: card.cy };
+      const radius = Math.hypot(from.x - center.x, from.y - center.y);
+      const signedAngle = options.signedAngle ?? getRrgRotationSignedRadians(card);
+      const progress = options.progress ?? 1;
+      const alpha = options.alpha ?? 1;
+      const color = options.color || '#2563eb';
+      drawPointMarker(center, '#2563eb', `Pusat (${card.cx}, ${card.cy})`, {
+        alpha,
+        radius: 7,
+        labelBackground: 'rgba(37, 99, 235, 0.9)',
+      });
+      if (radius < 0.05 || Math.abs(signedAngle) < 0.01) return;
+      drawGridLine(center, from, '#1d4ed8', { alpha: alpha * 0.45, width: 2, dash: [6, 7] });
+      const startAngle = Math.atan2(from.y - center.y, from.x - center.x);
+      const steps = Math.max(8, Math.ceil(Math.abs(signedAngle * progress) / (Math.PI / 20)));
+      let prev = null;
+      let last = null;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = options.width ?? 4;
+      ctx.lineCap = 'round';
+      ctx.setLineDash(options.dash || []);
+      ctx.beginPath();
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        const angle = startAngle + signedAngle * progress * t;
+        const point = {
+          x: center.x + Math.cos(angle) * radius,
+          y: center.y + Math.sin(angle) * radius,
+        };
+        const pos = gridToPixel(point.x, point.y);
+        if (i === 0) ctx.moveTo(pos.px, pos.py);
+        else ctx.lineTo(pos.px, pos.py);
+        prev = last;
+        last = pos;
+      }
+      ctx.stroke();
+      ctx.restore();
+      if (prev && last) drawArrowHead(prev, last, color, alpha, 12);
+      const dir = card.dir === 'cw' ? 'ikut jam' : 'lawan jam';
+      drawGuideLabel(options.label || `${card.angle}° ${dir}`, {
+        x: center.x + Math.cos(startAngle + signedAngle * progress * 0.5) * Math.max(1.25, radius * 0.72),
+        y: center.y + Math.sin(startAngle + signedAngle * progress * 0.5) * Math.max(1.25, radius * 0.72),
+      }, {
+        alpha,
+        background: 'rgba(29, 78, 216, 0.9)',
+        offsetY: -24,
+      });
+    };
+
+    const drawTransformGuide = (from, card, options = {}) => {
+      if (!card) return;
+      const mode = options.mode || 'active';
+      const destination = options.destination || transformRrgPoint(from, card);
+      const isGuess = mode === 'guess';
+      const showAnswer = mode === 'solution' || mode === 'motion';
+      const showDestination = showAnswer || isGuess;
+      const alpha = options.alpha ?? 1;
+      if (card.type === 'translasi') {
+        const vectorDx = isGuess ? destination.x - from.x : card.dx;
+        const vectorDy = isGuess ? destination.y - from.y : card.dy;
+        const xStep = { x: clampBoard(from.x + vectorDx), y: from.y };
+        drawGridLine(from, destination, '#ef4444', {
+          alpha: alpha * 0.45,
+          width: 7,
+          dash: [14, 12],
+          dashOffset: -game.time * 34,
+          arrow: true,
+          arrowSize: 13,
+        });
+        if (vectorDx !== 0) {
+          drawGridLine(from, xStep, '#dc2626', { alpha, width: 3.5, arrow: true });
+          drawGuideLabel(`x ${vectorDx > 0 ? '+' : ''}${vectorDx}`, {
+            x: (from.x + xStep.x) / 2,
+            y: from.y,
+          }, { alpha, background: 'rgba(220, 38, 38, 0.88)', offsetY: -24 });
+        }
+        if (vectorDy !== 0) {
+          drawGridLine(xStep, destination, '#f97316', { alpha, width: 3.5, arrow: true });
+          drawGuideLabel(`y ${vectorDy > 0 ? '+' : ''}${vectorDy}`, {
+            x: xStep.x,
+            y: (xStep.y + destination.y) / 2,
+          }, { alpha, background: 'rgba(249, 115, 22, 0.9)', offsetY: -24 });
+        }
+        drawGuideLabel(`${isGuess ? 'vektor tekaan' : 'vektor'} (${vectorDx}, ${vectorDy})`, {
+          x: (from.x + destination.x) / 2,
+          y: (from.y + destination.y) / 2,
+        }, { alpha, background: 'rgba(127, 29, 29, 0.86)' });
+      } else if (card.type === 'pantulan') {
+        const foot = getRrgReflectionFoot(from, card);
+        drawReflectionLineGuide(card, alpha);
+        if (foot) {
+          drawGridLine(from, foot, '#0f766e', { alpha: alpha * 0.78, width: 3, dash: [7, 7] });
+          drawPointMarker(foot, '#0f766e', showAnswer ? 'Jarak sama' : 'Tegak ke garis', {
+            alpha: alpha * 0.88,
+            radius: 5.5,
+            labelOffsetY: -26,
+            labelBackground: 'rgba(15, 118, 110, 0.9)',
+          });
+          if (showDestination) {
+            drawGridLine(foot, destination, '#0f766e', { alpha: alpha * 0.78, width: 3, dash: [7, 7] });
+            drawGridLine(from, destination, '#16a34a', {
+              alpha: alpha * 0.55,
+              width: 6,
+              dash: [14, 12],
+              dashOffset: -game.time * 32,
+              arrow: true,
+              arrowSize: 13,
+            });
+          }
+        }
+      } else if (card.type === 'putaran') {
+        drawRotationArcGuide(from, card, {
+          alpha,
+          progress: showDestination ? 1 : 0.86,
+          color: '#2563eb',
+          signedAngle: isGuess ? getRrgGuessSignedRadians(from, destination, card) : undefined,
+          label: isGuess ? 'putaran tekaan' : undefined,
+          dash: mode === 'active' ? [12, 9] : [],
+        });
+        if (showDestination) {
+          drawGridLine({ x: card.cx, y: card.cy }, destination, '#1d4ed8', { alpha: alpha * 0.48, width: 2.6, dash: [6, 7] });
+        }
+      }
+      drawPointMarker(from, '#0f172a', 'Mula', {
+        alpha: alpha * 0.9,
+        radius: 6.5,
+        labelOffsetY: 30,
+        labelBackground: 'rgba(15, 23, 42, 0.86)',
+      });
+      if (showDestination) {
+        drawPointMarker(destination, isGuess ? '#f97316' : '#16a34a', `${isGuess ? 'Pilihan' : 'Jawapan'} (${destination.x}, ${destination.y})`, {
+          alpha,
+          radius: 8.5,
+          labelBackground: isGuess ? 'rgba(249, 115, 22, 0.92)' : 'rgba(22, 163, 74, 0.92)',
+        });
+      }
+    };
+
+    const drawActiveTransformGuide = () => {
+      if (!game.card || game.animating) return;
+      const player = game.players[game.currentPlayer];
+      if (!player) return;
+      const pos = gridToPixel(player.x, player.y);
+      if (game.card.type === 'translasi') {
+        drawGuideLabel(`vektor kad (${game.card.dx}, ${game.card.dy})`, { px: pos.px, py: pos.py }, {
+          alpha: 0.74,
+          offsetY: -48,
+          background: 'rgba(127, 29, 29, 0.86)',
+        });
+        return;
+      }
+      if (game.card.type === 'pantulan') {
+        drawReflectionLineGuide(game.card, 0.7);
+        return;
+      }
+      if (game.card.type === 'putaran') {
+        drawPointMarker({ x: game.card.cx, y: game.card.cy }, '#2563eb', `Pusat (${game.card.cx}, ${game.card.cy})`, {
+          alpha: 0.76,
+          radius: 7,
+          labelBackground: 'rgba(37, 99, 235, 0.9)',
+        });
+      }
+    };
+
+    const drawMotionTransformGuides = () => {
+      game.players.forEach((player) => {
+        const motion = player.motion;
+        if (!motion?.card) return;
+        drawTransformGuide(motion.from, motion.card, {
+          destination: motion.destination,
+          mode: motion.previewOnly ? 'guess' : 'motion',
+          alpha: 0.72,
+        });
+      });
+    };
+
+    const drawSolutionPreview = () => {
+      game.solutionPreview = null;
+    };
+
     const drawMinimap = () => {
       const mW = miniMap.width;
       mmCtx.clearRect(0, 0, mW, miniMap.height);
@@ -3756,52 +4230,113 @@ const RRGCanvasGame = () => {
       boats.forEach((boat) => drawBoatShape(boat));
       landmarks.forEach((landmark) => drawLandmark(landmark));
       RRG_ITEMS.forEach((item) => drawItem(item, game.time));
+      drawActiveTransformGuide();
+      drawMotionTransformGuides();
 
       if (game.selected) {
         drawSelectedImageToken();
       }
+      drawSolutionPreview();
 
       game.players.forEach((player) => {
         const motion = player.motion;
         if (motion) {
-          const raw = Math.min(1, (timestamp - motion.segmentStartedAt) / motion.segmentDuration);
-          const eased = raw < 0.5
-            ? 4 * raw * raw * raw
-            : 1 - ((-2 * raw + 2) ** 3) / 2;
-          const hop = Math.sin(raw * Math.PI);
-          player.drawX = motion.from.x + (motion.to.x - motion.from.x) * eased;
-          player.drawY = motion.from.y + (motion.to.y - motion.from.y) * eased;
-          player.motionLift = hop * (motion.diagonal ? 13.5 : 10.8);
-          player.motionTilt = (motion.pixelVector.x / CELL) * 0.08 * hop;
-          player.motionStretch = hop * (motion.diagonal ? 0.075 : 0.06);
-          if (player.id === game.players[game.currentPlayer]?.id) {
-            const follow = game.gridToPixel(player.drawX, player.drawY);
-            game.camTargetX = follow.px + motion.pixelVector.x * 0.18;
-            game.camTargetY = follow.py + motion.pixelVector.y * 0.18;
-          }
-          if (raw >= 1) {
-            player.trail.push({ x: motion.to.x, y: motion.to.y, time: performance.now() });
-            if (motion.segmentIndex >= motion.path.length - 1) {
-              const onDone = motion.onDone;
-              player.x = motion.destination.x;
-              player.y = motion.destination.y;
-              player.drawX = motion.destination.x;
-              player.drawY = motion.destination.y;
-              player.motion = null;
-              player.motionLift = 0;
-              player.motionTilt = 0;
-              player.motionStretch = 0;
-              if (onDone) onDone();
+          const finishMotion = () => {
+            const onDone = motion.onDone;
+            const finalPoint = motion.previewOnly && motion.returnTo ? motion.returnTo : motion.destination;
+            player.x = finalPoint.x;
+            player.y = finalPoint.y;
+            player.drawX = finalPoint.x;
+            player.drawY = finalPoint.y;
+            player.motion = null;
+            player.motionLift = 0;
+            player.motionTilt = 0;
+            player.motionStretch = 0;
+            player.motionTransformRotation = 0;
+            if (onDone) onDone();
+          };
+          if (motion.mode === 'direct' || motion.mode === 'rotation') {
+            const raw = Math.min(1, (timestamp - motion.startedAt) / motion.duration);
+            const eased = raw < 0.5
+              ? 4 * raw * raw * raw
+              : 1 - ((-2 * raw + 2) ** 3) / 2;
+            const hop = Math.sin(raw * Math.PI);
+            let nextPoint;
+            if (motion.mode === 'rotation' && motion.center && motion.radius > 0.05) {
+              const angle = motion.startAngle + motion.signedAngle * eased;
+              nextPoint = {
+                x: motion.center.x + Math.cos(angle) * motion.radius,
+                y: motion.center.y + Math.sin(angle) * motion.radius,
+              };
+              const rawDestination = motion.rawDestination || motion.destination;
+              const clamped = rawDestination.x !== motion.destination.x || rawDestination.y !== motion.destination.y;
+              if (clamped && raw > 0.9) {
+                const blend = (raw - 0.9) / 0.1;
+                nextPoint = {
+                  x: nextPoint.x + (motion.destination.x - nextPoint.x) * blend,
+                  y: nextPoint.y + (motion.destination.y - nextPoint.y) * blend,
+                };
+              }
+              player.motionTransformRotation = -(motion.signedAngle || 0) * eased;
+              player.motionTilt = Math.sin(raw * Math.PI * 2) * 0.045;
+              player.motionStretch = hop * 0.035;
             } else {
-              motion.segmentIndex += 1;
-              motion.from = motion.to;
-              motion.to = motion.path[motion.segmentIndex];
-              motion.segmentStartedAt = timestamp;
-              motion.segmentDuration = getSegmentDuration(motion.from, motion.to, motion.path.length);
-              motion.diagonal = motion.from.x !== motion.to.x && motion.from.y !== motion.to.y;
-              const fromPixel = game.gridToPixel(motion.from.x, motion.from.y);
-              const toPixel = game.gridToPixel(motion.to.x, motion.to.y);
-              motion.pixelVector = { x: toPixel.px - fromPixel.px, y: toPixel.py - fromPixel.py };
+              nextPoint = {
+                x: motion.from.x + (motion.to.x - motion.from.x) * eased,
+                y: motion.from.y + (motion.to.y - motion.from.y) * eased,
+              };
+              player.motionTransformRotation = 0;
+              player.motionTilt = motion.card?.type === 'pantulan'
+                ? Math.sin(raw * Math.PI * 2) * 0.055
+                : (motion.pixelVector.x / CELL) * 0.075 * hop;
+              player.motionStretch = hop * (motion.card?.type === 'pantulan' ? 0.045 : 0.065);
+            }
+            player.drawX = nextPoint.x;
+            player.drawY = nextPoint.y;
+            player.motionLift = hop * (motion.mode === 'rotation' ? 14.5 : motion.card?.type === 'pantulan' ? 12 : 10.5);
+            if (player.id === game.players[game.currentPlayer]?.id) {
+              const follow = game.gridToPixel(player.drawX, player.drawY);
+              game.camTargetX = follow.px + motion.pixelVector.x * 0.14;
+              game.camTargetY = follow.py + motion.pixelVector.y * 0.14;
+            }
+            if (raw >= 1) {
+              player.trail.push({ x: motion.destination.x, y: motion.destination.y, time: performance.now() });
+              finishMotion();
+            }
+          } else {
+            const raw = Math.min(1, (timestamp - motion.segmentStartedAt) / motion.segmentDuration);
+            const eased = raw < 0.5
+              ? 4 * raw * raw * raw
+              : 1 - ((-2 * raw + 2) ** 3) / 2;
+            const hop = Math.sin(raw * Math.PI);
+            player.drawX = motion.from.x + (motion.to.x - motion.from.x) * eased;
+            player.drawY = motion.from.y + (motion.to.y - motion.from.y) * eased;
+            player.motionLift = hop * (motion.diagonal ? 13.5 : 10.8);
+            player.motionTilt = (motion.pixelVector.x / CELL) * 0.08 * hop;
+            player.motionStretch = hop * (motion.diagonal ? 0.075 : 0.06);
+            player.motionTransformRotation = 0;
+            if (player.id === game.players[game.currentPlayer]?.id) {
+              const follow = game.gridToPixel(player.drawX, player.drawY);
+              game.camTargetX = follow.px + motion.pixelVector.x * 0.18;
+              game.camTargetY = follow.py + motion.pixelVector.y * 0.18;
+            }
+            if (raw >= 1) {
+              player.trail.push({ x: motion.to.x, y: motion.to.y, time: performance.now() });
+              if (motion.segmentIndex >= motion.path.length - 1) {
+                finishMotion();
+              } else {
+                motion.segmentIndex += 1;
+                motion.from = motion.to;
+                motion.to = motion.path[motion.segmentIndex];
+                motion.segmentStartedAt = timestamp;
+                motion.segmentDuration = motion.axisStep
+                  ? getAxisSegmentDuration(motion.from, motion.to)
+                  : getSegmentDuration(motion.from, motion.to, motion.path.length);
+                motion.diagonal = motion.from.x !== motion.to.x && motion.from.y !== motion.to.y;
+                const fromPixel = game.gridToPixel(motion.from.x, motion.from.y);
+                const toPixel = game.gridToPixel(motion.to.x, motion.to.y);
+                motion.pixelVector = { x: toPixel.px - fromPixel.px, y: toPixel.py - fromPixel.py };
+              }
             }
           }
         } else {
@@ -3810,6 +4345,7 @@ const RRGCanvasGame = () => {
           player.motionLift *= 0.72;
           player.motionTilt *= 0.72;
           player.motionStretch *= 0.7;
+          player.motionTransformRotation *= 0.72;
         }
         player.trail.forEach((trail) => {
           const age = (performance.now() - trail.time) / 2000;
@@ -3837,7 +4373,7 @@ const RRGCanvasGame = () => {
         const scaleX = 1 + motionStretch + landingStretch;
         const scaleY = Math.max(0.84, 1 - motionStretch * 0.74 - landingStretch * 0.78);
         const shadowScale = Math.max(0.62, 1 - (player.motionLift || 0) / 28 + landingPulse * 0.08);
-        const rotation = (player.motionTilt || 0) + (index === game.currentPlayer ? Math.sin(game.time * 2.8 + index) * 0.01 : 0);
+        const rotation = (player.motionTilt || 0) + (player.motionTransformRotation || 0) + (index === game.currentPlayer ? Math.sin(game.time * 2.8 + index) * 0.01 : 0);
         if (index === game.currentPlayer) {
           ctx.fillStyle = player.color;
           ctx.globalAlpha = 0.08 + Math.sin(game.time * 4) * 0.05;
@@ -3920,7 +4456,7 @@ const RRGCanvasGame = () => {
       canvas.removeEventListener('mouseleave', onPointerUp);
       canvas.removeEventListener('wheel', onWheel);
     };
-  }, [getSegmentDuration, showPopup, submitAnswer, syncHud]);
+  }, [getAxisSegmentDuration, getSegmentDuration, showPopup, submitAnswer, syncHud]);
 
   const activePlayer = hud.players[hud.currentPlayer];
   const diceLabel = hud.diceRolling ? `${hud.dice?.symbol || '🎲'} Memilih warna...` : hud.dice ? `${hud.dice.symbol} ${hud.dice.label}` : 'Belum roll';

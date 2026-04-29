@@ -2324,6 +2324,7 @@ const RRGCanvasGame = () => {
   const canvasRef = useRef(null);
   const miniMapRef = useRef(null);
   const gameRef = useRef(null);
+  const [playerCount, setPlayerCount] = useState(6);
   const [hud, setHud] = useState({
     currentPlayer: 0,
     players: [],
@@ -2339,7 +2340,7 @@ const RRGCanvasGame = () => {
     gameOver: false,
   });
 
-  const makePlayers = () => Array.from({ length: 6 }, (_, index) => ({
+  const makePlayers = useCallback((count = playerCount) => Array.from({ length: count }, (_, index) => ({
     id: index + 1,
     name: `Pemain ${index + 1}`,
     x: 0,
@@ -2360,7 +2361,7 @@ const RRGCanvasGame = () => {
     motionStretch: 0,
     motionTransformRotation: 0,
     landingPulseAt: 0,
-  }));
+  })), [playerCount]);
 
   const syncHud = useCallback((game, popup = game?.popup || null) => {
     if (!game) return;
@@ -2475,22 +2476,37 @@ const RRGCanvasGame = () => {
     return path.length ? path : [{ x: to.x, y: to.y }];
   }, []);
 
+  const buildAxisTravelPath = useCallback((from, to) => {
+    const path = [];
+    let x = from.x;
+    let y = from.y;
+    while (x !== to.x) {
+      x += x < to.x ? 1 : -1;
+      path.push({ x, y });
+    }
+    while (y !== to.y) {
+      y += y < to.y ? 1 : -1;
+      path.push({ x, y });
+    }
+    return path.length ? path : [{ x: to.x, y: to.y }];
+  }, []);
+
   const getSegmentDuration = useCallback((from, to, totalSegments) => {
     const diagonal = from.x !== to.x && from.y !== to.y;
-    const cadenceDrop = Math.min(18, Math.max(0, totalSegments - 4) * 2);
-    return Math.max(126, (diagonal ? 182 : 156) - cadenceDrop);
+    const cadenceDrop = Math.min(70, Math.max(0, totalSegments - 4) * 8);
+    return Math.max(420, (diagonal ? 640 : 560) - cadenceDrop);
   }, []);
 
   const getTransformMotionDuration = useCallback((from, destination, card) => {
     const distance = Math.hypot(destination.x - from.x, destination.y - from.y);
-    if (card?.type === 'putaran') return Math.min(1500, Math.max(780, Math.abs(card.angle || 0) * 4.4 + distance * 44));
-    if (card?.type === 'pantulan') return Math.min(1250, Math.max(620, distance * 96));
-    return Math.min(1180, Math.max(520, distance * 92));
+    if (card?.type === 'putaran') return Math.min(3600, Math.max(1700, Math.abs(card.angle || 0) * 9 + distance * 120));
+    if (card?.type === 'pantulan') return Math.min(3000, Math.max(1500, distance * 210));
+    return Math.min(2800, Math.max(1400, distance * 190));
   }, []);
 
   const getAxisSegmentDuration = useCallback((from, destination) => {
     const distance = Math.hypot(destination.x - from.x, destination.y - from.y);
-    return Math.min(920, Math.max(340, distance * 175));
+    return Math.min(720, Math.max(460, distance * 520));
   }, []);
 
   const animatePlayerMove = useCallback((game, player, destination, card = null, options = {}) => new Promise((resolve) => {
@@ -2511,9 +2527,7 @@ const RRGCanvasGame = () => {
       const toPixel = game.gridToPixel(destination.x, destination.y);
       if (card.type === 'translasi') {
         const xStep = { x: destination.x, y: from.y };
-        const path = [];
-        if (xStep.x !== from.x || xStep.y !== from.y) path.push(xStep);
-        if (destination.x !== xStep.x || destination.y !== xStep.y) path.push(destination);
+        const path = buildAxisTravelPath(from, destination);
         const firstTarget = path[0] || destination;
         const firstPixel = game.gridToPixel(firstTarget.x, firstTarget.y);
         player.motion = {
@@ -2538,8 +2552,8 @@ const RRGCanvasGame = () => {
         player.motionTransformRotation = 0;
         game.animating = true;
         game.message = options.previewOnly
-          ? `${player.name} menguji pilihan (${destination.x}, ${destination.y}) ikut paksi-x kemudian paksi-y...`
-          : `${player.name} bergerak ikut vektor (${card.dx}, ${card.dy}): paksi-x dahulu, kemudian paksi-y...`;
+          ? `${player.name} menguji pilihan (${destination.x}, ${destination.y}) satu petak demi satu petak...`
+          : `${player.name} bergerak ikut vektor (${card.dx}, ${card.dy}) satu petak demi satu petak...`;
         centerOnPoints(game, [from, xStep, destination]);
         syncHud(game);
         return;
@@ -2606,7 +2620,7 @@ const RRGCanvasGame = () => {
     game.message = getRrgMovementMessage(player, card, destination);
     centerOnPoints(game, [from, destination]);
     syncHud(game);
-  }), [buildTravelPath, getAxisSegmentDuration, getSegmentDuration, getTransformMotionDuration, kickCamera, syncHud]);
+  }), [buildAxisTravelPath, buildTravelPath, getAxisSegmentDuration, getSegmentDuration, getTransformMotionDuration, kickCamera, syncHud]);
 
   const endTurn = useCallback((game, message) => {
     const endingPlayer = game.players[game.currentPlayer];
@@ -2704,7 +2718,13 @@ const RRGCanvasGame = () => {
     centerOnPlayer(game, game.players[0], true);
     showPopup('☢️', 'Misi Bermula', 'Selamatkan diri dari Bukit Kristal menuju Zon Selamat.');
     syncHud(game);
-  }, [showPopup, syncHud]);
+  }, [makePlayers, showPopup, syncHud]);
+
+  const updatePlayerCount = useCallback((event) => {
+    const count = Number(event.target.value);
+    if (!Number.isFinite(count)) return;
+    setPlayerCount(Math.max(2, Math.min(6, count)));
+  }, []);
 
   const findPreviousPlayer = useCallback((game) => {
     for (let step = 1; step < game.players.length; step++) {
@@ -4601,7 +4621,7 @@ const RRGCanvasGame = () => {
       canvas.removeEventListener('mouseleave', onPointerUp);
       canvas.removeEventListener('wheel', onWheel);
     };
-  }, [getAxisSegmentDuration, getSegmentDuration, showPopup, submitAnswer, syncHud]);
+  }, [getAxisSegmentDuration, getSegmentDuration, makePlayers, showPopup, submitAnswer, syncHud]);
 
   const activePlayer = hud.players[hud.currentPlayer];
   const diceLabel = hud.diceRolling ? `${hud.dice?.symbol || '🎲'} Memilih warna...` : hud.dice ? `${hud.dice.symbol} ${hud.dice.label}` : 'Belum roll';
@@ -4662,6 +4682,12 @@ const RRGCanvasGame = () => {
         <button type="button" onClick={buyHint} disabled={!hud.card || hud.hintLevel >= 2 || hud.gameOver || hud.animating || (activePlayer?.score ?? 0) < HINT_COST}>💡 Hint RM{HINT_COST}</button>
         <button type="button" onClick={submitAnswer} disabled={!hud.card || !hud.selected || hud.gameOver || hud.animating}>✅ Semak</button>
         <button type="button" onClick={resetGame} disabled={hud.animating}>↻ Reset</button>
+        <label className="rrg-player-count-control">
+          <span>Pemain</span>
+          <select value={playerCount} onChange={updatePlayerCount} disabled={hud.animating}>
+            {[2, 3, 4, 5, 6].map((count) => <option key={count} value={count}>{count}</option>)}
+          </select>
+        </label>
       </div>
       <div className="rrg-minimap"><canvas ref={miniMapRef} width="140" height="140" /></div>
       <div className="rrg-controls-hint">

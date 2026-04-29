@@ -2964,14 +2964,6 @@ const RRGCanvasGame = () => {
       { x: 10, y: 0, type: 'market', label: 'Market', size: 0.98 },
     ];
 
-    const grassAreas = [
-      { cx: -5.3, cy: -6.2, rx: 3.7, ry: 2.7, tint: '#2f8f46' },
-      { cx: -8.3, cy: 5.3, rx: 3.3, ry: 2.4, tint: '#3f9d52' },
-      { cx: 4.8, cy: 10.1, rx: 3.4, ry: 2.1, tint: '#4f9f43' },
-      { cx: 4.6, cy: -6.9, rx: 2.8, ry: 1.9, tint: '#358f55' },
-      { cx: -2.8, cy: 10.6, rx: 2.4, ry: 1.7, tint: '#5aa044' },
-    ];
-
     const paths = [
       [{ x: 0, y: -1 }, { x: -4, y: 2 }, { x: -8, y: 5 }, { x: -12, y: 12 }],
       [{ x: 0, y: -1 }, { x: 4, y: 2 }, { x: 8, y: 5 }, { x: 14, y: 7 }],
@@ -3000,7 +2992,6 @@ const RRGCanvasGame = () => {
     const textureSources = {
       water: '/assets/rrgs/air.png',
       sand: '/assets/rrgs/pasir.png',
-      grass: '/assets/rrgs/grass.png',
       buildings: '/assets/rrgs/bangunan.png',
     };
     const landmarkAssetPath = (name) => `/assets/rrgs/landmarks/${name}.png?v=transparent-cut-2`;
@@ -4152,13 +4143,6 @@ const RRGCanvasGame = () => {
       }
       mmCtx.closePath();
       mmCtx.fill();
-      grassAreas.forEach((area) => {
-        const pos = gridToPixel(area.cx, area.cy);
-        mmCtx.fillStyle = 'rgba(34, 139, 76, 0.65)';
-        mmCtx.beginPath();
-        mmCtx.ellipse(pos.px * scale, pos.py * scale, area.rx * CELL * scale, area.ry * CELL * scale, 0, 0, Math.PI * 2);
-        mmCtx.fill();
-      });
       const hazard = gridToPixel(0, -1);
       mmCtx.fillStyle = 'rgba(244,67,54,0.5)';
       mmCtx.beginPath();
@@ -4286,38 +4270,6 @@ const RRGCanvasGame = () => {
         ctx.fill();
       });
       ctx.globalAlpha = 1;
-
-      grassAreas.forEach((area) => {
-        const pos = gridToPixel(area.cx, area.cy);
-        ctx.save();
-        ctx.beginPath();
-        ctx.ellipse(pos.px, pos.py, area.rx * CELL, area.ry * CELL, Math.sin(area.cx) * 0.18, 0, Math.PI * 2);
-        ctx.clip();
-        const grassDrawn = drawTiledImage(
-          textures.grass,
-          pos.px - area.rx * CELL,
-          pos.py - area.ry * CELL,
-          area.rx * CELL * 2,
-          area.ry * CELL * 2,
-          285,
-          155,
-          Math.sin(game.time * 0.9 + area.cx) * 12,
-          Math.cos(game.time * 0.7 + area.cy) * 8,
-          0.9
-        );
-        if (!grassDrawn) {
-          const grad = ctx.createRadialGradient(pos.px, pos.py, 0, pos.px, pos.py, area.rx * CELL);
-          grad.addColorStop(0, area.tint);
-          grad.addColorStop(0.58, 'rgba(47,143,70,0.74)');
-          grad.addColorStop(1, 'rgba(47,143,70,0)');
-          ctx.fillStyle = grad;
-          ctx.fillRect(pos.px - area.rx * CELL, pos.py - area.ry * CELL, area.rx * CELL * 2, area.ry * CELL * 2);
-        }
-        ctx.globalAlpha = 0.22;
-        ctx.fillStyle = area.tint;
-        ctx.fillRect(pos.px - area.rx * CELL, pos.py - area.ry * CELL, area.rx * CELL * 2, area.ry * CELL * 2);
-        ctx.restore();
-      });
 
       paths.forEach((pathPoints) => drawRoadPath(pathPoints, 20));
 

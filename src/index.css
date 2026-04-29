@@ -1610,6 +1610,29 @@ body {
   font-weight: 950;
 }
 
+.rrg-player-hud-control {
+  min-width: 104px;
+  padding: 8px 10px;
+}
+
+.rrg-player-hud-control select {
+  width: 100%;
+  min-height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 7px;
+  background: rgba(248, 250, 252, 0.96);
+  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 950;
+  text-align: center;
+  cursor: pointer;
+}
+
+.rrg-player-hud-control select:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
 .rrg-health-panel {
   min-width: 135px;
 }
@@ -1911,43 +1934,6 @@ body {
 
 .rrg-transform-actions button.roll-active {
   animation: rrg-roll-button-glow 860ms ease-in-out infinite;
-}
-
-.rrg-player-count-control {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  min-height: 42px;
-  padding: 7px 10px 7px 14px;
-  border-radius: 8px;
-  background: rgba(15, 23, 42, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: rgba(248, 250, 252, 0.9);
-  font-weight: 900;
-  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.22);
-}
-
-.rrg-player-count-control span {
-  font-size: 0.88rem;
-}
-
-.rrg-player-count-control select {
-  width: 88px;
-  min-height: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.26);
-  border-radius: 7px;
-  background: rgba(248, 250, 252, 0.96);
-  color: #0f172a;
-  font-weight: 950;
-  text-align: center;
-  cursor: pointer;
-}
-
-.rrg-player-count-control select:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 @keyframes rrg-dice-roll-pulse {

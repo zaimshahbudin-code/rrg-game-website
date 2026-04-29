@@ -2493,20 +2493,20 @@ const RRGCanvasGame = () => {
 
   const getSegmentDuration = useCallback((from, to, totalSegments) => {
     const diagonal = from.x !== to.x && from.y !== to.y;
-    const cadenceDrop = Math.min(70, Math.max(0, totalSegments - 4) * 8);
-    return Math.max(420, (diagonal ? 640 : 560) - cadenceDrop);
+    const cadenceDrop = Math.min(90, Math.max(0, totalSegments - 4) * 10);
+    return Math.max(680, (diagonal ? 980 : 860) - cadenceDrop);
   }, []);
 
   const getTransformMotionDuration = useCallback((from, destination, card) => {
     const distance = Math.hypot(destination.x - from.x, destination.y - from.y);
-    if (card?.type === 'putaran') return Math.min(3600, Math.max(1700, Math.abs(card.angle || 0) * 9 + distance * 120));
-    if (card?.type === 'pantulan') return Math.min(3000, Math.max(1500, distance * 210));
-    return Math.min(2800, Math.max(1400, distance * 190));
+    if (card?.type === 'putaran') return Math.min(5200, Math.max(2400, Math.abs(card.angle || 0) * 13 + distance * 170));
+    if (card?.type === 'pantulan') return Math.min(4400, Math.max(2200, distance * 310));
+    return Math.min(4000, Math.max(2100, distance * 280));
   }, []);
 
   const getAxisSegmentDuration = useCallback((from, destination) => {
     const distance = Math.hypot(destination.x - from.x, destination.y - from.y);
-    return Math.min(720, Math.max(460, distance * 520));
+    return Math.min(1100, Math.max(780, distance * 860));
   }, []);
 
   const animatePlayerMove = useCallback((game, player, destination, card = null, options = {}) => new Promise((resolve) => {
@@ -2694,10 +2694,12 @@ const RRGCanvasGame = () => {
     syncHud(game);
   }, [showPopup, syncHud]);
 
-  const resetGame = useCallback(() => {
+  const resetGame = useCallback((requestedCount = playerCount) => {
     const game = gameRef.current;
     if (!game) return;
-    game.players = makePlayers();
+    const nextCount = Number.isFinite(requestedCount) ? Math.max(2, Math.min(6, requestedCount)) : playerCount;
+    setPlayerCount(nextCount);
+    game.players = makePlayers(nextCount);
     game.currentPlayer = 0;
     game.dice = null;
     game.card = null;
@@ -2718,13 +2720,13 @@ const RRGCanvasGame = () => {
     centerOnPlayer(game, game.players[0], true);
     showPopup('☢️', 'Misi Bermula', 'Selamatkan diri dari Bukit Kristal menuju Zon Selamat.');
     syncHud(game);
-  }, [makePlayers, showPopup, syncHud]);
+  }, [makePlayers, playerCount, showPopup, syncHud]);
 
   const updatePlayerCount = useCallback((event) => {
     const count = Number(event.target.value);
     if (!Number.isFinite(count)) return;
-    setPlayerCount(Math.max(2, Math.min(6, count)));
-  }, []);
+    resetGame(count);
+  }, [resetGame]);
 
   const findPreviousPlayer = useCallback((game) => {
     for (let step = 1; step < game.players.length; step++) {
@@ -4635,6 +4637,12 @@ const RRGCanvasGame = () => {
         </div>
         <div className="rrg-hud-right">
           <div className="rrg-hud-panel"><span>Giliran</span><b>{activePlayer?.name || 'Pemain'}</b></div>
+          <label className="rrg-hud-panel rrg-player-hud-control">
+            <span>Pemain</span>
+            <select value={playerCount} onChange={updatePlayerCount} disabled={hud.animating} aria-label="Bilangan pemain">
+              {[2, 3, 4, 5, 6].map((count) => <option key={count} value={count}>{count}</option>)}
+            </select>
+          </label>
           <div className="rrg-hud-panel"><span>Wang</span><b>RM{activePlayer?.score ?? 0}</b></div>
           <div className="rrg-hud-panel"><span>Posisi</span><b>({activePlayer?.x ?? 0}, {activePlayer?.y ?? 0})</b></div>
         </div>
@@ -4681,13 +4689,7 @@ const RRGCanvasGame = () => {
         <button type="button" className={hud.diceRolling ? 'roll-active' : ''} onClick={rollDice} disabled={!!hud.card || hud.gameOver || hud.animating}>🎲 Roll Warna</button>
         <button type="button" onClick={buyHint} disabled={!hud.card || hud.hintLevel >= 2 || hud.gameOver || hud.animating || (activePlayer?.score ?? 0) < HINT_COST}>💡 Hint RM{HINT_COST}</button>
         <button type="button" onClick={submitAnswer} disabled={!hud.card || !hud.selected || hud.gameOver || hud.animating}>✅ Semak</button>
-        <button type="button" onClick={resetGame} disabled={hud.animating}>↻ Reset</button>
-        <label className="rrg-player-count-control">
-          <span>Pemain</span>
-          <select value={playerCount} onChange={updatePlayerCount} disabled={hud.animating}>
-            {[2, 3, 4, 5, 6].map((count) => <option key={count} value={count}>{count}</option>)}
-          </select>
-        </label>
+        <button type="button" onClick={() => resetGame()} disabled={hud.animating}>↻ Reset</button>
       </div>
       <div className="rrg-minimap"><canvas ref={miniMapRef} width="140" height="140" /></div>
       <div className="rrg-controls-hint">

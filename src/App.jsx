@@ -2992,6 +2992,7 @@ const RRGCanvasGame = () => {
       [{ x: 0, y: -1 }, { x: 2, y: -5 }, { x: 5, y: -7 }, { x: 3, y: -14 }],
       [{ x: 0, y: -1 }, { x: -3, y: -4 }, { x: -5, y: -6 }, { x: -10, y: -12 }],
     ];
+    const riverPath = [{ x: -4.2, y: -3.6 }, { x: -5, y: -6 }, { x: -6.4, y: -8.2 }, { x: -8.7, y: -10.7 }, { x: -11.2, y: -13 }];
 
     const sandSpecks = [];
     for (let i = 0; i < 620; i++) {
@@ -3289,31 +3290,6 @@ const RRGCanvasGame = () => {
       return true;
     };
 
-    const drawTerrainPath = (points, width, color, shadowColor) => {
-      if (points.length < 2) return;
-      ctx.save();
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = shadowColor;
-      ctx.lineWidth = width + 8;
-      ctx.globalAlpha = 0.28;
-      ctx.beginPath();
-      points.forEach((point, index) => {
-        const pos = gridToPixel(point.x, point.y);
-        if (index === 0) ctx.moveTo(pos.px, pos.py);
-        else ctx.lineTo(pos.px, pos.py);
-      });
-      ctx.stroke();
-      ctx.globalAlpha = 1;
-      ctx.strokeStyle = color;
-      ctx.lineWidth = width;
-      ctx.stroke();
-      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
-      ctx.lineWidth = Math.max(2, width * 0.22);
-      ctx.stroke();
-      ctx.restore();
-    };
-
     const drawSmoothPath = (points) => {
       const pixels = points.map((point) => gridToPixel(point.x, point.y));
       drawSmoothPixelPath(pixels);
@@ -3394,44 +3370,52 @@ const RRGCanvasGame = () => {
       const roadPattern = ctx.createPattern(roadTexture, 'repeat');
 
       ctx.globalCompositeOperation = 'multiply';
-      ctx.strokeStyle = 'rgba(78, 50, 27, 0.2)';
-      ctx.lineWidth = width + 30;
+      ctx.filter = 'blur(4px)';
+      ctx.strokeStyle = 'rgba(75, 46, 24, 0.18)';
+      ctx.lineWidth = width + 48;
       drawSmoothPath(points);
       ctx.stroke();
-
-      ctx.strokeStyle = 'rgba(234, 201, 145, 0.28)';
-      ctx.lineWidth = width + 18;
+      ctx.filter = 'blur(2px)';
+      ctx.strokeStyle = 'rgba(155, 104, 54, 0.2)';
+      ctx.lineWidth = width + 34;
       drawSmoothPath(points);
       ctx.stroke();
+      ctx.filter = 'none';
 
       ctx.globalCompositeOperation = 'source-over';
-      ctx.globalAlpha = 0.92;
+      ctx.globalAlpha = 0.32;
+      ctx.strokeStyle = 'rgba(246, 216, 160, 0.72)';
+      ctx.lineWidth = width + 24;
+      drawSmoothPath(points);
+      ctx.stroke();
+
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.globalAlpha = 0.78;
       ctx.strokeStyle = roadPattern || 'rgba(183, 122, 64, 0.72)';
-      ctx.lineWidth = width + 2;
+      ctx.lineWidth = width + 8;
       drawSmoothPath(points);
       ctx.stroke();
       ctx.globalAlpha = 1;
 
-      ctx.globalCompositeOperation = 'multiply';
-      ctx.strokeStyle = 'rgba(130, 78, 36, 0.26)';
-      ctx.lineWidth = width * 0.92;
+      ctx.strokeStyle = 'rgba(104, 63, 32, 0.32)';
+      ctx.lineWidth = width * 0.72;
       drawSmoothPath(points);
       ctx.stroke();
       ctx.globalCompositeOperation = 'source-over';
 
       [-width * 0.23, width * 0.23].forEach((offset, trackIndex) => {
-        ctx.strokeStyle = trackIndex === 0 ? 'rgba(82, 50, 25, 0.2)' : 'rgba(98, 61, 31, 0.18)';
-        ctx.lineWidth = 3.2;
+        ctx.strokeStyle = trackIndex === 0 ? 'rgba(62, 39, 21, 0.27)' : 'rgba(78, 48, 25, 0.24)';
+        ctx.lineWidth = 4.4;
         drawOffsetRoadPath(points, offset);
         ctx.stroke();
-        ctx.strokeStyle = 'rgba(255, 230, 178, 0.09)';
-        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = 'rgba(255, 236, 190, 0.12)';
+        ctx.lineWidth = 1.5;
         drawOffsetRoadPath(points, offset + (offset < 0 ? 2 : -2));
         ctx.stroke();
       });
 
-      ctx.strokeStyle = 'rgba(255, 230, 174, 0.16)';
-      ctx.lineWidth = Math.max(4, width * 0.32);
+      ctx.strokeStyle = 'rgba(255, 231, 181, 0.12)';
+      ctx.lineWidth = Math.max(4, width * 0.26);
       drawSmoothPath(points);
       ctx.stroke();
 
@@ -3466,8 +3450,195 @@ const RRGCanvasGame = () => {
           );
           ctx.fill();
         }
+
+        if (index % 6 === 0) {
+          [-width * 0.23, width * 0.23].forEach((trackOffset, trackSide) => {
+            const treadPhase = Math.sin(sample.seed * 0.83 + trackSide) * 1.8;
+            const tx = sample.px + Math.cos(normal) * (trackOffset + treadPhase);
+            const ty = sample.py + Math.sin(normal) * (trackOffset + treadPhase);
+            const treadAngle = sample.angle + (trackSide === 0 ? 0.72 : -0.72);
+            ctx.globalAlpha = 0.13;
+            ctx.strokeStyle = '#3f2716';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ctx.moveTo(tx - Math.cos(treadAngle) * 3.8, ty - Math.sin(treadAngle) * 3.8);
+            ctx.lineTo(tx + Math.cos(treadAngle) * 3.8, ty + Math.sin(treadAngle) * 3.8);
+            ctx.stroke();
+          });
+        }
+
+        if (index % 13 === 0) {
+          const dustPhase = (game.time * 0.18 + Math.abs(Math.sin(sample.seed)) * 0.7) % 1;
+          const dustSide = Math.sin(sample.seed * 2.37) > 0 ? 1 : -1;
+          const dustOffset = dustSide * (width * 0.68 + dustPhase * 14);
+          ctx.globalAlpha = (1 - dustPhase) * 0.12;
+          ctx.fillStyle = '#ead3a5';
+          ctx.beginPath();
+          ctx.ellipse(
+            sample.px + Math.cos(normal) * dustOffset + Math.cos(sample.angle) * dustPhase * 12,
+            sample.py + Math.sin(normal) * dustOffset + Math.sin(sample.angle) * dustPhase * 12,
+            4 + dustPhase * 9,
+            1.6 + dustPhase * 4,
+            sample.angle + Math.sin(sample.seed) * 0.35,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+        }
       });
       ctx.globalAlpha = 1;
+      ctx.restore();
+    };
+
+    const drawRealisticRiverPath = (points, width = 34) => {
+      if (points.length < 2) return;
+      ctx.save();
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      makeIslandPath(ctx);
+      ctx.clip();
+
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.filter = 'blur(3px)';
+      ctx.strokeStyle = 'rgba(8, 47, 73, 0.18)';
+      ctx.lineWidth = width + 32;
+      drawSmoothPath(points);
+      ctx.stroke();
+      ctx.filter = 'none';
+
+      const shallow = ctx.createLinearGradient(0, 0, MAP_W, MAP_H);
+      shallow.addColorStop(0, 'rgba(125, 211, 252, 0.42)');
+      shallow.addColorStop(0.55, 'rgba(14, 165, 233, 0.34)');
+      shallow.addColorStop(1, 'rgba(6, 95, 150, 0.42)');
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = shallow;
+      ctx.lineWidth = width + 20;
+      drawSmoothPath(points);
+      ctx.stroke();
+
+      const depth = ctx.createLinearGradient(0, 0, MAP_W, MAP_H);
+      depth.addColorStop(0, 'rgba(56, 189, 248, 0.66)');
+      depth.addColorStop(0.45, 'rgba(2, 132, 199, 0.76)');
+      depth.addColorStop(1, 'rgba(8, 47, 73, 0.82)');
+      ctx.strokeStyle = depth;
+      ctx.lineWidth = width + 4;
+      drawSmoothPath(points);
+      ctx.stroke();
+
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.strokeStyle = 'rgba(15, 23, 42, 0.5)';
+      ctx.lineWidth = width * 0.42;
+      drawSmoothPath(points);
+      ctx.stroke();
+      ctx.globalCompositeOperation = 'source-over';
+
+      const samples = sampleRoadPixels(points, 0.16);
+      ctx.globalCompositeOperation = 'screen';
+      samples.forEach((sample, index) => {
+        if (index % 2 !== 0) return;
+        const normal = sample.angle + Math.PI / 2;
+        const wave = Math.sin(sample.seed * 0.52 + game.time * 4.4);
+        const cross = wave * width * 0.28;
+        const x = sample.px + Math.cos(normal) * cross;
+        const y = sample.py + Math.sin(normal) * cross;
+        const length = 8 + Math.abs(Math.cos(sample.seed * 1.7)) * 18;
+        ctx.globalAlpha = 0.08 + Math.abs(wave) * 0.11;
+        ctx.strokeStyle = '#dffbff';
+        ctx.lineWidth = 1.1 + Math.abs(wave) * 0.9;
+        ctx.beginPath();
+        ctx.moveTo(x - Math.cos(sample.angle) * length * 0.5, y - Math.sin(sample.angle) * length * 0.5);
+        ctx.lineTo(x + Math.cos(sample.angle) * length * 0.5, y + Math.sin(sample.angle) * length * 0.5);
+        ctx.stroke();
+      });
+
+      ctx.globalAlpha = 0.54 + Math.sin(game.time * 2.1) * 0.12;
+      ctx.strokeStyle = '#f0f9ff';
+      ctx.lineWidth = 2.2;
+      ctx.setLineDash([16, 18]);
+      ctx.lineDashOffset = -game.time * 42;
+      drawSmoothPath(points);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.globalAlpha = 0.48;
+      ctx.strokeStyle = '#e0f7ff';
+      ctx.lineWidth = 2.6;
+      [-width * 0.5, width * 0.5].forEach((offset, edgeIndex) => {
+        ctx.setLineDash([10 + edgeIndex * 4, 14]);
+        ctx.lineDashOffset = -game.time * (30 + edgeIndex * 8);
+        drawOffsetRoadPath(points, offset);
+        ctx.stroke();
+      });
+      ctx.setLineDash([]);
+
+      samples.forEach((sample, index) => {
+        if (index % 9 !== 0) return;
+        const normal = sample.angle + Math.PI / 2;
+        const phase = (game.time * 0.34 + Math.abs(Math.sin(sample.seed * 2.1))) % 1;
+        const side = Math.sin(sample.seed) > 0 ? 1 : -1;
+        const x = sample.px + Math.cos(normal) * side * (width * 0.46 - phase * 4);
+        const y = sample.py + Math.sin(normal) * side * (width * 0.46 - phase * 4);
+        ctx.globalAlpha = (1 - phase) * 0.18;
+        ctx.fillStyle = '#f8fdff';
+        ctx.beginPath();
+        ctx.ellipse(x, y, 3 + phase * 8, 1.2 + phase * 2, sample.angle, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.restore();
+    };
+
+    const drawWaterfallUltraOverlay = () => {
+      const waterfall = landmarks.find((landmark) => landmark.type === 'waterfall');
+      if (!waterfall) return;
+      const pos = gridToPixel(waterfall.x, waterfall.y);
+      ctx.save();
+      ctx.translate(pos.px, pos.py);
+
+      ctx.globalCompositeOperation = 'screen';
+      const pool = ctx.createRadialGradient(0, 22, 4, 0, 22, 54);
+      pool.addColorStop(0, 'rgba(240,249,255,0.52)');
+      pool.addColorStop(0.42, 'rgba(125,211,252,0.26)');
+      pool.addColorStop(1, 'rgba(125,211,252,0)');
+      ctx.fillStyle = pool;
+      ctx.beginPath();
+      ctx.ellipse(0, 24, 58, 24, -0.12, 0, Math.PI * 2);
+      ctx.fill();
+
+      for (let i = 0; i < 7; i++) {
+        const phase = (game.time * 4.7 + i * 0.19) % 1;
+        const x = -18 + i * 6 + Math.sin(game.time * 2.4 + i) * 2.4;
+        const y = -42 + phase * 54;
+        const grad = ctx.createLinearGradient(x, y - 18, x, y + 18);
+        grad.addColorStop(0, 'rgba(224,242,254,0)');
+        grad.addColorStop(0.45, 'rgba(224,242,254,0.62)');
+        grad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 2 + (i % 3);
+        ctx.beginPath();
+        ctx.moveTo(x, y - 18);
+        ctx.quadraticCurveTo(x + Math.sin(game.time * 3 + i) * 4, y, x + 2, y + 24);
+        ctx.stroke();
+      }
+
+      for (let i = 0; i < 34; i++) {
+        const phase = (game.time * 0.72 + i * 0.071) % 1;
+        const angle = i * 2.399;
+        const radius = 8 + phase * (34 + (i % 4) * 5);
+        const x = Math.cos(angle) * radius + Math.sin(game.time + i) * 6;
+        const y = 23 + Math.sin(angle) * radius * 0.32 + phase * 22;
+        const size = 1.5 + phase * 5 + (i % 3);
+        ctx.globalAlpha = (1 - phase) * 0.24;
+        ctx.fillStyle = i % 4 === 0 ? '#ffffff' : '#dff8ff';
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'source-over';
       ctx.restore();
     };
 
@@ -4293,24 +4464,8 @@ const RRGCanvasGame = () => {
       });
       ctx.globalAlpha = 1;
 
-      paths.forEach((pathPoints) => drawRoadPath(pathPoints, 20));
-
-      const river = [{ x: -4.2, y: -3.6 }, { x: -5, y: -6 }, { x: -6.4, y: -8.2 }, { x: -8.7, y: -10.7 }, { x: -11.2, y: -13 }];
-      drawTerrainPath(river, 15, '#38bdf8', '#075985');
-      ctx.save();
-      ctx.lineCap = 'round';
-      ctx.strokeStyle = `rgba(240,249,255,${0.34 + Math.sin(game.time * 2.2) * 0.1})`;
-      ctx.lineWidth = 3;
-      ctx.setLineDash([18, 14]);
-      ctx.lineDashOffset = -game.time * 38;
-      ctx.beginPath();
-      river.forEach((point, index) => {
-        const pos = gridToPixel(point.x, point.y);
-        if (index === 0) ctx.moveTo(pos.px, pos.py);
-        else ctx.lineTo(pos.px, pos.py);
-      });
-      ctx.stroke();
-      ctx.restore();
+      paths.forEach((pathPoints) => drawRoadPath(pathPoints, 24));
+      drawRealisticRiverPath(riverPath, 34);
 
       stones.forEach((stone) => {
         const pos = gridToPixel(stone.x, stone.y);
@@ -4396,6 +4551,7 @@ const RRGCanvasGame = () => {
       });
       boats.forEach((boat) => drawBoatShape(boat));
       landmarks.forEach((landmark) => drawLandmark(landmark));
+      drawWaterfallUltraOverlay();
       RRG_ITEMS.forEach((item) => drawItem(item, game.time));
       drawActiveTransformGuide();
       drawMotionTransformGuides();

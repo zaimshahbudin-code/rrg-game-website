@@ -161,7 +161,7 @@ const TranslasiStepper = ({ lang, theme = DEFAULT_NOTE_LAYOUT_THEME }) => {
   return (
     <div className={`border-2 rounded-xl p-4 md:p-6 mt-6 shadow-inner ${palette.stepperWrap}`}>
       <h3 className={`font-bold mb-4 flex items-center gap-2 ${palette.stepperTitle}`}>
-        <MousePointerClick size={18} /> {lang === 'en' ? 'Tutorial: How to Draw a Translation Image' : 'Tutorial: Cara Melukis Imej Translasi'}
+        <MousePointerClick size={18} /> {lang === 'en' ? 'Tutorial: How to Draw the Image After a Translation' : 'Tutorial: Cara Melukis Imej Translasi'}
       </h3>
       <div className="flex flex-col md:flex-row gap-6 items-center">
         <div className="flex-1 space-y-3 w-full">
@@ -172,13 +172,13 @@ const TranslasiStepper = ({ lang, theme = DEFAULT_NOTE_LAYOUT_THEME }) => {
                 1. {lang === 'en' ? 'Choose a reference vertex (Example: Point A).' : 'Pilih satu bucu rujukan (Contoh: Titik A).'}
               </button>
               <button onClick={() => setStep(2)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 2 ? palette.stepActive : TUTORIAL_STEP_IDLE_CLASS}`}>
-                2. {lang === 'en' ? 'Move along x-axis (e.g., right 4 units).' : 'Gerak paksi-x (contoh: ke kanan 4 petak).'}
+                2. {lang === 'en' ? 'Move along the x-axis (e.g., 4 units to the right).' : 'Gerak paksi-x (contoh: ke kanan 4 petak).'}
               </button>
               <button onClick={() => setStep(3)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 3 ? palette.stepActive : TUTORIAL_STEP_IDLE_CLASS}`}>
-                3. {lang === 'en' ? "Move along y-axis (e.g., down 3 units). Mark A'." : "Gerak paksi-y (contoh: ke bawah 3 petak). Tandakan A'."}
+                3. {lang === 'en' ? "Move along the y-axis (e.g., 3 units down). Mark A'." : "Gerak paksi-y (contoh: ke bawah 3 petak). Tandakan A'."}
               </button>
               <button onClick={() => setStep(4)} className={`text-left px-4 py-2 text-sm rounded-md transition-all ${step === 4 ? palette.stepActive : TUTORIAL_STEP_IDLE_CLASS}`}>
-                4. {lang === 'en' ? 'Repeat for other vertices & complete the image.' : 'Ulang langkah untuk bucu lain & lengkapkan imej.'}
+                4. {lang === 'en' ? 'Repeat for the other vertices and complete the image.' : 'Ulang langkah untuk bucu lain & lengkapkan imej.'}
               </button>
             </div>
           </div>
@@ -234,7 +234,7 @@ const PantulanStepper = ({ lang, theme = DEFAULT_NOTE_LAYOUT_THEME }) => {
   return (
     <div className={`border-2 rounded-xl p-4 md:p-6 mt-6 shadow-inner ${palette.stepperWrap}`}>
       <h3 className={`font-bold mb-4 flex items-center gap-2 ${palette.stepperTitle}`}>
-        <MousePointerClick size={18} /> {lang === 'en' ? 'Tutorial: How to Draw a Reflection Image' : 'Tutorial: Cara Melukis Imej Pantulan'}
+        <MousePointerClick size={18} /> {lang === 'en' ? 'Tutorial: How to Draw the Image After a Reflection' : 'Tutorial: Cara Melukis Imej Pantulan'}
       </h3>
       <div className="flex flex-col md:flex-row gap-6 items-center">
         <div className="flex-1 space-y-3 w-full">
@@ -308,7 +308,7 @@ const PutaranStepper = ({ lang }) => {
   return (
     <div className="bg-slate-50 border-2 border-purple-100 rounded-xl p-4 md:p-6 mt-6 shadow-inner">
       <h3 className="font-bold text-purple-800 mb-4 flex items-center gap-2">
-        <MousePointerClick size={18} /> {lang === 'en' ? 'Tutorial: How to Draw a Rotation Image (90° Clockwise)' : 'Tutorial: Cara Melukis Imej Putaran (90° Ikut Jam)'}
+        <MousePointerClick size={18} /> {lang === 'en' ? 'Tutorial: How to Draw the Image After a Rotation (90° Clockwise)' : 'Tutorial: Cara Melukis Imej Putaran (90° Ikut Jam)'}
       </h3>
       <div className="flex flex-col md:flex-row gap-6 items-center">
         <div className="flex-1 space-y-3 w-full">
@@ -429,10 +429,10 @@ const SectionNota = ({ lang }) => {
       <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h3 className="text-lg font-bold text-slate-900">{lang === 'en' ? 'Translation & Reflection Layout Colors' : 'Warna Layout Translasi & Pantulan'}</h3>
+            <h3 className="text-lg font-bold text-slate-900">{lang === 'en' ? 'Note Theme Colors' : 'Warna Layout Translasi & Pantulan'}</h3>
             <p className="text-sm text-slate-600 mt-1">
               {lang === 'en'
-                ? 'Choose a shared palette so both sections look consistent and easier to read.'
+                ? 'Choose a shared palette so the note sections look consistent and easier to read.'
                 : 'Pilih satu palette yang sama supaya kedua-dua bahagian nampak konsisten dan lebih kemas.'}
             </p>
           </div>
@@ -459,20 +459,20 @@ const SectionNota = ({ lang }) => {
       <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
         <h2 className={`text-2xl font-bold text-slate-900 border-b-2 pb-3 mb-6 flex items-center gap-2 ${layoutTheme.sectionRule}`}>
           <span className={`px-3 py-1 rounded-lg text-lg ${layoutTheme.sectionBadge}`}>11.2</span> 
-          {lang === 'en' ? 'Translation (Shift)' : 'Translasi (Pergeseran)'}
+          {lang === 'en' ? 'Geometric Translation' : 'Translasi'}
         </h2>
         
         <div className="flex flex-col md:flex-row gap-8 items-center mb-6">
           <div className="flex-1 space-y-4">
             <p className="text-slate-700 leading-relaxed">
               {lang === 'en' ? (
-                <><strong>Translation</strong> is the movement of all points on a plane in the same direction and through the same distance. The object <em>slides</em> without turning, and its size remains.</>
+                <><strong>Geometric translation</strong> moves every point on a plane in the same direction and by the same distance. The object <em>slides</em> without turning, and its size remains the same.</>
               ) : (
                 <><strong>Translasi</strong> ialah pemindahan semua titik pada suatu satah mengikut arah dan jarak yang sama. Objek <em>melongsor</em> tanpa dipusingkan dan saiznya kekal.</>
               )}
             </p>
             <div className={`p-4 rounded-lg inline-block ${layoutTheme.infoPanel}`}>
-              <h4 className={`font-bold mb-2 ${layoutTheme.infoTitle}`}>{lang === 'en' ? 'Translation Vector' : 'Vektor Translasi'}</h4>
+              <h4 className={`font-bold mb-2 ${layoutTheme.infoTitle}`}>{lang === 'en' ? 'Vector of Translation' : 'Vektor Translasi'}</h4>
               <div className={`text-sm mb-2 flex items-center gap-2 ${layoutTheme.infoText}`}>
                 {lang === 'en' ? 'Written as' : 'Ditulis dalam bentuk'}
                 <span className={`flex flex-col items-center border-l-2 border-r-2 px-1.5 rounded-sm leading-tight ${layoutTheme.matrixChip}`}>
@@ -480,8 +480,8 @@ const SectionNota = ({ lang }) => {
                 </span>
               </div>
               <ul className={`list-disc pl-5 text-sm space-y-1 ${layoutTheme.infoText}`}>
-                <li><strong>a:</strong> {lang === 'en' ? 'Right (+) or Left (-) x-axis.' : 'Kanan (+) atau Kiri (-) paksi-x.'}</li>
-                <li><strong>b:</strong> {lang === 'en' ? 'Up (+) or Down (-) y-axis.' : 'Atas (+) atau Bawah (-) paksi-y.'}</li>
+                <li><strong>a:</strong> {lang === 'en' ? 'Right (+) or left (-) along the x-axis.' : 'Kanan (+) atau Kiri (-) paksi-x.'}</li>
+                <li><strong>b:</strong> {lang === 'en' ? 'Up (+) or down (-) along the y-axis.' : 'Atas (+) atau Bawah (-) paksi-y.'}</li>
               </ul>
             </div>
           </div>
@@ -516,7 +516,7 @@ const SectionNota = ({ lang }) => {
       <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
         <h2 className={`text-2xl font-bold text-slate-900 border-b-2 pb-3 mb-6 flex items-center gap-2 ${layoutTheme.sectionRule}`}>
           <span className={`px-3 py-1 rounded-lg text-lg ${layoutTheme.sectionBadge}`}>11.3</span> 
-          {lang === 'en' ? 'Reflection' : 'Pantulan (Refleksi)'}
+          {lang === 'en' ? 'Reflection' : 'Pantulan'}
         </h2>
         
         <div className="flex flex-col md:flex-row-reverse gap-8 items-center mb-6">
@@ -565,7 +565,7 @@ const SectionNota = ({ lang }) => {
       <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
         <h2 className="text-2xl font-bold text-slate-900 border-b-2 border-purple-100 pb-3 mb-6 flex items-center gap-2">
           <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-lg text-lg">11.4</span> 
-          {lang === 'en' ? 'Rotation' : 'Putaran (Rotasi)'}
+          {lang === 'en' ? 'Rotation' : 'Putaran'}
         </h2>
         
         <div className="flex flex-col md:flex-row gap-8 items-center mb-6">
@@ -1403,7 +1403,7 @@ const generateQuestionsData = (num = 10) => {
     
     q.pilihan = allOpts;
     q.jawapanBetul = allOpts.indexOf(correctStr);
-    q.kategori_ms = type.charAt(0).toUpperCase() + type.slice(1);
+    q.kategori_ms = type === 'translasi' ? 'Translasi' : type === 'pantulan' ? 'Refleksi' : 'Rotasi';
     q.kategori_en = type === 'translasi' ? 'Translation' : type === 'pantulan' ? 'Reflection' : 'Rotation';
     q.iconString = type === 'translasi' ? 'move' : type === 'pantulan' ? 'flip' : 'rotate';
     q.warna = type === 'translasi' ? 'bg-blue-500' : type === 'pantulan' ? 'bg-purple-500' : 'bg-amber-500';
@@ -1415,14 +1415,40 @@ const generateQuestionsData = (num = 10) => {
 const CartesianGrid = ({ visualData, isAnswered, lang }) => {
   if (!visualData) return null;
   const { type, pt, correct, detail, vertices, imageVertices, ptLabel } = visualData;
-  const scale = 10; 
+  const visualPoints = [...(vertices || []), ...(imageVertices || []), pt, correct].filter(Boolean);
+  const maxCoordinate = Math.max(
+    6,
+    ...visualPoints.flatMap((point) => [Math.abs(point.x), Math.abs(point.y)]),
+  );
+  const GRID_LIMIT = Math.min(14, Math.max(8, Math.ceil(maxCoordinate + 2)));
+  const scale = 119 / GRID_LIMIT; 
   const toSvgX = (val) => val * scale;
   const toSvgY = (val) => -val * scale; 
 
   const gridLines = [];
-  for (let i = -12; i <= 12; i++) {
-    gridLines.push(<line key={`v${i}`} x1={i*scale} y1="-120" x2={i*scale} y2="120" stroke={i===0?"#000":"#e2e8f0"} strokeWidth={i===0?1.5:0.5} />);
-    gridLines.push(<line key={`h${i}`} x1="-120" y1={i*scale} x2="120" y2={i*scale} stroke={i===0?"#000":"#e2e8f0"} strokeWidth={i===0?1.5:0.5} />);
+  const axisNumbers = [];
+  const gridMin = -GRID_LIMIT * scale;
+  const gridMax = GRID_LIMIT * scale;
+  const numberTextProps = {
+    fontSize: 6,
+    fill: '#0f172a',
+    stroke: 'white',
+    strokeWidth: 0.9,
+    paintOrder: 'stroke',
+    className: 'font-sans font-bold',
+  };
+
+  for (let i = -GRID_LIMIT; i <= GRID_LIMIT; i++) {
+    const pos = i * scale;
+    const isAxis = i === 0;
+    gridLines.push(<line key={`v${i}`} x1={pos} y1={gridMin} x2={pos} y2={gridMax} stroke={isAxis ? "#0f172a" : "#e2e8f0"} strokeWidth={isAxis ? 1.6 : 0.5} />);
+    gridLines.push(<line key={`h${i}`} x1={gridMin} y1={pos} x2={gridMax} y2={pos} stroke={isAxis ? "#0f172a" : "#e2e8f0"} strokeWidth={isAxis ? 1.6 : 0.5} />);
+
+    // ticks and labels for every integer coordinate (including negatives)
+    axisNumbers.push(<line key={`xtick${i}`} x1={pos} y1="-2" x2={pos} y2="2" stroke="#64748b" strokeWidth="0.8" />);
+    axisNumbers.push(<line key={`ytick${i}`} x1="-2" y1={-pos} x2="2" y2={-pos} stroke="#64748b" strokeWidth="0.8" />);
+    axisNumbers.push(<text key={`xlabel${i}`} x={pos} y="9.6" textAnchor="middle" {...numberTextProps}>{i}</text>);
+    axisNumbers.push(<text key={`ylabel${i}`} x="-8.5" y={-pos + 2.4} textAnchor="end" {...numberTextProps}>{i}</text>);
   }
 
   const makePolygonPath = (points) => {
@@ -1432,18 +1458,20 @@ const CartesianGrid = ({ visualData, isAnswered, lang }) => {
   };
 
   return (
-    <div className="w-full h-full min-h-[300px] flex items-center justify-center bg-white rounded-xl border-2 border-slate-200 overflow-hidden relative">
-      <svg viewBox="-125 -125 250 250" className="w-full h-full max-w-[400px] max-h-[400px]">
+    <div className="w-full h-full min-h-[500px] lg:min-h-[640px] flex items-center justify-center bg-white rounded-xl border-2 border-slate-200 overflow-hidden relative">
+      <svg viewBox="-132 -132 264 264" className="w-full h-full max-w-[640px] max-h-[640px]">
         {gridLines}
-        <text x="110" y="12" fontSize="6" fill="#64748b" className="font-sans">x</text>
-        <text x="4" y="-110" fontSize="6" fill="#64748b" className="font-sans">y</text>
+        {axisNumbers}
+        <text x="4.5" y="7.4" textAnchor="start" {...numberTextProps}>0</text>
+        <text x="123" y="7.4" fontSize="6.2" fill="#334155" className="font-sans font-bold">x</text>
+        <text x="4.5" y="-122" fontSize="6.2" fill="#334155" className="font-sans font-bold">y</text>
 
         {type === 'pantulan' && (
           <line 
-            x1={detail === 'Paksi-y' ? 0 : detail === 'Garis y=x' ? -120 : detail === 'Garis y=-x' ? -120 : -120}
-            y1={detail === 'Paksi-x' ? 0 : detail === 'Garis y=x' ? 120 : detail === 'Garis y=-x' ? -120 : -120}
-            x2={detail === 'Paksi-y' ? 0 : detail === 'Garis y=x' ? 120 : detail === 'Garis y=-x' ? 120 : 120}
-            y2={detail === 'Paksi-x' ? 0 : detail === 'Garis y=x' ? -120 : detail === 'Garis y=-x' ? 120 : 120}
+            x1={detail === 'Paksi-y' ? 0 : detail === 'Garis y=x' ? gridMin : detail === 'Garis y=-x' ? gridMin : gridMin}
+            y1={detail === 'Paksi-x' ? 0 : detail === 'Garis y=x' ? gridMax : detail === 'Garis y=-x' ? gridMin : gridMin}
+            x2={detail === 'Paksi-y' ? 0 : detail === 'Garis y=x' ? gridMax : detail === 'Garis y=-x' ? gridMax : gridMax}
+            y2={detail === 'Paksi-x' ? 0 : detail === 'Garis y=x' ? gridMin : detail === 'Garis y=-x' ? gridMax : gridMax}
             stroke="#f43f5e" strokeWidth="1.5" strokeDasharray="4,4" opacity="0.6"
           />
         )}
@@ -1515,17 +1543,17 @@ const SectionKuiz = ({ lang }) => {
     if (q.type === 'translasi') {
       return lang === 'en'
         ? `The diagram shows a polygon with vertex ${q.ptLabel}(${q.x}, ${q.y}). If this polygon is translated by vector (${q.dx}, ${q.dy}), what are the coordinates of the image vertex ${q.ptLabel}'?`
-        : `Rajah menunjukkan sebuah poligon dengan bucu ${q.ptLabel}(${q.x}, ${q.y}). Jika poligon ini ditranslasikan dengan vektor (${q.dx}, ${q.dy}), apakah koordinat bagi imej bucu ${q.ptLabel}'?`;
+        : `Graf menunjukkan sebuah poligon dengan bucu ${q.ptLabel}(${q.x}, ${q.y}). Jika poligon ini melalui translasi vektor (${q.dx}, ${q.dy}), apakah koordinat bagi imej bucu ${q.ptLabel}'?`;
     } else if (q.type === 'pantulan') {
       const axisEn = q.axis === 'Paksi-x' ? 'X-axis' : q.axis === 'Paksi-y' ? 'Y-axis' : q.axis === 'Garis y=x' ? 'Line y=x' : 'Line y=-x';
       return lang === 'en'
         ? `The diagram shows an object with vertex ${q.ptLabel}(${q.x}, ${q.y}). The object is reflected on the ${axisEn}. What are the coordinates of the image vertex ${q.ptLabel}'?`
-        : `Rajah menunjukkan sebuah objek dengan bucu ${q.ptLabel}(${q.x}, ${q.y}). Objek ini dipantulkan pada ${q.axis}. Apakah koordinat bagi imej bucu ${q.ptLabel}'?`;
+        : `Graf menunjukkan sebuah objek dengan bucu ${q.ptLabel}(${q.x}, ${q.y}). Objek ini melalui refleksi pada ${q.axis}. Apakah koordinat bagi imej bucu ${q.ptLabel}'?`;
     } else {
       const angleEn = q.angleCode === '90cw' ? '90° clockwise' : q.angleCode === '90ccw' ? '90° anticlockwise' : '180°';
       return lang === 'en'
         ? `The diagram shows an object with vertex ${q.ptLabel}(${q.x}, ${q.y}). The object is rotated ${angleEn} at the origin (0,0). Find the coordinates of the image vertex ${q.ptLabel}'.`
-        : `Rajah menunjukkan sebuah objek dengan bucu ${q.ptLabel}(${q.x}, ${q.y}). Objek ini diputar ${q.angleCode === '90cw' ? '90° ikut arah jam' : q.angleCode === '90ccw' ? '90° lawan arah jam' : '180°'} pada asalan (0,0). Cari koordinat bagi imej bucu ${q.ptLabel}'.`;
+        : `Graf menunjukkan sebuah objek dengan bucu ${q.ptLabel}(${q.x}, ${q.y}). Objek ini melalui rotasi ${q.angleCode === '90cw' ? '90° ikut arah jam' : q.angleCode === '90ccw' ? '90° lawan arah jam' : '180°'} pada origin (0,0). Cari koordinat bagi imej bucu ${q.ptLabel}'.`;
     }
   };
 
@@ -1538,12 +1566,12 @@ const SectionKuiz = ({ lang }) => {
       const axisEn = q.axis === 'Paksi-x' ? 'X-axis' : q.axis === 'Paksi-y' ? 'Y-axis' : q.axis === 'Garis y=x' ? 'Line y=x' : 'Line y=-x';
       return lang === 'en'
         ? `Reflection on ${axisEn} changes coordinates (${q.x}, ${q.y}) to its image at (${q.newX}, ${q.newY}).`
-        : `Pantulan pada ${q.axis} menukarkan koordinat (${q.x}, ${q.y}) menjadi imejnya di (${q.newX}, ${q.newY}).`;
+        : `Refleksi pada ${q.axis} menukarkan koordinat (${q.x}, ${q.y}) kepada imej (${q.newX}, ${q.newY}).`;
     } else {
       const angleEn = q.angleCode === '90cw' ? '90° clockwise' : q.angleCode === '90ccw' ? '90° anticlockwise' : '180°';
       return lang === 'en'
         ? `Rotation of ${angleEn} will change the original position (${q.x}, ${q.y}) to (${q.newX}, ${q.newY}).`
-        : `Putaran ${q.angleCode === '90cw' ? '90° ikut arah jam' : q.angleCode === '90ccw' ? '90° lawan arah jam' : '180°'} akan mengubah kedudukan asal (${q.x}, ${q.y}) menjadi (${q.newX}, ${q.newY}).`;
+        : `Rotasi ${q.angleCode === '90cw' ? '90° ikut arah jam' : q.angleCode === '90ccw' ? '90° lawan arah jam' : '180°'} menukarkan koordinat asal (${q.x}, ${q.y}) kepada imej (${q.newX}, ${q.newY}).`;
     }
   };
 
@@ -1583,27 +1611,27 @@ const SectionKuiz = ({ lang }) => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-      <div className={`${q.warna} p-4 md:px-8 text-white flex justify-between items-center transition-colors duration-500`}>
+    <div className="max-w-7xl mx-auto bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+      <div className={`${q.warna} p-5 md:px-10 text-white flex justify-between items-center transition-colors duration-500`}>
         <div className="flex items-center gap-3">
-          <IconComponent className="w-6 h-6 text-white/90" />
-          <h2 className="text-xl md:text-2xl font-bold uppercase tracking-wide">{lang === 'en' ? q.kategori_en : q.kategori_ms}</h2>
+          <IconComponent className="w-7 h-7 text-white/90" />
+          <h2 className="text-2xl md:text-3xl font-bold uppercase tracking-wide">{lang === 'en' ? q.kategori_en : q.kategori_ms}</h2>
         </div>
-        <div className="text-sm font-medium bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
+        <div className="text-sm md:text-base font-medium bg-white/20 px-4 py-1.5 rounded-full backdrop-blur-sm">
           {lang === 'en' ? 'Question' : 'Soalan'} {currentQuestion + 1} / {quizData.length}
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row p-4 md:p-6 gap-6">
-        <div className="w-full md:w-1/2 flex flex-col gap-2">
-          <div className="text-sm font-semibold text-slate-500 uppercase tracking-wider pl-1">{lang === 'en' ? 'Cartesian Plane Diagram' : 'Rajah Satah Cartes'}</div>
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.25fr)_minmax(420px,0.75fr)] p-4 md:p-8 gap-8">
+        <div className="w-full flex flex-col gap-3">
+          <div className="text-base font-semibold text-slate-500 uppercase tracking-wider pl-1">{lang === 'en' ? 'Numbered Coordinate Graph' : 'Graf Koordinat Bernombor'}</div>
           <CartesianGrid visualData={q.visualData} isAnswered={isAnswered} lang={lang} />
-          {isAnswered && <div className="text-xs text-center text-slate-500 italic mt-1">{lang === 'en' ? 'Image (green color) appears after you answer.' : 'Imej (warna hijau) muncul selepas anda menjawab.'}</div>}
+          {isAnswered && <div className="text-sm text-center text-slate-500 italic mt-1">{lang === 'en' ? 'Image (green color) appears after you answer.' : 'Imej (warna hijau) muncul selepas anda menjawab.'}</div>}
         </div>
 
-        <div className="w-full md:w-1/2 flex flex-col">
-          <h2 className="text-xl font-semibold text-slate-800 mb-6 leading-relaxed">{getQuestionText()}</h2>
-          <div className="grid grid-cols-1 gap-3 mb-6">
+        <div className="w-full flex flex-col">
+          <h2 className="text-2xl md:text-3xl font-semibold text-slate-800 mb-8 leading-relaxed">{getQuestionText()}</h2>
+          <div className="grid grid-cols-1 gap-4 mb-8">
             {q.pilihan.map((pilihan, index) => {
               let btnStyle = "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700";
               let icon = null;
@@ -1621,7 +1649,7 @@ const SectionKuiz = ({ lang }) => {
               return (
                 <button
                   key={index} onClick={() => handleAnswerClick(index)} disabled={isAnswered}
-                  className={`w-full text-left px-5 py-3 rounded-xl border-2 font-mono text-lg font-semibold transition-all duration-200 flex items-center justify-between group ${btnStyle} ${!isAnswered && 'hover:border-blue-400 hover:shadow-md'}`}
+                  className={`w-full text-left px-6 py-4 rounded-xl border-2 font-mono text-xl font-semibold transition-all duration-200 flex items-center justify-between group ${btnStyle} ${!isAnswered && 'hover:border-blue-400 hover:shadow-md'}`}
                 >
                   <span>{pilihan}</span>
                   {icon}
@@ -2961,7 +2989,14 @@ const RRGCanvasGame = () => {
       const gx = rand() * 28 - 14;
       const gy = rand() * 28 - 14;
       if (isOnIsland(gx, gy) && Math.sqrt(gx * gx + gy * gy) > HAZARD_RADIUS + 0.8) {
-        trees.push({ x: gx, y: gy, size: 0.34 + rand() * 0.42, type: rand() > 0.5 ? 'palm' : 'tree' });
+        trees.push({
+          x: gx,
+          y: gy,
+          size: 0.34 + rand() * 0.42,
+          type: rand() > 0.5 ? 'palm' : 'tree',
+          phase: rand() * Math.PI * 2,
+          lean: -0.08 + rand() * 0.16,
+        });
       }
     }
 
@@ -2969,7 +3004,14 @@ const RRGCanvasGame = () => {
     for (let i = 0; i < 12; i++) {
       const angle = (i / 12) * Math.PI * 2;
       const radius = 14 + rand() * 2;
-      boats.push({ x: Math.cos(angle) * radius, y: Math.sin(angle) * radius, type: rand() > 0.5 ? '🚤' : '🛥️', phase: rand() * Math.PI * 2 });
+      boats.push({
+        x: Math.cos(angle) * radius,
+        y: Math.sin(angle) * radius,
+        type: rand() > 0.5 ? 'speedboat' : 'sailboat',
+        phase: rand() * Math.PI * 2,
+        scale: 0.82 + rand() * 0.34,
+        heading: angle + Math.PI / 2,
+      });
     }
 
     const landmarks = [
@@ -3013,9 +3055,9 @@ const RRGCanvasGame = () => {
     }
 
     const textureSources = {
-      water: '/assets/rrgs/air.png',
-      sand: '/assets/rrgs/pasir.png',
-      buildings: '/assets/rrgs/bangunan.png',
+      water: '/assets/rrgs/textures/air.png',
+      sand: '/assets/rrgs/textures/pasir.png',
+      buildings: '/assets/rrgs/textures/bangunan.png',
     };
     const landmarkAssetPath = (name) => `/assets/rrgs/landmarks/${name}.png?v=transparent-cut-2`;
     const landmarkAssetSources = {
@@ -3092,6 +3134,42 @@ const RRGCanvasGame = () => {
       bridge: { drawScale: 1.18, shadowScale: 1.2, labelFactor: 0.31, crop: { left: 0.07, right: 0.07, top: 0.08, bottom: 0.18 }, fadeStart: 0.55, fadeMid: 0.76, maskOuter: 0.64 },
       ranch: { drawScale: 1.1, shadowScale: 1.04, labelFactor: 0.34, crop: { left: 0.1, right: 0.1, top: 0.08, bottom: 0.22 }, fadeStart: 0.61 },
       market: { drawScale: 1.08, shadowScale: 1.06, labelFactor: 0.34, crop: { left: 0.1, right: 0.1, top: 0.07, bottom: 0.2 }, fadeStart: 0.6 },
+    };
+    const landmarkAnimationMeta = {
+      crystal: { speed: 1.28, float: 0.85, sway: 0.012, breath: 0.018, shadow: 0.08 },
+      farm: { speed: 0.9, float: 0.2, sway: 0.006, breath: 0.006, shadow: 0.025 },
+      factory: { speed: 0.82, float: 0.12, sway: 0.004, breath: 0.004, shake: 0.28, shadow: 0.035 },
+      waterfall: { speed: 1.18, float: 0.18, sway: 0.004, breath: 0.008, shadow: 0.04 },
+      clinic: { speed: 0.95, float: 0.16, sway: 0.004, breath: 0.006, shadow: 0.025 },
+      village: { speed: 0.86, float: 0.2, sway: 0.006, breath: 0.007, shadow: 0.03 },
+      harbor: { speed: 1.08, float: 0.38, sway: 0.01, breath: 0.01, shadow: 0.045 },
+      lighthouse: { speed: 0.92, float: 0.16, sway: 0.007, breath: 0.006, shadow: 0.026 },
+      bridge: { speed: 0.74, float: 0.1, sway: 0.002, breath: 0.004, shadow: 0.02 },
+      ranch: { speed: 0.9, float: 0.2, sway: 0.006, breath: 0.006, shadow: 0.025 },
+      market: { speed: 1.0, float: 0.18, sway: 0.006, breath: 0.008, shadow: 0.03 },
+    };
+    const getStablePhase = (landmark) => {
+      const raw = Math.sin(landmark.x * 12.9898 + landmark.y * 78.233 + landmark.label.length * 9.17) * 43758.5453;
+      return Math.abs(raw % 1) * Math.PI * 2;
+    };
+    const getLandmarkMotion = (landmark) => {
+      const meta = landmarkAnimationMeta[landmark.type] || {};
+      const phase = getStablePhase(landmark);
+      const t = game.time * (meta.speed || 1) + phase;
+      const fineT = game.time * ((meta.speed || 1) * 1.7) + phase * 0.67;
+      const shake = meta.shake
+        ? Math.sin(game.time * 17 + phase) * meta.shake + Math.sin(game.time * 23 + phase * 0.5) * meta.shake * 0.45
+        : 0;
+
+      return {
+        phase,
+        x: shake,
+        floatY: Math.sin(t) * (meta.float || 0),
+        sway: Math.sin(t * 0.72) * (meta.sway || 0),
+        scaleX: 1 + Math.sin(fineT) * (meta.breath || 0),
+        scaleY: 1 - Math.sin(fineT) * (meta.breath || 0) * 0.55,
+        shadowPulse: Math.sin(t + Math.PI / 3) * (meta.shadow || 0),
+      };
     };
     const getProcessedLandmarkImage = (landmarkType) => {
       const image = landmarkImages[landmarkType];
@@ -3645,41 +3723,61 @@ const RRGCanvasGame = () => {
     const drawPalm = (tree, time) => {
       const pos = gridToPixel(tree.x, tree.y);
       const s = 0.82 + tree.size;
-      const sway = Math.sin(time * 1.4 + tree.x * 2.1) * 0.15;
+      const wind = Math.sin(time * 0.9 + tree.phase) * 0.08 + Math.sin(time * 1.7 + tree.phase * 0.7) * 0.045;
+      const sway = tree.lean + wind;
       ctx.save();
       ctx.translate(pos.px, pos.py);
-      ctx.rotate(sway);
+      ctx.fillStyle = 'rgba(55, 38, 18, 0.2)';
+      ctx.beginPath();
+      ctx.ellipse(0, 14 * s, 16 * s, 5 * s, sway * 0.4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.rotate(sway * 0.55);
       ctx.lineCap = 'round';
-      ctx.strokeStyle = '#8b5a2b';
-      ctx.lineWidth = 4.4 * s;
+      const trunk = ctx.createLinearGradient(-4 * s, 11 * s, 5 * s, -19 * s);
+      trunk.addColorStop(0, '#6f3f1d');
+      trunk.addColorStop(0.5, '#a16207');
+      trunk.addColorStop(1, '#c0843f');
+      ctx.strokeStyle = trunk;
+      ctx.lineWidth = 4.6 * s;
       ctx.beginPath();
       ctx.moveTo(0, 11 * s);
       ctx.quadraticCurveTo(-4 * s, -4 * s, 3 * s, -18 * s);
       ctx.stroke();
       for (let i = 0; i < 6; i++) {
-        const angle = -Math.PI / 2 + i * (Math.PI * 2 / 6) + sway * 0.5;
+        const leafFlutter = Math.sin(time * 2.2 + tree.phase + i * 0.9) * 0.08;
+        const angle = -Math.PI / 2 + i * (Math.PI * 2 / 6) + sway * 0.65 + leafFlutter;
         const leafGrad = ctx.createLinearGradient(0, -17 * s, Math.cos(angle) * 22 * s, -17 * s + Math.sin(angle) * 10 * s);
         leafGrad.addColorStop(0, '#2e7d32');
         leafGrad.addColorStop(1, '#7fba43');
         ctx.fillStyle = leafGrad;
         ctx.beginPath();
-        ctx.ellipse(Math.cos(angle) * 11 * s, -17 * s + Math.sin(angle) * 7 * s, 15 * s, 4.5 * s, angle, 0, Math.PI * 2);
+        ctx.ellipse(Math.cos(angle) * 11 * s, -17 * s + Math.sin(angle) * 7 * s, 15 * s, 4.2 * s, angle, 0, Math.PI * 2);
         ctx.fill();
       }
+      ctx.fillStyle = 'rgba(92, 56, 20, 0.82)';
+      [-2, 3].forEach((x, index) => {
+        ctx.beginPath();
+        ctx.arc(x * s, (-14 + index * 2) * s, 2.2 * s, 0, Math.PI * 2);
+        ctx.fill();
+      });
       ctx.restore();
     };
 
     const drawCanopyTree = (tree, time) => {
       const pos = gridToPixel(tree.x, tree.y);
       const s = 0.8 + tree.size;
-      const bob = Math.sin(time * 1.2 + tree.y) * 0.8;
+      const bob = Math.sin(time * 1.2 + tree.phase) * 0.7;
+      const sway = tree.lean + Math.sin(time * 0.82 + tree.phase) * 0.08;
       ctx.save();
       ctx.translate(pos.px, pos.py + bob);
       ctx.fillStyle = 'rgba(55, 38, 18, 0.22)';
       ctx.beginPath();
-      ctx.ellipse(0, 13 * s, 13 * s, 5 * s, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 13 * s, 14 * s, 5 * s, sway * 0.25, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#7b4f25';
+      const trunk = ctx.createLinearGradient(-4 * s, 0, 4 * s, 17 * s);
+      trunk.addColorStop(0, '#9a6a32');
+      trunk.addColorStop(1, '#5b3418');
+      ctx.fillStyle = trunk;
       ctx.fillRect(-3 * s, -1 * s, 6 * s, 17 * s);
       const canopy = ctx.createRadialGradient(-4 * s, -10 * s, 2 * s, -2 * s, -8 * s, 24 * s);
       canopy.addColorStop(0, '#77b255');
@@ -3687,24 +3785,54 @@ const RRGCanvasGame = () => {
       canopy.addColorStop(1, '#1f6f3c');
       ctx.fillStyle = canopy;
       [[-9, -8, 12], [4, -12, 14], [12, -4, 11], [-1, 0, 15], [-14, 1, 9]].forEach(([x, y, r]) => {
+        const leafBob = Math.sin(time * 1.65 + tree.phase + x * 0.3) * 0.8;
         ctx.beginPath();
-        ctx.arc(x * s, y * s, r * s, 0, Math.PI * 2);
+        ctx.arc((x + sway * 10) * s, (y + leafBob) * s, r * s, 0, Math.PI * 2);
         ctx.fill();
       });
+      ctx.globalCompositeOperation = 'screen';
+      ctx.globalAlpha = 0.16;
+      ctx.fillStyle = '#d9f99d';
+      ctx.beginPath();
+      ctx.arc((-7 + sway * 8) * s, -13 * s, 6 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = 1;
       ctx.restore();
     };
 
     const drawBoatShape = (boat) => {
-      const pos = gridToPixel(boat.x, boat.y);
-      const bob = Math.sin(game.time * 2 + boat.phase) * 3;
+      const driftX = Math.cos(game.time * 0.22 + boat.phase) * 0.22;
+      const driftY = Math.sin(game.time * 0.18 + boat.phase * 0.8) * 0.16;
+      const pos = gridToPixel(boat.x + driftX, boat.y + driftY);
+      const bob = Math.sin(game.time * 1.9 + boat.phase) * 2.4;
+      const roll = Math.sin(game.time * 1.05 + boat.phase) * 0.055;
       ctx.save();
       ctx.translate(pos.px, pos.py + bob);
-      ctx.rotate(Math.sin(game.time + boat.phase) * 0.05);
+      ctx.rotate(boat.heading + roll);
+      ctx.scale(boat.scale, boat.scale);
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      ctx.globalAlpha = 0.2 + Math.sin(game.time * 2.2 + boat.phase) * 0.05;
+      ctx.strokeStyle = '#e0fbff';
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      [-1, 1].forEach((side) => {
+        ctx.beginPath();
+        ctx.moveTo(-18, side * 6);
+        ctx.quadraticCurveTo(-36, side * (8 + Math.sin(game.time * 2 + boat.phase) * 3), -54, side * 12);
+        ctx.stroke();
+      });
+      ctx.restore();
       ctx.fillStyle = 'rgba(0,0,0,0.18)';
       ctx.beginPath();
-      ctx.ellipse(0, 10, 20, 5, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 10, 22, 5, 0, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#7c3f1d';
+      const hull = ctx.createLinearGradient(-22, 1, 22, 11);
+      hull.addColorStop(0, '#5f2c14');
+      hull.addColorStop(0.48, '#9a5a2f');
+      hull.addColorStop(1, '#3f1d10');
+      ctx.fillStyle = hull;
       ctx.beginPath();
       ctx.moveTo(-20, 1);
       ctx.quadraticCurveTo(0, 16, 22, 1);
@@ -3712,72 +3840,227 @@ const RRGCanvasGame = () => {
       ctx.lineTo(-14, 11);
       ctx.closePath();
       ctx.fill();
-      ctx.strokeStyle = '#f8fafc';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(0, 1);
-      ctx.lineTo(0, -23);
-      ctx.stroke();
-      ctx.fillStyle = '#f8fafc';
-      ctx.beginPath();
-      ctx.moveTo(2, -21);
-      ctx.lineTo(2, -2);
-      ctx.lineTo(17, -3);
-      ctx.closePath();
-      ctx.fill();
+      if (boat.type === 'speedboat') {
+        ctx.fillStyle = '#f8fafc';
+        drawRoundRect(ctx, -3, -5, 19, 10, 4);
+        ctx.fill();
+        ctx.fillStyle = '#7dd3fc';
+        drawRoundRect(ctx, 3, -3, 8, 5, 2);
+        ctx.fill();
+      } else {
+        ctx.strokeStyle = '#f8fafc';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, 1);
+        ctx.lineTo(0, -23);
+        ctx.stroke();
+        const sail = ctx.createLinearGradient(2, -21, 17, -3);
+        sail.addColorStop(0, '#ffffff');
+        sail.addColorStop(1, '#c7e8ff');
+        ctx.fillStyle = sail;
+        ctx.beginPath();
+        ctx.moveTo(2, -21);
+        ctx.lineTo(2, -2);
+        ctx.lineTo(17, -3);
+        ctx.closePath();
+        ctx.fill();
+      }
       ctx.restore();
     };
 
-    const drawBuildingSprite = (landmark) => {
+    const drawLandmarkAmbientEffects = (landmark, motion, metrics = {}) => {
+      const phase01 = motion.phase / (Math.PI * 2);
+      const t = game.time + motion.phase;
+      ctx.save();
+      ctx.translate(motion.x, motion.floatY - 5);
+
+      if (landmark.type === 'crystal') {
+        ctx.globalCompositeOperation = 'screen';
+        const glow = ctx.createRadialGradient(0, -38, 6, 0, -38, 70);
+        glow.addColorStop(0, `rgba(248,113,113,${0.3 + Math.sin(t * 1.7) * 0.1})`);
+        glow.addColorStop(0.38, 'rgba(244,114,182,0.16)');
+        glow.addColorStop(1, 'rgba(244,114,182,0)');
+        ctx.fillStyle = glow;
+        ctx.fillRect(-76, -108, 152, 128);
+        for (let i = 0; i < 4; i++) {
+          const glint = (game.time * 0.22 + i * 0.23 + phase01) % 1;
+          const x = -30 + glint * 60;
+          const y = -64 + Math.sin(t + i) * 16;
+          ctx.globalAlpha = (1 - Math.abs(glint - 0.5) * 2) * 0.42;
+          ctx.strokeStyle = '#fff7ed';
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.moveTo(x - 6, y);
+          ctx.lineTo(x + 6, y);
+          ctx.moveTo(x, y - 6);
+          ctx.lineTo(x, y + 6);
+          ctx.stroke();
+        }
+      } else if (landmark.type === 'factory') {
+        ctx.globalCompositeOperation = 'screen';
+        for (let i = 0; i < 6; i++) {
+          const puff = (game.time * 0.18 + i * 0.17 + phase01) % 1;
+          const x = 18 + Math.sin(t * 1.3 + i) * 7 + puff * 12;
+          const y = -54 - puff * 58;
+          ctx.globalAlpha = (1 - puff) * 0.24;
+          ctx.fillStyle = '#e2e8f0';
+          ctx.beginPath();
+          ctx.ellipse(x, y, 7 + puff * 16, 5 + puff * 11, Math.sin(t + i) * 0.45, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else if (landmark.type === 'waterfall') {
+        ctx.globalCompositeOperation = 'screen';
+        for (let i = 0; i < 6; i++) {
+          const fall = (game.time * 3.2 + i * 0.18 + phase01) % 1;
+          const x = -18 + i * 7 + Math.sin(t * 2.3 + i) * 2.4;
+          const y = -48 + fall * 66;
+          const grad = ctx.createLinearGradient(x, y - 20, x, y + 24);
+          grad.addColorStop(0, 'rgba(224,242,254,0)');
+          grad.addColorStop(0.5, 'rgba(224,242,254,0.62)');
+          grad.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.globalAlpha = 0.72;
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 1.6 + (i % 3);
+          ctx.beginPath();
+          ctx.moveTo(x, y - 20);
+          ctx.quadraticCurveTo(x + Math.sin(t + i) * 4, y, x + 1.5, y + 25);
+          ctx.stroke();
+        }
+      } else if (landmark.type === 'lighthouse') {
+        ctx.globalCompositeOperation = 'screen';
+        const sweep = Math.sin(game.time * 1.25 + motion.phase);
+        ctx.save();
+        ctx.translate(2, -70);
+        ctx.rotate(-0.06 + sweep * 0.46);
+        const beam = ctx.createLinearGradient(0, 0, 110, 0);
+        beam.addColorStop(0, 'rgba(254,240,138,0.42)');
+        beam.addColorStop(0.55, 'rgba(254,240,138,0.16)');
+        beam.addColorStop(1, 'rgba(254,240,138,0)');
+        ctx.fillStyle = beam;
+        ctx.globalAlpha = 0.7;
+        ctx.beginPath();
+        ctx.moveTo(0, -6);
+        ctx.lineTo(112, -28);
+        ctx.lineTo(112, 22);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+        ctx.globalAlpha = 0.48 + Math.sin(t * 3.2) * 0.16;
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath();
+        ctx.arc(2, -70, 9, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (landmark.type === 'harbor') {
+        ctx.globalCompositeOperation = 'screen';
+        for (let i = 0; i < 4; i++) {
+          const ripple = (game.time * 0.34 + i * 0.23 + phase01) % 1;
+          ctx.globalAlpha = (1 - ripple) * 0.22;
+          ctx.strokeStyle = '#dffbff';
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.ellipse(0, 21, 26 + ripple * 42, 8 + ripple * 12, Math.sin(t) * 0.12, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      } else if (landmark.type === 'bridge') {
+        const glint = (game.time * 0.2 + phase01) % 1;
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = 0.32;
+        ctx.strokeStyle = '#fff7ed';
+        ctx.lineWidth = 2.2;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(-34 + glint * 58, -5 + Math.sin(glint * Math.PI) * -8);
+        ctx.lineTo(-22 + glint * 58, -9 + Math.sin(glint * Math.PI) * -10);
+        ctx.stroke();
+      } else if (landmark.type === 'market') {
+        ctx.globalCompositeOperation = 'source-over';
+        ['#ef4444', '#f8fafc', '#facc15'].forEach((color, index) => {
+          const x = -18 + index * 18;
+          const flutter = Math.sin(t * 2.4 + index) * 2.4;
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.moveTo(x - 5, -34);
+          ctx.lineTo(x + 5, -34);
+          ctx.lineTo(x + flutter, -25);
+          ctx.closePath();
+          ctx.fill();
+        });
+      } else if (landmark.type === 'clinic') {
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = 0.18 + Math.max(0, Math.sin(t * 2.1)) * 0.18;
+        const glow = ctx.createRadialGradient(0, -18, 4, 0, -18, 34);
+        glow.addColorStop(0, 'rgba(248,113,113,0.55)');
+        glow.addColorStop(1, 'rgba(248,113,113,0)');
+        ctx.fillStyle = glow;
+        ctx.fillRect(-42, -54, 84, 62);
+      } else if (landmark.type === 'farm' || landmark.type === 'ranch' || landmark.type === 'village') {
+        ctx.globalCompositeOperation = 'screen';
+        for (let i = 0; i < 3; i++) {
+          const dust = (game.time * 0.12 + i * 0.31 + phase01) % 1;
+          ctx.globalAlpha = (1 - dust) * 0.12;
+          ctx.fillStyle = '#fef3c7';
+          ctx.beginPath();
+          ctx.ellipse(
+            -24 + i * 24 + Math.sin(t + i) * 7,
+            16 - dust * 18,
+            5 + dust * 8,
+            2 + dust * 4,
+            Math.sin(t + i) * 0.35,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+        }
+      }
+
+      if (metrics.drawHeight > 0 && landmark.type !== 'waterfall') {
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = 0.08 + Math.sin(t * 1.1) * 0.025;
+        const light = ctx.createLinearGradient(-metrics.sizePx * 0.45, -metrics.drawHeight + 28, metrics.sizePx * 0.22, 20);
+        light.addColorStop(0, '#ffffff');
+        light.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = light;
+        ctx.fillRect(-metrics.sizePx / 2, -metrics.drawHeight + 24, metrics.sizePx, metrics.drawHeight);
+      }
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.restore();
+    };
+
+    const drawBuildingSprite = (landmark, motion = getLandmarkMotion(landmark)) => {
       const sprite = buildingSpriteMap[landmark.type];
       const image = textures.buildings;
       if (!sprite || !isTextureReady(image)) return false;
-      const floatY = Math.sin(game.time * 1.6 + landmark.x * 0.7) * 1.4;
       ctx.save();
-      ctx.translate(0, floatY - 6);
+      ctx.translate(motion.x, motion.floatY - 6);
+      ctx.rotate(motion.sway);
+      ctx.scale(motion.scaleX, motion.scaleY);
       ctx.shadowColor = 'rgba(15,23,42,0.28)';
       ctx.shadowBlur = 10;
       ctx.shadowOffsetY = 9;
       ctx.drawImage(image, sprite.sx, sprite.sy, sprite.sw, sprite.sh, -sprite.dw / 2, -sprite.dh + 18, sprite.dw, sprite.dh);
       ctx.restore();
 
-      if (landmark.type === 'factory') {
-        ctx.save();
-        ctx.fillStyle = `rgba(226,232,240,${0.25 + Math.sin(game.time * 2.3) * 0.08})`;
-        ctx.beginPath();
-        ctx.arc(21, -43 - Math.sin(game.time * 2) * 3, 7 + Math.sin(game.time * 1.7) * 2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-      if (landmark.type === 'lighthouse') {
-        ctx.save();
-        ctx.globalAlpha = 0.45 + Math.sin(game.time * 4) * 0.2;
-        ctx.fillStyle = '#fde047';
-        ctx.beginPath();
-        ctx.moveTo(4, -57);
-        ctx.lineTo(70, -73);
-        ctx.lineTo(70, -40);
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
-      }
+      drawLandmarkAmbientEffects(landmark, motion, { sizePx: sprite.dw, drawHeight: sprite.dh });
       return true;
     };
 
-    const drawGeneratedLandmarkAsset = (landmark) => {
+    const drawGeneratedLandmarkAsset = (landmark, motion) => {
       const processedImage = getProcessedLandmarkImage(landmark.type);
       if (!processedImage) return null;
       const meta = landmarkAssetMeta[landmark.type] || {};
       const sizePx = LANDMARK_DRAW_BASE * (meta.drawScale || 1);
-      const floatY = Math.sin(game.time * 1.6 + landmark.x * 0.7) * 1.4;
       const drawHeight = sizePx * (processedImage.height / processedImage.width);
       ctx.save();
-      ctx.translate(0, floatY - 5);
+      ctx.translate(motion.x, motion.floatY - 5);
+      ctx.rotate(motion.sway);
+      ctx.scale(motion.scaleX, motion.scaleY);
       ctx.shadowColor = 'rgba(15,23,42,0.24)';
       ctx.shadowBlur = 16;
       ctx.shadowOffsetY = 10;
       ctx.drawImage(processedImage.canvas, -sizePx / 2, -drawHeight + 24, sizePx, drawHeight);
       ctx.restore();
+      drawLandmarkAmbientEffects(landmark, motion, { sizePx, drawHeight });
       return {
         sizePx: Math.max(sizePx, drawHeight),
         labelOffset: Math.max(30, drawHeight * landmark.size * (meta.labelFactor || 0.34)),
@@ -3788,15 +4071,24 @@ const RRGCanvasGame = () => {
       const pos = gridToPixel(landmark.x, landmark.y);
       const s = landmark.size;
       const assetMeta = landmarkAssetMeta[landmark.type] || {};
+      const motion = getLandmarkMotion(landmark);
       ctx.save();
       ctx.translate(pos.px, pos.py);
       ctx.scale(s, s);
       ctx.fillStyle = 'rgba(0,0,0,0.18)';
       ctx.beginPath();
-      ctx.ellipse(0, 20, 27 * (assetMeta.shadowScale || 1), 7 * Math.max(1, (assetMeta.shadowScale || 1) * 0.9), 0, 0, Math.PI * 2);
+      ctx.ellipse(
+        motion.x * 0.24,
+        20 + Math.max(0, motion.floatY * 0.28),
+        27 * (assetMeta.shadowScale || 1) * (1 + motion.shadowPulse),
+        7 * Math.max(1, (assetMeta.shadowScale || 1) * 0.9) * (1 - motion.shadowPulse * 0.35),
+        0,
+        0,
+        Math.PI * 2
+      );
       ctx.fill();
 
-      const generatedMetrics = drawGeneratedLandmarkAsset(landmark);
+      const generatedMetrics = drawGeneratedLandmarkAsset(landmark, motion);
       if (generatedMetrics) {
         ctx.restore();
         ctx.save();
@@ -3817,7 +4109,7 @@ const RRGCanvasGame = () => {
         return;
       }
 
-      if (drawBuildingSprite(landmark)) {
+      if (drawBuildingSprite(landmark, motion)) {
         ctx.restore();
         ctx.save();
         ctx.fillStyle = 'rgba(255,255,255,0.86)';
@@ -4545,12 +4837,21 @@ const RRGCanvasGame = () => {
         ctx.fillText(i, py.px - 14, py.py);
       }
 
-      trees.forEach((tree) => {
-        if (tree.type === 'palm') drawPalm(tree, game.time);
-        else drawCanopyTree(tree, game.time);
-      });
-      boats.forEach((boat) => drawBoatShape(boat));
-      landmarks.forEach((landmark) => drawLandmark(landmark));
+      [
+        ...boats.map((boat) => ({ kind: 'boat', sortY: gridToPixel(boat.x, boat.y).py + 6, value: boat })),
+        ...trees.map((tree) => ({ kind: 'tree', sortY: gridToPixel(tree.x, tree.y).py + 15 * (0.8 + tree.size), value: tree })),
+        ...landmarks.map((landmark) => ({ kind: 'landmark', sortY: gridToPixel(landmark.x, landmark.y).py + 24 * landmark.size, value: landmark })),
+      ]
+        .sort((a, b) => a.sortY - b.sortY)
+        .forEach((entry) => {
+          if (entry.kind === 'boat') drawBoatShape(entry.value);
+          else if (entry.kind === 'tree') {
+            if (entry.value.type === 'palm') drawPalm(entry.value, game.time);
+            else drawCanopyTree(entry.value, game.time);
+          } else {
+            drawLandmark(entry.value);
+          }
+        });
       drawWaterfallUltraOverlay();
       RRG_ITEMS.forEach((item) => drawItem(item, game.time));
       drawActiveTransformGuide();
@@ -5278,29 +5579,29 @@ export default function App() {
             </div>
           </div>
           
-          <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
-            <nav className="flex gap-1 bg-blue-800/50 p-1 rounded-full backdrop-blur-sm overflow-x-auto hide-scrollbar">
+          <div className="flex items-center gap-3 w-full md:flex-1 justify-between md:justify-end">
+            <nav className="grid grid-cols-4 flex-1 min-w-0 gap-1 bg-blue-800/50 p-1 rounded-full backdrop-blur-sm">
               <button 
                 onClick={() => setActiveTab('nota')}
-                className={`px-4 md:px-5 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'nota' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
+                className={`w-full justify-center px-2 sm:px-4 md:px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap ${activeTab === 'nota' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
               >
                 <BookOpen className="w-4 h-4 shrink-0"/> {lang === 'en' ? 'Notes' : 'Nota'}
               </button>
               <button 
                 onClick={() => setActiveTab('makmal')}
-                className={`px-4 md:px-5 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'makmal' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
+                className={`w-full justify-center px-2 sm:px-4 md:px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap ${activeTab === 'makmal' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
               >
                 <InfinityIcon className="w-4 h-4 shrink-0"/> {lang === 'en' ? 'Lab' : 'Makmal'}
               </button>
               <button 
                 onClick={() => setActiveTab('kuiz')}
-                className={`px-4 md:px-5 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'kuiz' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
+                className={`w-full justify-center px-2 sm:px-4 md:px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap ${activeTab === 'kuiz' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
               >
                 <Trophy className="w-4 h-4 shrink-0"/> {lang === 'en' ? 'Quiz' : 'Kuiz'}
               </button>
               <button 
                 onClick={() => setActiveTab('rrgs')}
-                className={`px-4 md:px-5 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'rrgs' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
+                className={`w-full justify-center px-2 sm:px-4 md:px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap ${activeTab === 'rrgs' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
               >
                 <Shapes className="w-4 h-4 shrink-0"/> RRGs
               </button>

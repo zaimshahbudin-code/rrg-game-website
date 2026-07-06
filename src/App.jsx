@@ -1430,12 +1430,20 @@ const CartesianGrid = ({ visualData, isAnswered, lang }) => {
   const gridMin = -GRID_LIMIT * scale;
   const gridMax = GRID_LIMIT * scale;
   const numberTextProps = {
-    fontSize: 6,
+    fontSize: 8,
     fill: '#0f172a',
     stroke: 'white',
-    strokeWidth: 0.9,
+    strokeWidth: 1,
     paintOrder: 'stroke',
     className: 'font-sans font-bold',
+  };
+
+  const pointTextProps = {
+    fontSize: 9.5,
+    stroke: 'white',
+    strokeWidth: 1.2,
+    paintOrder: 'stroke',
+    className: 'font-sans font-black',
   };
 
   for (let i = -GRID_LIMIT; i <= GRID_LIMIT; i++) {
@@ -1444,11 +1452,17 @@ const CartesianGrid = ({ visualData, isAnswered, lang }) => {
     gridLines.push(<line key={`v${i}`} x1={pos} y1={gridMin} x2={pos} y2={gridMax} stroke={isAxis ? "#0f172a" : "#e2e8f0"} strokeWidth={isAxis ? 1.6 : 0.5} />);
     gridLines.push(<line key={`h${i}`} x1={gridMin} y1={pos} x2={gridMax} y2={pos} stroke={isAxis ? "#0f172a" : "#e2e8f0"} strokeWidth={isAxis ? 1.6 : 0.5} />);
 
-    // ticks and labels for every integer coordinate (including negatives)
-    axisNumbers.push(<line key={`xtick${i}`} x1={pos} y1="-2" x2={pos} y2="2" stroke="#64748b" strokeWidth="0.8" />);
-    axisNumbers.push(<line key={`ytick${i}`} x1="-2" y1={-pos} x2="2" y2={-pos} stroke="#64748b" strokeWidth="0.8" />);
-    axisNumbers.push(<text key={`xlabel${i}`} x={pos} y="9.6" textAnchor="middle" {...numberTextProps}>{i}</text>);
-    axisNumbers.push(<text key={`ylabel${i}`} x="-8.5" y={-pos + 2.4} textAnchor="end" {...numberTextProps}>{i}</text>);
+    // ticks and labels for every integer coordinate (except origin 0 to avoid overlapping)
+    if (i !== 0) {
+      axisNumbers.push(<line key={`xtick${i}`} x1={pos} y1="-3" x2={pos} y2="3" stroke="#64748b" strokeWidth="0.9" />);
+      axisNumbers.push(<line key={`ytick${i}`} x1="-3" y1={-pos} x2="3" y2={-pos} stroke="#64748b" strokeWidth="0.9" />);
+      
+      // Draw number labels only for even numbers to prevent crowding
+      if (i % 2 === 0) {
+        axisNumbers.push(<text key={`xlabel${i}`} x={pos} y="12" textAnchor="middle" {...numberTextProps}>{i}</text>);
+        axisNumbers.push(<text key={`ylabel${i}`} x="-12" y={-pos + 3} textAnchor="end" {...numberTextProps}>{i}</text>);
+      }
+    }
   }
 
   const makePolygonPath = (points) => {
@@ -1458,14 +1472,14 @@ const CartesianGrid = ({ visualData, isAnswered, lang }) => {
   };
 
   return (
-    <div className="w-full h-full min-h-[500px] lg:min-h-[640px] flex items-center justify-center bg-white rounded-xl border-2 border-slate-200 overflow-hidden relative">
-      <svg viewBox="-132 -132 264 264" className="w-full h-full max-w-[640px] max-h-[640px]">
+    <div className="w-full h-full min-h-[500px] lg:min-h-[700px] flex items-center justify-center bg-white rounded-xl border-2 border-slate-200 overflow-hidden relative">
+      <svg viewBox="-132 -132 264 264" className="w-full h-auto aspect-square max-w-[560px] lg:max-w-[680px]">
         {gridLines}
         {axisNumbers}
-        <text x="4.5" y="7.4" textAnchor="start" {...numberTextProps}>0</text>
-        <text x="123" y="7.4" fontSize="6.2" fill="#334155" className="font-sans font-bold">x</text>
-        <text x="4.5" y="-122" fontSize="6.2" fill="#334155" className="font-sans font-bold">y</text>
-
+        <text x="6" y="12" textAnchor="start" {...numberTextProps}>0</text>
+        <text x="123" y="12" fontSize="8" fill="#334155" className="font-sans font-bold">x</text>
+        <text x="6" y="-122" fontSize="8" fill="#334155" className="font-sans font-bold">y</text>
+ 
         {type === 'pantulan' && (
           <line 
             x1={detail === 'Paksi-y' ? 0 : detail === 'Garis y=x' ? gridMin : detail === 'Garis y=-x' ? gridMin : gridMin}
@@ -1476,18 +1490,18 @@ const CartesianGrid = ({ visualData, isAnswered, lang }) => {
           />
         )}
         {type === 'putaran' && <circle cx="0" cy="0" r="2.5" fill="#f59e0b" opacity="0.8" />}
-
+ 
         {/* Poligon Objek */}
         <path d={makePolygonPath(vertices)} fill="rgba(59, 130, 246, 0.3)" stroke="#3b82f6" strokeWidth="1.5" strokeLinejoin="round" />
         <circle cx={toSvgX(pt.x)} cy={toSvgY(pt.y)} r="4" fill="#1d4ed8" />
-        <text x={toSvgX(pt.x) + 6} y={toSvgY(pt.y) - 6} fontSize="10" fontWeight="bold" fill="#1d4ed8">{ptLabel}</text>
-
+        <text x={toSvgX(pt.x) + 6} y={toSvgY(pt.y) - 6} fill="#1d4ed8" {...pointTextProps}>{ptLabel}({pt.x}, {pt.y})</text>
+ 
         {isAnswered && (
           <>
             {/* Poligon Imej */}
             <path d={makePolygonPath(imageVertices)} fill="rgba(34, 197, 94, 0.3)" stroke="#22c55e" strokeWidth="1.5" strokeLinejoin="round" strokeDasharray="4,4" />
             <circle cx={toSvgX(correct.x)} cy={toSvgY(correct.y)} r="4" fill="#15803d" className="animate-pulse" />
-            <text x={toSvgX(correct.x) + 6} y={toSvgY(correct.y) - 6} fontSize="10" fontWeight="bold" fill="#15803d">{ptLabel}'</text>
+            <text x={toSvgX(correct.x) + 6} y={toSvgY(correct.y) - 6} fill="#15803d" {...pointTextProps}>{ptLabel}'({correct.x}, {correct.y})</text>
           </>
         )}
       </svg>
@@ -2937,7 +2951,7 @@ const RRGCanvasGame = () => {
     const GRID_MIN = -15;
     const GRID_MAX = 15;
     const GRID_SIZE = GRID_MAX - GRID_MIN + 1;
-    const CELL = 52;
+    const CELL = 75;
     const MAP_W = GRID_SIZE * CELL;
     const MAP_H = GRID_SIZE * CELL;
     const HAZARD_RADIUS = 3.5;
@@ -3055,9 +3069,12 @@ const RRGCanvasGame = () => {
     }
 
     const textureSources = {
-      water: '/assets/rrgs/textures/air.png',
+      water: '/assets/rrgs/textures/air_new.jpg',
       sand: '/assets/rrgs/textures/pasir.png',
       buildings: '/assets/rrgs/textures/bangunan.png',
+      cloud: '/assets/rrgs/textures/cloud.jpg',
+      proBomb: '/assets/rrgs/textures/simple_bomb.jpg',
+      proChest: '/assets/rrgs/textures/simple_chest.jpg',
     };
     const landmarkAssetPath = (name) => `/assets/rrgs/landmarks/${name}.png?v=transparent-cut-2`;
     const landmarkAssetSources = {
@@ -3076,6 +3093,41 @@ const RRGCanvasGame = () => {
     const textures = Object.fromEntries(Object.entries(textureSources).map(([key, src]) => {
       const image = new Image();
       image.src = src;
+      if (key === 'cloud') {
+        image.onload = () => {
+          const c = document.createElement('canvas');
+          c.width = image.width;
+          c.height = image.height;
+          const ctx = c.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, c.width, c.height);
+          ctx.globalCompositeOperation = 'difference';
+          ctx.drawImage(image, 0, 0);
+          textures.cloudShadow = c;
+        };
+      } else if (key === 'proBomb' || key === 'proChest') {
+        image.onload = () => {
+          const c = document.createElement('canvas');
+          c.width = image.width;
+          c.height = image.height;
+          const ctx = c.getContext('2d');
+          ctx.drawImage(image, 0, 0);
+          const imgData = ctx.getImageData(0, 0, c.width, c.height);
+          const data = imgData.data;
+          for (let i = 0; i < data.length; i += 4) {
+             const r = data[i], g = data[i+1], b = data[i+2];
+             const distanceToGreen = Math.abs(r - 0) + Math.abs(g - 255) + Math.abs(b - 0);
+             if (distanceToGreen < 150) {
+                data[i+3] = 0;
+             } else if (g > r + 30 && g > b + 30) {
+                data[i+3] = Math.max(0, 255 - (g - Math.max(r, b)) * 2);
+                data[i+1] = Math.min(r, b);
+             }
+          }
+          ctx.putImageData(imgData, 0, 0);
+          textures[`${key}Transparent`] = c;
+        };
+      }
       return [key, image];
     }));
     const landmarkImages = Object.fromEntries(Object.entries(landmarkAssetSources).map(([key, src]) => {
@@ -3574,98 +3626,78 @@ const RRGCanvasGame = () => {
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       makeIslandPath(ctx);
-      ctx.clip();
+      ctx.clip(); 
 
-      ctx.globalCompositeOperation = 'multiply';
-      ctx.filter = 'blur(3px)';
-      ctx.strokeStyle = 'rgba(8, 47, 73, 0.18)';
-      ctx.lineWidth = width + 32;
+      // 1. Drop shadow (outer depth on the land)
+      ctx.shadowColor = 'rgba(6, 78, 59, 0.4)';
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetY = 4;
+      
+      // 2. Base River Path with beautiful Figma UI gradient
+      const baseGrad = ctx.createLinearGradient(0, 0, MAP_W, MAP_H);
+      baseGrad.addColorStop(0, '#38bdf8');   
+      baseGrad.addColorStop(0.5, '#0ea5e9'); 
+      baseGrad.addColorStop(1, '#0284c7');   
+      
+      ctx.strokeStyle = baseGrad;
+      ctx.lineWidth = width;
       drawSmoothPath(points);
       ctx.stroke();
-      ctx.filter = 'none';
+      
+      ctx.shadowColor = 'transparent'; 
 
-      const shallow = ctx.createLinearGradient(0, 0, MAP_W, MAP_H);
-      shallow.addColorStop(0, 'rgba(125, 211, 252, 0.42)');
-      shallow.addColorStop(0.55, 'rgba(14, 165, 233, 0.34)');
-      shallow.addColorStop(1, 'rgba(6, 95, 150, 0.42)');
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.strokeStyle = shallow;
-      ctx.lineWidth = width + 20;
+      // 3. Neumorphic Inner Shadow (Figma style 3D recessed look)
+      ctx.save();
+      drawSmoothPath(points);
+      ctx.clip(); 
+      
+      ctx.shadowColor = 'rgba(2, 6, 23, 0.6)';
+      ctx.shadowBlur = 12;
+      ctx.strokeStyle = 'transparent';
+      ctx.lineWidth = width + 20; 
       drawSmoothPath(points);
       ctx.stroke();
+      ctx.shadowColor = 'transparent';
 
-      const depth = ctx.createLinearGradient(0, 0, MAP_W, MAP_H);
-      depth.addColorStop(0, 'rgba(56, 189, 248, 0.66)');
-      depth.addColorStop(0.45, 'rgba(2, 132, 199, 0.76)');
-      depth.addColorStop(1, 'rgba(8, 47, 73, 0.82)');
-      ctx.strokeStyle = depth;
-      ctx.lineWidth = width + 4;
+      // 4. Glossy Specular Bevel (White rim light on the top/left edge)
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = width * 0.85; 
+      ctx.translate(-2, -2);
       drawSmoothPath(points);
       ctx.stroke();
+      ctx.translate(2, 2); 
 
-      ctx.globalCompositeOperation = 'multiply';
-      ctx.strokeStyle = 'rgba(15, 23, 42, 0.5)';
-      ctx.lineWidth = width * 0.42;
-      drawSmoothPath(points);
-      ctx.stroke();
-      ctx.globalCompositeOperation = 'source-over';
-
-      const samples = sampleRoadPixels(points, 0.16);
+      // 5. Figma minimalist flow indicators (Clean overlapping glass capsules)
       ctx.globalCompositeOperation = 'screen';
-      samples.forEach((sample, index) => {
-        if (index % 2 !== 0) return;
-        const normal = sample.angle + Math.PI / 2;
-        const wave = Math.sin(sample.seed * 0.52 + game.time * 4.4);
-        const cross = wave * width * 0.28;
-        const x = sample.px + Math.cos(normal) * cross;
-        const y = sample.py + Math.sin(normal) * cross;
-        const length = 8 + Math.abs(Math.cos(sample.seed * 1.7)) * 18;
-        ctx.globalAlpha = 0.08 + Math.abs(wave) * 0.11;
-        ctx.strokeStyle = '#dffbff';
-        ctx.lineWidth = 1.1 + Math.abs(wave) * 0.9;
-        ctx.beginPath();
-        ctx.moveTo(x - Math.cos(sample.angle) * length * 0.5, y - Math.sin(sample.angle) * length * 0.5);
-        ctx.lineTo(x + Math.cos(sample.angle) * length * 0.5, y + Math.sin(sample.angle) * length * 0.5);
-        ctx.stroke();
-      });
-
-      ctx.globalAlpha = 0.54 + Math.sin(game.time * 2.1) * 0.12;
-      ctx.strokeStyle = '#f0f9ff';
-      ctx.lineWidth = 2.2;
-      ctx.setLineDash([16, 18]);
-      ctx.lineDashOffset = -game.time * 42;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      
+      // Flow Band 1 (Thick, slow)
+      ctx.lineWidth = width * 0.4;
+      ctx.setLineDash([width * 3, width * 2.5]);
+      ctx.lineDashOffset = -game.time * 25;
       drawSmoothPath(points);
       ctx.stroke();
+      
+      // Flow Band 2 (Thin, fast, offset)
+      ctx.lineWidth = width * 0.15;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.setLineDash([width * 1.5, width * 3.5]);
+      ctx.lineDashOffset = -game.time * 50;
+      drawSmoothPath(points);
+      ctx.stroke();
+      
+      // Flow Band 3 (Tiny bright sparkling dashes)
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.setLineDash([8, 60]);
+      ctx.lineDashOffset = -game.time * 80;
+      drawSmoothPath(points);
+      ctx.stroke();
+      
       ctx.setLineDash([]);
-
-      ctx.globalAlpha = 0.48;
-      ctx.strokeStyle = '#e0f7ff';
-      ctx.lineWidth = 2.6;
-      [-width * 0.5, width * 0.5].forEach((offset, edgeIndex) => {
-        ctx.setLineDash([10 + edgeIndex * 4, 14]);
-        ctx.lineDashOffset = -game.time * (30 + edgeIndex * 8);
-        drawOffsetRoadPath(points, offset);
-        ctx.stroke();
-      });
-      ctx.setLineDash([]);
-
-      samples.forEach((sample, index) => {
-        if (index % 9 !== 0) return;
-        const normal = sample.angle + Math.PI / 2;
-        const phase = (game.time * 0.34 + Math.abs(Math.sin(sample.seed * 2.1))) % 1;
-        const side = Math.sin(sample.seed) > 0 ? 1 : -1;
-        const x = sample.px + Math.cos(normal) * side * (width * 0.46 - phase * 4);
-        const y = sample.py + Math.sin(normal) * side * (width * 0.46 - phase * 4);
-        ctx.globalAlpha = (1 - phase) * 0.18;
-        ctx.fillStyle = '#f8fdff';
-        ctx.beginPath();
-        ctx.ellipse(x, y, 3 + phase * 8, 1.2 + phase * 2, sample.angle, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      ctx.globalAlpha = 1;
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.restore();
+      
+      ctx.restore(); 
+      ctx.restore(); 
     };
 
     const drawWaterfallUltraOverlay = () => {
@@ -3675,41 +3707,134 @@ const RRGCanvasGame = () => {
       ctx.save();
       ctx.translate(pos.px, pos.py);
 
+      // 1. Splash pool glow & mist base
       ctx.globalCompositeOperation = 'screen';
-      const pool = ctx.createRadialGradient(0, 22, 4, 0, 22, 54);
-      pool.addColorStop(0, 'rgba(240,249,255,0.52)');
-      pool.addColorStop(0.42, 'rgba(125,211,252,0.26)');
-      pool.addColorStop(1, 'rgba(125,211,252,0)');
+      const pool = ctx.createRadialGradient(0, 20, 5, 0, 20, 58);
+      pool.addColorStop(0, 'rgba(224,242,254,0.62)');
+      pool.addColorStop(0.38, 'rgba(14,165,233,0.32)');
+      pool.addColorStop(1, 'rgba(14,165,233,0)');
       ctx.fillStyle = pool;
       ctx.beginPath();
-      ctx.ellipse(0, 24, 58, 24, -0.12, 0, Math.PI * 2);
+      ctx.ellipse(0, 22, 62, 25, -0.08, 0, Math.PI * 2);
       ctx.fill();
 
-      for (let i = 0; i < 7; i++) {
-        const phase = (game.time * 4.7 + i * 0.19) % 1;
-        const x = -18 + i * 6 + Math.sin(game.time * 2.4 + i) * 2.4;
-        const y = -42 + phase * 54;
-        const grad = ctx.createLinearGradient(x, y - 18, x, y + 18);
-        grad.addColorStop(0, 'rgba(224,242,254,0)');
-        grad.addColorStop(0.45, 'rgba(224,242,254,0.62)');
-        grad.addColorStop(1, 'rgba(255,255,255,0)');
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = 2 + (i % 3);
+      // 2. Base Splash concentric expanding ripples
+      for (let i = 0; i < 3; i++) {
+        const ripplePhase = ((game.time * 0.8 + i * 0.33) % 1 + 1) % 1;
+        const rx = Math.max(0, ripplePhase * 68);
+        const ry = Math.max(0, ripplePhase * 27);
+        ctx.strokeStyle = `rgba(224, 242, 254, ${(1 - ripplePhase) * 0.45})`;
+        ctx.lineWidth = 1.6;
         ctx.beginPath();
-        ctx.moveTo(x, y - 18);
-        ctx.quadraticCurveTo(x + Math.sin(game.time * 3 + i) * 4, y, x + 2, y + 24);
+        ctx.ellipse(0, 22, rx, ry, 0, 0, Math.PI * 2);
         ctx.stroke();
       }
 
-      for (let i = 0; i < 34; i++) {
-        const phase = (game.time * 0.72 + i * 0.071) % 1;
-        const angle = i * 2.399;
-        const radius = 8 + phase * (34 + (i % 4) * 5);
-        const x = Math.cos(angle) * radius + Math.sin(game.time + i) * 6;
-        const y = 23 + Math.sin(angle) * radius * 0.32 + phase * 22;
-        const size = 1.5 + phase * 5 + (i % 3);
-        ctx.globalAlpha = (1 - phase) * 0.24;
-        ctx.fillStyle = i % 4 === 0 ? '#ffffff' : '#dff8ff';
+      // 3. Background curtain flow representation (semi-transparent solid vertical gradient block)
+      ctx.globalCompositeOperation = 'source-over';
+      const curtainGrad = ctx.createLinearGradient(0, -48, 0, 22);
+      curtainGrad.addColorStop(0, 'rgba(56, 189, 248, 0.12)');
+      curtainGrad.addColorStop(0.25, 'rgba(56, 189, 248, 0.58)');
+      curtainGrad.addColorStop(0.85, 'rgba(14, 165, 233, 0.65)');
+      curtainGrad.addColorStop(1, 'rgba(224, 242, 254, 0.88)');
+      ctx.fillStyle = curtainGrad;
+      ctx.beginPath();
+      ctx.moveTo(-16, -46);
+      ctx.lineTo(16, -46);
+      ctx.lineTo(24, 22);
+      ctx.lineTo(-24, 22);
+      ctx.closePath();
+      ctx.fill();
+
+      // 4. Detailed flowing streams (cascading water threads)
+      const numStreams = 15;
+      for (let i = 0; i < numStreams; i++) {
+        const speed = 2.8 + (i % 3) * 0.6;
+        const phase = (game.time * speed + i * 0.17) % 1;
+        
+        const xTop = -14 + i * 2.0;
+        const xBottom = -21 + i * 3.0;
+        const x = xTop + (xBottom - xTop) * phase;
+        const y = -46 + phase * 68;
+        
+        const len = 16 + (i % 4) * 6;
+        const streamGrad = ctx.createLinearGradient(0, y - len/2, 0, y + len/2);
+        streamGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+        streamGrad.addColorStop(0.48, 'rgba(255, 255, 255, 0.85)');
+        streamGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        
+        ctx.strokeStyle = streamGrad;
+        ctx.lineWidth = 1.4 + (i % 3) * 0.5;
+        ctx.beginPath();
+        ctx.moveTo(x, y - len/2);
+        const wave = Math.sin(game.time * 8 + i) * 1.5;
+        ctx.quadraticCurveTo(x + wave, y, x, y + len/2);
+        ctx.stroke();
+      }
+
+      // 5. Bubbling Foam at the waterfall base impact zone
+      const numFoams = 20;
+      for (let i = 0; i < numFoams; i++) {
+        const speed = 1.1 + (i % 2) * 0.4;
+        const phase = (game.time * speed + i * 0.13) % 1;
+        const angle = i * 2.399; // golden angle distribution
+        
+        const dist = phase * (18 + (i % 3) * 5);
+        const x = Math.cos(angle) * dist + Math.sin(game.time * 2 + i) * 1.6;
+        const y = 22 + Math.sin(angle) * dist * 0.35 - phase * 5;
+        
+        const size = (3.5 + (i % 3) * 1.8) * (1 - phase * 0.35);
+        ctx.fillStyle = `rgba(255, 255, 255, ${(1 - phase) * 0.76})`;
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.fill();
+        
+        if (size > 3.2) {
+          ctx.fillStyle = `rgba(224, 242, 254, ${(1 - phase) * 0.45})`;
+          ctx.beginPath();
+          ctx.arc(x - size*0.18, y - size*0.18, size * 0.36, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // 6. High-velocity splash droplets shooting up and falling back down
+      const numDroplets = 12;
+      for (let i = 0; i < numDroplets; i++) {
+        const speed = 1.9 + (i % 3) * 0.7;
+        const phase = (game.time * speed + i * 0.23) % 1;
+        
+        const angle = -Math.PI/2 + (i - numDroplets/2) * 0.12; 
+        const v0 = 24 + (i % 3) * 7; 
+        const t = phase * 0.88;
+        
+        const x = Math.cos(angle) * v0 * t;
+        const y = 18 + Math.sin(angle) * v0 * t + 0.5 * 88 * t * t;
+        
+        const size = Math.max(0.7, (1.8 - phase * 1.4));
+        ctx.fillStyle = `rgba(255, 255, 255, ${(1 - phase) * 0.88})`;
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 7. Soft rising mist clouds
+      const numMists = 10;
+      for (let i = 0; i < numMists; i++) {
+        const speed = 0.42 + (i % 2) * 0.18;
+        const phase = (game.time * speed + i * 0.19) % 1;
+        
+        const x = -16 + i * 3.2 + Math.sin(game.time * 1.3 + i) * 5;
+        const y = 20 - phase * 52;
+        
+        const size = 14 + phase * 26;
+        const opacity = (1 - phase) * 0.15;
+        
+        const mistGrad = ctx.createRadialGradient(x, y, 0, x, y, size);
+        mistGrad.addColorStop(0, `rgba(224, 242, 254, ${opacity})`);
+        mistGrad.addColorStop(0.45, `rgba(240, 249, 255, ${opacity * 0.48})`);
+        mistGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        
+        ctx.fillStyle = mistGrad;
         ctx.beginPath();
         ctx.arc(x, y, size, 0, Math.PI * 2);
         ctx.fill();
@@ -3723,41 +3848,69 @@ const RRGCanvasGame = () => {
     const drawPalm = (tree, time) => {
       const pos = gridToPixel(tree.x, tree.y);
       const s = 0.82 + tree.size;
-      const wind = Math.sin(time * 0.9 + tree.phase) * 0.08 + Math.sin(time * 1.7 + tree.phase * 0.7) * 0.045;
-      const sway = tree.lean + wind;
+      
+      const gust = Math.sin(time * 0.7 + tree.phase) * Math.sin(time * 1.3 + tree.phase * 0.8);
+      const sway = tree.lean + gust * 0.18;
+      
+      const stretch = 1 + Math.sin(time * 2.1 + tree.phase) * 0.03;
+      
       ctx.save();
       ctx.translate(pos.px, pos.py);
+      
       ctx.fillStyle = 'rgba(55, 38, 18, 0.2)';
       ctx.beginPath();
-      ctx.ellipse(0, 14 * s, 16 * s, 5 * s, sway * 0.4, 0, Math.PI * 2);
+      ctx.ellipse(0, 14 * s, 16 * s * (2 - stretch), 5 * s, sway * 0.4, 0, Math.PI * 2);
       ctx.fill();
+      
       ctx.rotate(sway * 0.55);
+      ctx.scale(1, stretch);
+      
       ctx.lineCap = 'round';
       const trunk = ctx.createLinearGradient(-4 * s, 11 * s, 5 * s, -19 * s);
-      trunk.addColorStop(0, '#6f3f1d');
-      trunk.addColorStop(0.5, '#a16207');
-      trunk.addColorStop(1, '#c0843f');
+      trunk.addColorStop(0, '#78350f');
+      trunk.addColorStop(0.5, '#92400e');
+      trunk.addColorStop(1, '#b45309');
       ctx.strokeStyle = trunk;
-      ctx.lineWidth = 4.6 * s;
+      ctx.lineWidth = 5 * s;
+      
       ctx.beginPath();
       ctx.moveTo(0, 11 * s);
-      ctx.quadraticCurveTo(-4 * s, -4 * s, 3 * s, -18 * s);
+      ctx.quadraticCurveTo(-4 * s + sway * 15, -4 * s, 3 * s + sway * 25, -18 * s);
       ctx.stroke();
+      
+      ctx.translate(3 * s + sway * 25, -18 * s);
+      
+      ctx.shadowColor = 'rgba(20, 83, 45, 0.4)';
+      ctx.shadowBlur = 6 * s;
+      ctx.shadowOffsetY = 3 * s;
+      
       for (let i = 0; i < 6; i++) {
-        const leafFlutter = Math.sin(time * 2.2 + tree.phase + i * 0.9) * 0.08;
-        const angle = -Math.PI / 2 + i * (Math.PI * 2 / 6) + sway * 0.65 + leafFlutter;
-        const leafGrad = ctx.createLinearGradient(0, -17 * s, Math.cos(angle) * 22 * s, -17 * s + Math.sin(angle) * 10 * s);
-        leafGrad.addColorStop(0, '#2e7d32');
-        leafGrad.addColorStop(1, '#7fba43');
+        const flutter = Math.pow(Math.sin(time * 3.5 + tree.phase + i * 1.2), 2) * 0.15;
+        const angle = -Math.PI / 2 + i * (Math.PI * 2 / 6) + sway * 0.8 + flutter;
+        
+        const leafGrad = ctx.createLinearGradient(0, 0, Math.cos(angle) * 25 * s, Math.sin(angle) * 15 * s);
+        leafGrad.addColorStop(0, '#bef264'); 
+        leafGrad.addColorStop(0.5, '#65a30d'); 
+        leafGrad.addColorStop(1, '#166534'); 
         ctx.fillStyle = leafGrad;
+        
         ctx.beginPath();
-        ctx.ellipse(Math.cos(angle) * 11 * s, -17 * s + Math.sin(angle) * 7 * s, 15 * s, 4.2 * s, angle, 0, Math.PI * 2);
+        ctx.moveTo(0, 0); 
+        
+        const tipX = Math.cos(angle) * 24 * s * (1 - flutter*0.3);
+        const tipY = Math.sin(angle) * 18 * s * (1 - flutter*0.3);
+        const cpDist = 12 * s;
+        
+        ctx.quadraticCurveTo(Math.cos(angle - 0.4) * cpDist, Math.sin(angle - 0.4) * cpDist, tipX, tipY);
+        ctx.quadraticCurveTo(Math.cos(angle + 0.4) * cpDist, Math.sin(angle + 0.4) * cpDist, 0, 0);
         ctx.fill();
       }
-      ctx.fillStyle = 'rgba(92, 56, 20, 0.82)';
-      [-2, 3].forEach((x, index) => {
+      
+      ctx.shadowColor = 'transparent';
+      ctx.fillStyle = '#451a03';
+      [-3, 4].forEach((x, index) => {
         ctx.beginPath();
-        ctx.arc(x * s, (-14 + index * 2) * s, 2.2 * s, 0, Math.PI * 2);
+        ctx.arc((x - 2) * s, (index * 2) * s, 3 * s, 0, Math.PI * 2);
         ctx.fill();
       });
       ctx.restore();
@@ -3766,38 +3919,74 @@ const RRGCanvasGame = () => {
     const drawCanopyTree = (tree, time) => {
       const pos = gridToPixel(tree.x, tree.y);
       const s = 0.8 + tree.size;
-      const bob = Math.sin(time * 1.2 + tree.phase) * 0.7;
-      const sway = tree.lean + Math.sin(time * 0.82 + tree.phase) * 0.08;
+      
+      const gust = Math.sin(time * 0.8 + tree.phase) * Math.cos(time * 0.4 + tree.phase * 0.5);
+      const sway = tree.lean + gust * 0.15;
+      
+      const breathe = Math.sin(time * 2.2 + tree.phase) * Math.sin(time * 1.1 + tree.phase);
+      const scaleX = 1 - breathe * 0.025;
+      const scaleY = 1 + breathe * 0.035;
+      
       ctx.save();
-      ctx.translate(pos.px, pos.py + bob);
+      ctx.translate(pos.px, pos.py);
+      
       ctx.fillStyle = 'rgba(55, 38, 18, 0.22)';
       ctx.beginPath();
-      ctx.ellipse(0, 13 * s, 14 * s, 5 * s, sway * 0.25, 0, Math.PI * 2);
+      ctx.ellipse(0, 13 * s, 14 * s * scaleX, 5 * s, sway * 0.25, 0, Math.PI * 2);
       ctx.fill();
+      
+      ctx.scale(scaleX, scaleY);
+      ctx.rotate(sway * 0.1);
+      
       const trunk = ctx.createLinearGradient(-4 * s, 0, 4 * s, 17 * s);
-      trunk.addColorStop(0, '#9a6a32');
-      trunk.addColorStop(1, '#5b3418');
+      trunk.addColorStop(0, '#78350f'); 
+      trunk.addColorStop(1, '#451a03');
       ctx.fillStyle = trunk;
-      ctx.fillRect(-3 * s, -1 * s, 6 * s, 17 * s);
-      const canopy = ctx.createRadialGradient(-4 * s, -10 * s, 2 * s, -2 * s, -8 * s, 24 * s);
-      canopy.addColorStop(0, '#77b255');
-      canopy.addColorStop(0.55, '#2f8f46');
-      canopy.addColorStop(1, '#1f6f3c');
-      ctx.fillStyle = canopy;
-      [[-9, -8, 12], [4, -12, 14], [12, -4, 11], [-1, 0, 15], [-14, 1, 9]].forEach(([x, y, r]) => {
-        const leafBob = Math.sin(time * 1.65 + tree.phase + x * 0.3) * 0.8;
-        ctx.beginPath();
-        ctx.arc((x + sway * 10) * s, (y + leafBob) * s, r * s, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      ctx.globalCompositeOperation = 'screen';
-      ctx.globalAlpha = 0.16;
-      ctx.fillStyle = '#d9f99d';
+      
       ctx.beginPath();
-      ctx.arc((-7 + sway * 8) * s, -13 * s, 6 * s, 0, Math.PI * 2);
+      ctx.moveTo(-2 * s, 0);
+      ctx.lineTo(2 * s, 0);
+      ctx.lineTo(4 * s, 16 * s);
+      ctx.lineTo(-4 * s, 16 * s);
       ctx.fill();
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.globalAlpha = 1;
+      
+      ctx.beginPath();
+      const clusters = [[-9, -8, 12], [4, -12, 14], [12, -4, 11], [-1, 0, 15], [-14, 1, 9]];
+      clusters.forEach(([x, y, r]) => {
+        const clusterBob = Math.sin(time * 3 + tree.phase + x * 0.5) * 0.6;
+        ctx.moveTo((x + sway * 15 + r) * s, (y + clusterBob) * s);
+        ctx.arc((x + sway * 15) * s, (y + clusterBob) * s, r * s, 0, Math.PI * 2);
+      });
+      
+      ctx.shadowColor = 'rgba(20, 83, 45, 0.4)';
+      ctx.shadowBlur = 8 * s;
+      ctx.shadowOffsetY = 4 * s;
+      
+      const canopy = ctx.createLinearGradient(-15 * s, -25 * s, 15 * s, 10 * s);
+      canopy.addColorStop(0, '#4ade80');
+      canopy.addColorStop(0.5, '#22c55e');
+      canopy.addColorStop(1, '#14532d');
+      ctx.fillStyle = canopy;
+      ctx.fill();
+      
+      ctx.shadowColor = 'transparent';
+      
+      ctx.save();
+      ctx.clip(); 
+      
+      ctx.globalCompositeOperation = 'screen';
+      ctx.globalAlpha = 0.3 + gust * 0.1;
+      
+      const highlightGrad = ctx.createLinearGradient(-10 * s, -25 * s, 10 * s, -5 * s);
+      highlightGrad.addColorStop(0, '#ffffff');
+      highlightGrad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = highlightGrad;
+      
+      ctx.beginPath();
+      ctx.ellipse(-3 * s + sway * 8 * s, -12 * s, 18 * s, 10 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.restore(); 
       ctx.restore();
     };
 
@@ -4313,16 +4502,35 @@ const RRGCanvasGame = () => {
         ctx.fillText(item.kind === 'reward' ? 'ZON GANJARAN' : 'ZON DENDA', pos.px, pos.py + zoneRadius * CELL + 14);
         ctx.restore();
       }
-      ctx.globalAlpha = 0.28 + Math.sin(time * 4 + item.y) * 0.08;
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.arc(pos.px, pos.py, 15, 0, Math.PI * 2);
-      ctx.fill();
+      // Draw Beautiful Custom Vectors instead of Emojis
       ctx.globalAlpha = 1;
-      ctx.font = '19px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(icon, pos.px, pos.py + bob);
+      ctx.save();
+      ctx.translate(pos.px, pos.py + bob);
+
+      if (item.kind === 'penalty' || icon === '💣') {
+        // --- PRO BOMB ---
+        if (textures.proBombTransparent) {
+           ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+           ctx.shadowBlur = 10;
+           ctx.drawImage(textures.proBombTransparent, -28, -32, 56, 56);
+        } else {
+           ctx.font = '32px serif';
+           ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+           ctx.fillText('💣', 0, 0);
+        }
+      } else {
+        // --- PRO CHEST (For all rewards) ---
+        if (textures.proChestTransparent) {
+           ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+           ctx.shadowBlur = 10;
+           ctx.drawImage(textures.proChestTransparent, -32, -32, 64, 64);
+        } else {
+           ctx.font = '32px serif';
+           ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+           ctx.fillText('🎁', 0, 0);
+        }
+      }
+      ctx.restore();
     };
 
     const drawGuideLabel = (text, point, options = {}) => {
@@ -4682,39 +4890,81 @@ const RRGCanvasGame = () => {
       ctx.scale(game.zoom * dpr, game.zoom * dpr);
       ctx.translate(-game.camX, -game.camY);
 
-      const waterReady = drawTiledImage(
+      // Dynamic Viewport Bounds for Infinite Ocean
+      const worldVW = canvas.width / (game.zoom * dpr);
+      const worldVH = canvas.height / (game.zoom * dpr);
+      const drawX = game.camX - worldVW / 2 - 200;
+      const drawY = game.camY - worldVH / 2 - 200;
+      const drawW = worldVW + 400;
+      const drawH = worldVH + 400;
+
+      // Simple Parallax Water Animation
+      const oceanGrad = ctx.createLinearGradient(drawX, drawY, drawX + drawW, drawY + drawH);
+      oceanGrad.addColorStop(0, '#075985');
+      oceanGrad.addColorStop(0.45, '#0891b2');
+      oceanGrad.addColorStop(1, '#0f766e');
+      ctx.fillStyle = oceanGrad;
+      ctx.fillRect(drawX, drawY, drawW, drawH);
+
+      // Layer 1: Base moving water
+      drawTiledImage(
         textures.water,
-        -240,
-        -240,
-        MAP_W + 480,
-        MAP_H + 480,
-        420,
-        280,
+        drawX, drawY, drawW, drawH,
+        420, 280,
         game.time * 22,
         Math.sin(game.time * 0.7) * 24,
-        0.92
+        0.8
       );
-      if (!waterReady) {
-        const oceanGrad = ctx.createLinearGradient(-240, -240, MAP_W + 240, MAP_H + 240);
-        oceanGrad.addColorStop(0, '#075985');
-        oceanGrad.addColorStop(0.45, '#0891b2');
-        oceanGrad.addColorStop(1, '#0f766e');
-        ctx.fillStyle = oceanGrad;
-        ctx.fillRect(-240, -240, MAP_W + 480, MAP_H + 480);
-      }
+
       ctx.save();
-      ctx.globalAlpha = 0.42;
-      const oceanTint = ctx.createLinearGradient(-240, -240, MAP_W + 240, MAP_H + 240);
+      // Layer 2: Intersecting moving water to create moving ripples (caustics effect)
+      ctx.globalCompositeOperation = 'screen';
+      drawTiledImage(
+        textures.water,
+        drawX, drawY, drawW, drawH,
+        420, 280,
+        -game.time * 15, 
+        game.time * 10 + Math.cos(game.time * 0.5) * 20, 
+        0.35 
+      );
+      ctx.restore();
+
+      ctx.save();
+      ctx.globalAlpha = 0.25;
+      const oceanTint = ctx.createLinearGradient(drawX, drawY, drawX + drawW, drawY + drawH);
       oceanTint.addColorStop(0, '#075985');
       oceanTint.addColorStop(0.55, '#0891b2');
       oceanTint.addColorStop(1, '#0f766e');
       ctx.fillStyle = oceanTint;
-      ctx.fillRect(-240, -240, MAP_W + 480, MAP_H + 480);
+      ctx.fillRect(drawX, drawY, drawW, drawH);
       ctx.restore();
+      // Specular Sunlight Sparkles on Ocean
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      for (let i = 0; i < 28; i++) {
+        const sx = ((i * 193 + game.time * 6) % (MAP_W + 480)) - 240;
+        const sy = ((i * 127 + game.time * 4) % (MAP_H + 480)) - 240;
+        if (!isOnIsland(sx / CELL, sy / CELL)) {
+          const pulse = 0.32 + Math.sin(game.time * 2.4 + i) * 0.32;
+          const size = 1.0 + (i % 2) * 0.8;
+          ctx.fillStyle = `rgba(224, 242, 254, ${pulse * 0.72})`;
+          ctx.beginPath();
+          ctx.arc(sx, sy, size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.restore();
+
       for (let i = 0; i < 46; i++) {
         const wx = ((i * 137 + game.time * 42) % (MAP_W + 480)) - 240;
         const wy = ((i * 211 + game.time * 34) % (MAP_H + 480)) - 240;
-        ctx.strokeStyle = `rgba(255,255,255,${0.06 + (i % 4) * 0.014})`;
+        
+        // Smoothly fade waves out near the boundaries of the water grid to prevent clipping pop
+        const distFromEdgeX = Math.min(wx - (-240), (MAP_W + 240) - wx);
+        const distFromEdgeY = Math.min(wy - (-240), (MAP_H + 240) - wy);
+        const fade = Math.min(1, Math.max(0, distFromEdgeX / 80)) * Math.min(1, Math.max(0, distFromEdgeY / 80));
+        
+        ctx.strokeStyle = `rgba(255,255,255,${(0.06 + (i % 4) * 0.014) * fade})`;
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.ellipse(wx, wy, 30 + Math.sin(game.time + i) * 10, 7, Math.sin(i) * 0.2, 0, Math.PI * 1.45);
@@ -4770,6 +5020,35 @@ const RRGCanvasGame = () => {
       ctx.globalAlpha = 1;
       ctx.restore();
 
+      // --- ULTRA-REALISTIC DYNAMIC CLOUD SHADOWS (Land & Water) ---
+      ctx.save();
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.globalAlpha = 0.45; // Increase alpha slightly because mask might be soft
+      const numClouds = 6;
+      for (let i = 0; i < numClouds; i++) {
+        const speedX = 9 + (i % 2) * 4;
+        const speedY = 5 + (i % 3) * 2;
+        const cx = ((game.time * speedX + i * 260) % (MAP_W + 1200)) - 600;
+        const cy = ((game.time * speedY + i * 190) % (MAP_H + 1200)) - 600;
+        
+        const cWidth = 140 + (i % 3) * 50;
+        const cHeight = 140 + (i % 3) * 50;
+
+        if (textures.cloudShadow) {
+          // Draw the perfect shadow mask slightly offset
+          ctx.drawImage(textures.cloudShadow, cx + 25, cy + 30, cWidth, cHeight);
+        } else {
+          // Fallback while loading
+          ctx.globalAlpha = 0.14;
+          ctx.fillStyle = '#0f172a';
+          ctx.beginPath();
+          ctx.ellipse(cx + cWidth/2 + 25, cy + cHeight/2 + 30, cWidth/2.5, cHeight/3.5, 0.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 0.45;
+        }
+      }
+      ctx.restore();
+
       makeIslandPath(ctx);
       ctx.strokeStyle = '#f9e6b4';
       ctx.lineWidth = 18;
@@ -4779,6 +5058,17 @@ const RRGCanvasGame = () => {
       ctx.lineWidth = 7;
       ctx.globalAlpha = 0.65;
       ctx.stroke();
+      
+      // Outer Shore Foam Wave (Double Wave effect)
+      makeIslandPath(ctx);
+      ctx.strokeStyle = `rgba(224,242,254,${0.22 + Math.sin(game.time * 1.8) * 0.08})`;
+      ctx.lineWidth = 8;
+      ctx.setLineDash([12, 24]);
+      ctx.lineDashOffset = -game.time * 18;
+      ctx.stroke();
+      ctx.setLineDash([]);
+      
+      // Inner Shore Foam Wave
       makeIslandPath(ctx);
       ctx.strokeStyle = `rgba(236,254,255,${0.42 + Math.sin(game.time * 2.2) * 0.12})`;
       ctx.lineWidth = 5;
@@ -4805,6 +5095,65 @@ const RRGCanvasGame = () => {
       ctx.arc(hazard.px, hazard.py, HAZARD_RADIUS * CELL, 0, Math.PI * 2);
       ctx.stroke();
       ctx.setLineDash([]);
+      
+      // --- DYNAMIC ACTIVE VOLCANO ERUPTION EFFECTS ---
+      ctx.save();
+      // 1. Lava glowing core (bubbling red/orange) at the peak of Bukit Kristal (0, -1)
+      ctx.globalCompositeOperation = 'screen';
+      const lavaGrad = ctx.createRadialGradient(hazard.px, hazard.py - 12, 0, hazard.px, hazard.py - 12, 14 + Math.sin(game.time * 4) * 3);
+      lavaGrad.addColorStop(0, '#fef08a'); 
+      lavaGrad.addColorStop(0.35, '#f97316'); 
+      lavaGrad.addColorStop(0.85, '#dc2626'); 
+      lavaGrad.addColorStop(1, 'rgba(220,38,38,0)');
+      ctx.fillStyle = lavaGrad;
+      ctx.beginPath();
+      ctx.arc(hazard.px, hazard.py - 12, 18, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // 2. Rising Volcano Smoke Puffs (drifting North-East)
+      ctx.globalCompositeOperation = 'source-over';
+      const numSmoke = 10;
+      for (let i = 0; i < numSmoke; i++) {
+        const speed = 0.46 + (i % 2) * 0.18;
+        const phase = (game.time * speed + i * 0.19) % 1;
+        const sx = hazard.px + phase * 38 + Math.sin(game.time * 1.6 + i) * 4;
+        const sy = (hazard.py - 12) - phase * 68;
+        
+        const size = 5 + phase * 20;
+        const opacity = (1 - phase) * 0.36;
+        
+        const smokeGrad = ctx.createRadialGradient(sx, sy, 0, sx, sy, size);
+        smokeGrad.addColorStop(0, `rgba(51, 65, 85, ${opacity})`);
+        smokeGrad.addColorStop(0.65, `rgba(30, 41, 59, ${opacity * 0.58})`);
+        smokeGrad.addColorStop(1, 'rgba(15, 23, 42, 0)');
+        
+        ctx.fillStyle = smokeGrad;
+        ctx.beginPath();
+        ctx.arc(sx, sy, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      
+      // 3. Glowing lava embers/sparks shooting up
+      ctx.globalCompositeOperation = 'screen';
+      const numEmbers = 12;
+      for (let i = 0; i < numEmbers; i++) {
+        const speed = 1.3 + (i % 3) * 0.5;
+        const phase = (game.time * speed + i * 0.23) % 1;
+        
+        const angle = -Math.PI/2 + (i - numEmbers/2) * 0.16; 
+        const v0 = 16 + (i % 3) * 6;
+        const t = phase * 0.92;
+        
+        const sx = hazard.px + Math.cos(angle) * v0 * t + phase * 18; 
+        const sy = (hazard.py - 12) + Math.sin(angle) * v0 * t - phase * 22; 
+        
+        const size = Math.max(0.6, 2.0 - phase * 1.8);
+        ctx.fillStyle = i % 2 === 0 ? `rgba(251, 146, 60, ${1 - phase})` : `rgba(239, 68, 68, ${1 - phase})`;
+        ctx.beginPath();
+        ctx.arc(sx, sy, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
 
       ctx.strokeStyle = 'rgba(0,0,0,0.08)';
       ctx.lineWidth = 1;
@@ -4877,6 +5226,17 @@ const RRGCanvasGame = () => {
             player.motionTilt = 0;
             player.motionStretch = 0;
             player.motionTransformRotation = 0;
+
+            // Trigger landing dust puff
+            game.effects.push({
+              id: Math.random().toString(),
+              type: 'dust',
+              x: finalPoint.x,
+              y: finalPoint.y,
+              startedAt: performance.now(),
+              color: player.color
+            });
+
             if (onDone) onDone();
           };
           if (motion.mode === 'direct' || motion.mode === 'rotation') {
@@ -4949,6 +5309,16 @@ const RRGCanvasGame = () => {
               if (motion.segmentIndex >= motion.path.length - 1) {
                 finishMotion();
               } else {
+                // Trigger intermediate landing dust puff
+                game.effects.push({
+                  id: Math.random().toString(),
+                  type: 'dust',
+                  x: motion.to.x,
+                  y: motion.to.y,
+                  startedAt: performance.now(),
+                  color: player.color
+                });
+
                 motion.segmentIndex += 1;
                 motion.from = motion.to;
                 motion.to = motion.path[motion.segmentIndex];
@@ -5051,6 +5421,24 @@ const RRGCanvasGame = () => {
           ctx.globalAlpha = 1 - age;
           ctx.font = `${24 + age * 18}px serif`;
           ctx.fillText('❌', pos.px, pos.py - age * 26);
+        } else if (effect.type === 'dust') {
+          ctx.globalAlpha = 1 - age;
+          ctx.strokeStyle = effect.color || 'rgba(214,168,107,0.8)';
+          ctx.lineWidth = 2.5 * (1 - age);
+          ctx.beginPath();
+          ctx.ellipse(pos.px, pos.py + 12, 10 + age * 18, 4 + age * 8, 0, 0, Math.PI * 2);
+          ctx.stroke();
+          
+          ctx.fillStyle = 'rgba(224,185,125,0.7)';
+          for (let j = 0; j < 6; j++) {
+            const angle = j * (Math.PI * 2 / 6);
+            const dist = age * 24;
+            const px = pos.px + Math.cos(angle) * dist;
+            const py = pos.py + 12 + Math.sin(angle) * dist * 0.4 - age * 8;
+            ctx.beginPath();
+            ctx.arc(px, py, 2.5 * (1 - age), 0, Math.PI * 2);
+            ctx.fill();
+          }
         }
         ctx.globalAlpha = 1;
       });
@@ -5060,6 +5448,53 @@ const RRGCanvasGame = () => {
       ctx.textAlign = 'center';
       ctx.fillText('ZON SELAMAT', gridToPixel(0, 15).px, gridToPixel(0, 15).py - 10);
       ctx.fillText('ZON SELAMAT', gridToPixel(0, -15).px, gridToPixel(0, -15).py + 20);
+
+      // --- ULTRA-REALISTIC DRIFTING CLOUDS (High-altitude) ---
+      ctx.save();
+      ctx.globalAlpha = 0.55; // Increase alpha since screen blending softens it
+      ctx.globalCompositeOperation = 'screen'; // Automatically removes the black background!
+      for (let i = 0; i < numClouds; i++) {
+        const speedX = 9 + (i % 2) * 4;
+        const speedY = 5 + (i % 3) * 2;
+        const cx = ((game.time * speedX + i * 260) % (MAP_W + 1200)) - 600;
+        const cy = ((game.time * speedY + i * 190) % (MAP_H + 1200)) - 600;
+        
+        const cWidth = 140 + (i % 3) * 50;
+        const cHeight = 140 + (i % 3) * 50;
+        
+        // Draw the photorealistic AI cloud!
+        if (textures.cloud && textures.cloud.complete && textures.cloud.naturalHeight !== 0) {
+          ctx.drawImage(textures.cloud, cx, cy, cWidth, cHeight);
+        } else {
+          // Fallback if not loaded yet
+          const grad = ctx.createRadialGradient(cx + cWidth/2, cy + cHeight/2, 0, cx + cWidth/2, cy + cHeight/2, cWidth/2);
+          grad.addColorStop(0, '#ffffff');
+          grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.ellipse(cx + cWidth/2, cy + cHeight/2, cWidth/2, cHeight/3, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.restore();
+
+      ctx.restore(); // restores camera translate
+
+      // --- CINEMATIC VIGNETTE & AMBIENT GLOW (Screen Space) ---
+      ctx.save();
+      const vigGrad = ctx.createRadialGradient(
+        canvas.width / 2, 
+        canvas.height / 2, 
+        Math.min(canvas.width, canvas.height) * 0.42, 
+        canvas.width / 2, 
+        canvas.height / 2, 
+        Math.max(canvas.width, canvas.height) * 0.78
+      );
+      vigGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      vigGrad.addColorStop(0.5, 'rgba(15, 23, 42, 0.08)');
+      vigGrad.addColorStop(1, 'rgba(8, 15, 30, 0.38)'); // rich dark slate cinematic edge
+      ctx.fillStyle = vigGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.restore();
 
       drawMinimap();
@@ -5647,7 +6082,7 @@ export default function App() {
       </div>
 
       {/* KANDUNGAN SEKSYEN */}
-      <main className="max-w-7xl mx-auto px-4 md:px-6">
+      <main className={`mx-auto ${activeTab === 'rrgs' ? 'w-full max-w-[1920px] px-2 md:px-4' : 'max-w-7xl px-4 md:px-6'}`}>
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           {activeTab === 'nota' && <SectionNota lang={lang} />}
           {activeTab === 'makmal' && <SectionMakmal lang={lang} />}

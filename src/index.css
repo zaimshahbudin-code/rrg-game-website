@@ -1498,14 +1498,14 @@ body {
 
 .rrg-canvas-game {
   position: relative;
-  height: min(78vh, 820px);
-  min-height: 620px;
+  height: min(88vh, 1200px);
+  min-height: 720px;
   width: 100%;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 12px;
   background: #0a1628;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 34px 95px rgba(8, 47, 73, 0.28);
+  box-shadow: 0 34px 95px rgba(8, 47, 73, 0.38);
   isolation: isolate;
 }
 
@@ -1805,7 +1805,7 @@ body {
 
 @media (max-width: 900px) {
   .rrg-canvas-game {
-    min-height: 680px;
+    min-height: 760px;
   }
 
   .rrg-game-hud {
@@ -1984,7 +1984,7 @@ body {
 
 @media (max-width: 640px) {
   .rrg-canvas-game {
-    min-height: 760px;
+    min-height: 820px;
   }
 
   .rrg-card-panel {

@@ -1828,16 +1828,25 @@ const RRG_PENALTY_CARDS = [
 ];
 
 const RRG_ITEMS = [
-  { x: -4, y: 7, kind: 'money', label: 'RM', amount: 50 }, { x: -8, y: 2, kind: 'money', label: 'RM', amount: 50 },
-  { x: 4, y: -13, kind: 'money', label: 'RM', amount: 50 }, { x: 13, y: 3, kind: 'money', label: 'RM', amount: 50 },
-  { x: -1, y: 4, kind: 'diamond', label: 'Berlian', amount: 100 }, { x: 8, y: 5, kind: 'diamond', label: 'Berlian', amount: 100 },
-  { x: 12, y: -4, kind: 'diamond', label: 'Berlian', amount: 100 }, { x: -10, y: 1, kind: 'diamond', label: 'Berlian', amount: 100 },
-  { x: -7, y: 8, kind: 'chest', label: 'Peti emas', amount: 200 }, { x: 7, y: -1, kind: 'chest', label: 'Peti emas', amount: 200 },
-  { x: 11, y: 7, kind: 'chest', label: 'Peti emas', amount: 200 }, { x: -3, y: -8, kind: 'chest', label: 'Peti emas', amount: 200 },
-  { x: -11, y: 5, kind: 'reward', label: 'Mentol' }, { x: -5, y: 2, kind: 'reward', label: 'Mentol' },
-  { x: 6, y: 4, kind: 'reward', label: 'Mentol' }, { x: 13, y: -6, kind: 'reward', label: 'Mentol' },
-  { x: -5, y: 5, kind: 'penalty', label: 'Bom' }, { x: 5, y: 3, kind: 'penalty', label: 'Bom' },
-  { x: 8, y: 9, kind: 'penalty', label: 'Bom' }, { x: 14, y: -11, kind: 'penalty', label: 'Bom' },
+  // 4 Money
+  { x: 4, y: 4, kind: 'money', label: 'RM', amount: 50 }, { x: -6, y: 0, kind: 'money', label: 'RM', amount: 50 },
+  { x: -6, y: -4, kind: 'money', label: 'RM', amount: 50 }, { x: 2, y: -4, kind: 'money', label: 'RM', amount: 50 },
+  // 4 Diamond
+  { x: 8, y: 8, kind: 'diamond', label: 'Berlian', amount: 100 }, { x: 0, y: 12, kind: 'diamond', label: 'Berlian', amount: 100 },
+  { x: -12, y: 4, kind: 'diamond', label: 'Berlian', amount: 100 }, { x: 10, y: -12, kind: 'diamond', label: 'Berlian', amount: 100 },
+  // 4 Chest
+  { x: 10, y: 10, kind: 'chest', label: 'Peti emas', amount: 200 }, { x: -12, y: 0, kind: 'chest', label: 'Peti emas', amount: 200 },
+  { x: -12, y: -8, kind: 'chest', label: 'Peti emas', amount: 200 }, { x: 0, y: -12, kind: 'chest', label: 'Peti emas', amount: 200 },
+  // 8 Reward
+  { x: 2, y: 2, kind: 'reward', label: 'Mentol' }, { x: 0, y: 8, kind: 'reward', label: 'Mentol' },
+  { x: 2, y: 6, kind: 'reward', label: 'Mentol' }, { x: -6, y: 4, kind: 'reward', label: 'Mentol' },
+  { x: -9, y: -6, kind: 'reward', label: 'Mentol' }, { x: 5, y: -6, kind: 'reward', label: 'Mentol' },
+  { x: -6, y: -12, kind: 'reward', label: 'Mentol' }, { x: 7, y: -4, kind: 'reward', label: 'Mentol' },
+  // 8 Penalty (Bom)
+  { x: 6, y: 6, kind: 'penalty', label: 'Bom' }, { x: 0, y: 4, kind: 'penalty', label: 'Bom' },
+  { x: 4, y: 10, kind: 'penalty', label: 'Bom' }, { x: -3, y: -2, kind: 'penalty', label: 'Bom' },
+  { x: 0, y: -6, kind: 'penalty', label: 'Bom' }, { x: -6, y: -6, kind: 'penalty', label: 'Bom' },
+  { x: 5, y: -2, kind: 'penalty', label: 'Bom' }, { x: -3, y: -8, kind: 'penalty', label: 'Bom' },
 ];
 
 const RRG_COLORS = [
@@ -3016,11 +3025,24 @@ const RRGCanvasGame = () => {
 
     const boats = [];
     for (let i = 0; i < 12; i++) {
-      const angle = (i / 12) * Math.PI * 2;
-      const radius = 14 + rand() * 2;
+      const baseAngle = (i / 12) * Math.PI * 2;
+      // Add a bit of random offset to the angle so they don't look perfectly rigid
+      const angle = baseAngle + (-0.1 + rand() * 0.2);
+      
+      let radius = 12 + rand() * 3;
+      let bx = Math.cos(angle) * radius;
+      let by = Math.sin(angle) * radius;
+      
+      // Push the boat outwards until it is safely off the island (in the water)
+      while (isOnIsland(bx, by)) {
+        radius += 1.5;
+        bx = Math.cos(angle) * radius;
+        by = Math.sin(angle) * radius;
+      }
+      
       boats.push({
-        x: Math.cos(angle) * radius,
-        y: Math.sin(angle) * radius,
+        x: bx,
+        y: by,
         type: rand() > 0.5 ? 'speedboat' : 'sailboat',
         phase: rand() * Math.PI * 2,
         scale: 0.82 + rand() * 0.34,
@@ -3075,6 +3097,8 @@ const RRGCanvasGame = () => {
       cloud: '/assets/rrgs/textures/cloud.jpg',
       proBomb: '/assets/rrgs/textures/simple_bomb.jpg',
       proChest: '/assets/rrgs/textures/simple_chest.jpg',
+      stylizedSpeedboat: '/assets/rrgs/textures/stylized_speedboat.jpg',
+      stylizedSailboat: '/assets/rrgs/textures/stylized_sailboat.jpg',
     };
     const landmarkAssetPath = (name) => `/assets/rrgs/landmarks/${name}.png?v=transparent-cut-2`;
     const landmarkAssetSources = {
@@ -3105,7 +3129,7 @@ const RRGCanvasGame = () => {
           ctx.drawImage(image, 0, 0);
           textures.cloudShadow = c;
         };
-      } else if (key === 'proBomb' || key === 'proChest') {
+      } else if (key === 'proBomb' || key === 'proChest' || key === 'stylizedSpeedboat' || key === 'stylizedSailboat') {
         image.onload = () => {
           const c = document.createElement('canvas');
           c.width = image.width;
@@ -3628,75 +3652,80 @@ const RRGCanvasGame = () => {
       makeIslandPath(ctx);
       ctx.clip(); 
 
-      // 1. Drop shadow (outer depth on the land)
-      ctx.shadowColor = 'rgba(6, 78, 59, 0.4)';
-      ctx.shadowBlur = 10;
-      ctx.shadowOffsetY = 4;
-      
-      // 2. Base River Path with beautiful Figma UI gradient
-      const baseGrad = ctx.createLinearGradient(0, 0, MAP_W, MAP_H);
+      // 1. River Bank (Darker deep edge for depth)
+      ctx.strokeStyle = '#0369a1';
+      ctx.lineWidth = width + 4;
+      drawSmoothPath(points);
+      ctx.stroke();
+
+      // 2. Base Stylized Water (Vibrant Cyan-Blue)
+      const baseGrad = ctx.createLinearGradient(0, -20, 20, 20);
       baseGrad.addColorStop(0, '#38bdf8');   
-      baseGrad.addColorStop(0.5, '#0ea5e9'); 
       baseGrad.addColorStop(1, '#0284c7');   
-      
       ctx.strokeStyle = baseGrad;
       ctx.lineWidth = width;
       drawSmoothPath(points);
       ctx.stroke();
-      
-      ctx.shadowColor = 'transparent'; 
 
-      // 3. Neumorphic Inner Shadow (Figma style 3D recessed look)
-      ctx.save();
-      drawSmoothPath(points);
-      ctx.clip(); 
-      
-      ctx.shadowColor = 'rgba(2, 6, 23, 0.6)';
-      ctx.shadowBlur = 12;
-      ctx.strokeStyle = 'transparent';
-      ctx.lineWidth = width + 20; 
-      drawSmoothPath(points);
-      ctx.stroke();
-      ctx.shadowColor = 'transparent';
-
-      // 4. Glossy Specular Bevel (White rim light on the top/left edge)
+      // 3. Stylized Foam Edges (White rim that hugs the shore)
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
       ctx.lineWidth = width * 0.85; 
-      ctx.translate(-2, -2);
       drawSmoothPath(points);
       ctx.stroke();
-      ctx.translate(2, 2); 
 
-      // 5. Figma minimalist flow indicators (Clean overlapping glass capsules)
+      // Inner water body to hide the center of the foam, leaving only the edges
+      ctx.strokeStyle = baseGrad;
+      ctx.lineWidth = width * 0.7; 
+      drawSmoothPath(points);
+      ctx.stroke();
+
+      // 4. Ultra-Smooth Game Engine Flow (Scrolling UV Texture)
+      // By translating a repeating pattern matrix, we get continuous fluid motion!
+      ctx.save();
+      if (textures.water) {
+        ctx.globalCompositeOperation = 'overlay'; // Blend with the cyan base
+        const pattern = ctx.createPattern(textures.water, 'repeat');
+        const matrix = new DOMMatrix();
+        // The river flows diagonally from top-left to bottom-right (in grid), which is left-down in pixels!
+        matrix.translateSelf(-game.time * 28, game.time * 35);
+        matrix.scaleSelf(0.35, 0.35); // Scale down the texture for finer caustics
+        pattern.setTransform(matrix);
+        
+        ctx.strokeStyle = pattern;
+        ctx.lineWidth = width - 4; // Inside the foam edges
+        ctx.globalAlpha = 0.85;
+        drawSmoothPath(points);
+        ctx.stroke();
+
+        // Add a second, slower layer of water texture in the opposite direction for parallax depth!
+        ctx.globalCompositeOperation = 'screen';
+        const pattern2 = ctx.createPattern(textures.water, 'repeat');
+        const matrix2 = new DOMMatrix();
+        matrix2.translateSelf(-game.time * 12, game.time * 15);
+        matrix2.scaleSelf(0.5, 0.5); 
+        pattern2.setTransform(matrix2);
+        
+        ctx.strokeStyle = pattern2;
+        ctx.lineWidth = width - 8;
+        ctx.globalAlpha = 0.4;
+        drawSmoothPath(points);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // 5. Ambient Gloss/Shine (Figma-style soft overlay for the surface)
+      ctx.save();
       ctx.globalCompositeOperation = 'screen';
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
-      
-      // Flow Band 1 (Thick, slow)
-      ctx.lineWidth = width * 0.4;
-      ctx.setLineDash([width * 3, width * 2.5]);
-      ctx.lineDashOffset = -game.time * 25;
+      ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+      ctx.shadowBlur = 15;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.lineWidth = 4;
+      ctx.setLineDash([5, 120]);
+      ctx.lineDashOffset = -game.time * 15;
       drawSmoothPath(points);
       ctx.stroke();
-      
-      // Flow Band 2 (Thin, fast, offset)
-      ctx.lineWidth = width * 0.15;
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-      ctx.setLineDash([width * 1.5, width * 3.5]);
-      ctx.lineDashOffset = -game.time * 50;
-      drawSmoothPath(points);
-      ctx.stroke();
-      
-      // Flow Band 3 (Tiny bright sparkling dashes)
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-      ctx.setLineDash([8, 60]);
-      ctx.lineDashOffset = -game.time * 80;
-      drawSmoothPath(points);
-      ctx.stroke();
-      
-      ctx.setLineDash([]);
-      
-      ctx.restore(); 
+      ctx.restore();
+
       ctx.restore(); 
     };
 
@@ -3996,62 +4025,56 @@ const RRGCanvasGame = () => {
       const pos = gridToPixel(boat.x + driftX, boat.y + driftY);
       const bob = Math.sin(game.time * 1.9 + boat.phase) * 2.4;
       const roll = Math.sin(game.time * 1.05 + boat.phase) * 0.055;
+      
       ctx.save();
       ctx.translate(pos.px, pos.py + bob);
       ctx.rotate(boat.heading + roll);
       ctx.scale(boat.scale, boat.scale);
+
+      // --- Beautiful Figma-style Flowing Wake (Water trails) ---
       ctx.save();
       ctx.globalCompositeOperation = 'screen';
-      ctx.globalAlpha = 0.2 + Math.sin(game.time * 2.2 + boat.phase) * 0.05;
-      ctx.strokeStyle = '#e0fbff';
-      ctx.lineWidth = 2;
+      ctx.globalAlpha = 0.35 + Math.sin(game.time * 2.2 + boat.phase) * 0.15;
       ctx.lineCap = 'round';
+      
       [-1, 1].forEach((side) => {
+        // Main thick foam trail
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.lineWidth = 4;
         ctx.beginPath();
-        ctx.moveTo(-18, side * 6);
-        ctx.quadraticCurveTo(-36, side * (8 + Math.sin(game.time * 2 + boat.phase) * 3), -54, side * 12);
+        ctx.moveTo(-12, side * 6);
+        ctx.quadraticCurveTo(-30, side * (10 + Math.sin(game.time * 3 + boat.phase) * 3), -55, side * 16);
+        ctx.stroke();
+
+        // Secondary thin water ripple (glassy)
+        ctx.strokeStyle = 'rgba(186, 230, 253, 0.5)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(-5, side * 9);
+        ctx.quadraticCurveTo(-25, side * (16 + Math.cos(game.time * 2 + boat.phase) * 4), -45, side * 22);
         ctx.stroke();
       });
       ctx.restore();
-      ctx.fillStyle = 'rgba(0,0,0,0.18)';
-      ctx.beginPath();
-      ctx.ellipse(0, 10, 22, 5, 0, 0, Math.PI * 2);
-      ctx.fill();
-      const hull = ctx.createLinearGradient(-22, 1, 22, 11);
-      hull.addColorStop(0, '#5f2c14');
-      hull.addColorStop(0.48, '#9a5a2f');
-      hull.addColorStop(1, '#3f1d10');
-      ctx.fillStyle = hull;
-      ctx.beginPath();
-      ctx.moveTo(-20, 1);
-      ctx.quadraticCurveTo(0, 16, 22, 1);
-      ctx.lineTo(15, 11);
-      ctx.lineTo(-14, 11);
-      ctx.closePath();
-      ctx.fill();
-      if (boat.type === 'speedboat') {
-        ctx.fillStyle = '#f8fafc';
-        drawRoundRect(ctx, -3, -5, 19, 10, 4);
-        ctx.fill();
-        ctx.fillStyle = '#7dd3fc';
-        drawRoundRect(ctx, 3, -3, 8, 5, 2);
-        ctx.fill();
+
+      // --- Drop Shadow for floating 3D effect ---
+      ctx.shadowColor = 'rgba(2, 44, 34, 0.4)';
+      ctx.shadowBlur = 12;
+      ctx.shadowOffsetY = 6;
+      ctx.shadowOffsetX = -2;
+
+      // Ensure boats face right (positive X) natively so the wake appears behind them properly
+      // Adjust orientation based on the generated AI assets (the AI assets point left, so we flip them to point right)
+      ctx.scale(-1, 1);
+
+      if (boat.type === 'speedboat' && textures.stylizedSpeedboatTransparent) {
+        ctx.drawImage(textures.stylizedSpeedboatTransparent, -45, -45, 90, 90);
+      } else if (boat.type !== 'speedboat' && textures.stylizedSailboatTransparent) {
+        ctx.drawImage(textures.stylizedSailboatTransparent, -50, -50, 100, 100);
       } else {
-        ctx.strokeStyle = '#f8fafc';
-        ctx.lineWidth = 2;
+        // Fallback simple shapes if textures fail to load
+        ctx.fillStyle = '#f8fafc';
         ctx.beginPath();
-        ctx.moveTo(0, 1);
-        ctx.lineTo(0, -23);
-        ctx.stroke();
-        const sail = ctx.createLinearGradient(2, -21, 17, -3);
-        sail.addColorStop(0, '#ffffff');
-        sail.addColorStop(1, '#c7e8ff');
-        ctx.fillStyle = sail;
-        ctx.beginPath();
-        ctx.moveTo(2, -21);
-        ctx.lineTo(2, -2);
-        ctx.lineTo(17, -3);
-        ctx.closePath();
+        ctx.ellipse(0, 0, 20, 10, 0, 0, Math.PI * 2);
         ctx.fill();
       }
       ctx.restore();
@@ -4478,30 +4501,7 @@ const RRGCanvasGame = () => {
       const icon = item.kind === 'money' ? '💰' : item.kind === 'diamond' ? '💎' : item.kind === 'chest' ? '🎁' : item.kind === 'reward' ? '💡' : '💣';
       const color = item.kind === 'penalty' ? '#ef4444' : item.kind === 'reward' ? '#fde047' : item.kind === 'diamond' ? '#c084fc' : '#facc15';
       const zoneRadius = getRrgItemRadius(item);
-      if (zoneRadius > 0) {
-        const pulse = 0.5 + Math.sin(time * 2.4 + item.x) * 0.18;
-        ctx.save();
-        ctx.globalAlpha = item.kind === 'reward' ? 0.13 + pulse * 0.05 : 0.11 + pulse * 0.05;
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(pos.px, pos.py, zoneRadius * CELL, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 0.55 + pulse * 0.16;
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 2.5;
-        ctx.setLineDash([14, 10]);
-        ctx.lineDashOffset = -time * 28;
-        ctx.beginPath();
-        ctx.arc(pos.px, pos.py, zoneRadius * CELL, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.fillStyle = item.kind === 'reward' ? 'rgba(113, 63, 18, 0.78)' : 'rgba(127, 29, 29, 0.78)';
-        ctx.font = 'bold 11px Inter';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(item.kind === 'reward' ? 'ZON GANJARAN' : 'ZON DENDA', pos.px, pos.py + zoneRadius * CELL + 14);
-        ctx.restore();
-      }
+      // Removed visual zone radius drawing to keep the map clean
       // Draw Beautiful Custom Vectors instead of Emojis
       ctx.globalAlpha = 1;
       ctx.save();

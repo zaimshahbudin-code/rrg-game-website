@@ -6001,7 +6001,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center justify-between w-full md:w-auto">
             <div className="flex items-center gap-3">
-              <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm"><img src="/assets/logo.png" alt="Logo" className="w-7 h-7 object-contain" /></div>
+              <img src="/assets/logo.png" alt="Logo" className="h-12 w-auto object-contain drop-shadow-lg scale-125 ml-2 mr-1" />
               <div>
                 <h1 className="text-xl font-bold tracking-tight">{lang === 'en' ? 'Form 2 Isometric Transformations' : 'Transformasi Isometri Tingkatan 2'}</h1>
                 <span className="text-blue-200 text-xs tracking-wider uppercase font-semibold">{lang === 'en' ? 'Form 2 Mathematics - Chapter 11' : 'Matematik Tingkatan 2 - Bab 11'}</span>

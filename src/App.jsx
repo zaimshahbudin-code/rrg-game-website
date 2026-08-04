@@ -6003,7 +6003,7 @@ export default function App() {
             <div className="flex items-center gap-3">
               <img src="/assets/logo.png" alt="Logo" className="h-12 w-auto object-contain drop-shadow-lg scale-125 ml-2 mr-1" />
               <div>
-                <h1 className="text-xl font-bold tracking-tight">{lang === 'en' ? 'Form 2 Isometric Transformations' : 'Transformasi Isometri Tingkatan 2'}</h1>
+                <h1 className="text-xl font-bold tracking-tight">{lang === 'en' ? 'Isometric Transformations' : 'Transformasi Isometri'}</h1>
                 <span className="text-blue-200 text-xs tracking-wider uppercase font-semibold">{lang === 'en' ? 'Form 2 Mathematics - Chapter 11' : 'Matematik Tingkatan 2 - Bab 11'}</span>
               </div>
             </div>

@@ -5994,7 +5994,7 @@ export default function App() {
   }
 
   return (
-    <div className="apple-page min-h-screen bg-slate-50 text-slate-800 font-sans pb-12 relative scroll-smooth">
+    <div className={`apple-page bg-slate-50 text-slate-800 font-sans relative scroll-smooth ${activeTab === 'rrgs' ? 'pb-0 h-screen overflow-hidden' : 'pb-12 min-h-screen'}`}>
       
       {/* HEADER & NAVIGASI STICKY */}
       <header className="sticky top-0 z-50 bg-blue-700 text-white shadow-lg">
@@ -6059,27 +6059,27 @@ export default function App() {
       </header>
 
       {/* BANNER SEKSYEN */}
-      <div className="apple-hero bg-gradient-to-b from-blue-700 to-indigo-800 text-white py-12 px-6 shadow-inner mb-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-4 leading-tight">
-            {activeTab === 'nota' && (lang === 'en' ? "Comprehensive Notes & Tutorials" : "Nota Komprehensif & Tutorial")}
-            {activeTab === 'makmal' && (lang === 'en' ? "Interactive Cartesian Plane Lab" : "Makmal Satah Cartes Interaktif")}
-            {activeTab === 'kuiz' && (lang === 'en' ? "Mind Test: Visual Quiz" : "Uji Minda: Kuiz Visual")}
-            {activeTab === 'rrgs' && "Running Rangers Game: Super"}
-          </h2>
-          <p className="text-blue-100 text-lg max-w-2xl mx-auto">
-            {activeTab === 'nota' && (lang === 'en' ? "Master translation, reflection, rotation, isometry, and rotational symmetry through clear step-by-step visuals." : "Kuasai translasi, pantulan, putaran, isometri dan simetri putaran melalui visual langkah demi langkah.")}
-            {activeTab === 'makmal' && (lang === 'en' ? "Draw shapes, adjust transformation values, and watch every coordinate move on the Cartesian plane." : "Lakar bentuk, ubah nilai transformasi, dan lihat setiap koordinat bergerak pada satah Cartes.")}
-            {activeTab === 'kuiz' && (lang === 'en' ? "Practise image coordinates with visual questions that reveal the solution after each answer." : "Latih koordinat imej dengan soalan visual yang menunjukkan penyelesaian selepas setiap jawapan.")}
-            {activeTab === 'rrgs' && (lang === 'en' ? "Play the original RRGs mission with color dice, transformation cards, paid hints, coordinate selection, minimap, collectibles, and live island effects." : "Main misi RRGs asal dengan dadu warna, kad transformasi, hint berbayar, pilihan koordinat, minimap, item ganjaran dan efek pulau hidup.")}
-          </p>
-          <div className="apple-hero-metrics" aria-label={lang === 'en' ? 'Learning highlights' : 'Sorotan pembelajaran'}>
-            <span>{lang === 'en' ? 'Visual steps' : 'Langkah visual'}</span>
-            <span>{lang === 'en' ? 'Live coordinate lab' : 'Makmal koordinat live'}</span>
-            <span>{lang === 'en' ? 'Mission game' : 'Game misi'}</span>
+      {activeTab !== 'rrgs' && (
+        <div className="apple-hero bg-gradient-to-b from-blue-700 to-indigo-800 text-white py-12 px-6 shadow-inner mb-8">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 leading-tight">
+              {activeTab === 'nota' && (lang === 'en' ? "Comprehensive Notes & Tutorials" : "Nota Komprehensif & Tutorial")}
+              {activeTab === 'makmal' && (lang === 'en' ? "Interactive Cartesian Plane Lab" : "Makmal Satah Cartes Interaktif")}
+              {activeTab === 'kuiz' && (lang === 'en' ? "Mind Test: Visual Quiz" : "Uji Minda: Kuiz Visual")}
+            </h2>
+            <p className="text-blue-100 text-lg max-w-2xl mx-auto">
+              {activeTab === 'nota' && (lang === 'en' ? "Master translation, reflection, rotation, isometry, and rotational symmetry through clear step-by-step visuals." : "Kuasai translasi, pantulan, putaran, isometri dan simetri putaran melalui visual langkah demi langkah.")}
+              {activeTab === 'makmal' && (lang === 'en' ? "Draw shapes, adjust transformation values, and watch every coordinate move on the Cartesian plane." : "Lakar bentuk, ubah nilai transformasi, dan lihat setiap koordinat bergerak pada satah Cartes.")}
+              {activeTab === 'kuiz' && (lang === 'en' ? "Practise image coordinates with visual questions that reveal the solution after each answer." : "Latih koordinat imej dengan soalan visual yang menunjukkan penyelesaian selepas setiap jawapan.")}
+            </p>
+            <div className="apple-hero-metrics" aria-label={lang === 'en' ? 'Learning highlights' : 'Sorotan pembelajaran'}>
+              <span>{lang === 'en' ? 'Visual steps' : 'Langkah visual'}</span>
+              <span>{lang === 'en' ? 'Live coordinate lab' : 'Makmal koordinat live'}</span>
+              <span>{lang === 'en' ? 'Mission game' : 'Game misi'}</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* KANDUNGAN SEKSYEN */}
       <main className={`mx-auto ${activeTab === 'rrgs' ? 'w-full max-w-[1920px] px-2 md:px-4' : 'max-w-7xl px-4 md:px-6'}`}>
@@ -6091,9 +6091,11 @@ export default function App() {
         </div>
       </main>
 
-      <footer className="max-w-7xl mx-auto mt-16 text-center text-slate-400 text-sm border-t border-slate-200 pt-8">
-        <p>{lang === 'en' ? 'Interactive Form 2 Mathematics Module' : 'Modul Matematik Tingkatan 2 Interaktif'} &copy; 2026</p>
-      </footer>
+      {activeTab !== 'rrgs' && (
+        <footer className="max-w-7xl mx-auto mt-16 text-center text-slate-400 text-sm border-t border-slate-200 pt-8">
+          <p>{lang === 'en' ? 'Interactive Form 2 Mathematics Module' : 'Modul Matematik Tingkatan 2 Interaktif'} &copy; 2026</p>
+        </footer>
+      )}
     </div>
   );
 }

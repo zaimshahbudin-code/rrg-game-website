@@ -1498,8 +1498,8 @@ body {
 
 .rrg-canvas-game {
   position: relative;
-  height: min(88vh, 1200px);
-  min-height: 720px;
+  height: calc(100vh - 120px);
+  min-height: 500px;
   width: 100%;
   overflow: hidden;
   border-radius: 12px;

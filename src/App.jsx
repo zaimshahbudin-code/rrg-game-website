@@ -4435,7 +4435,7 @@ const RRGCanvasGame = () => {
       const scaleY = options.scaleY ?? 1;
       const shadowScale = options.shadowScale ?? 1;
       ctx.save();
-      ctx.translate(x, y + bounce);
+      ctx.translate(x, y + bounce - size * 0.64);
       ctx.globalAlpha = alpha;
       ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
       ctx.beginPath();

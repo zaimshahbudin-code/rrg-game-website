@@ -823,14 +823,19 @@ Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
 
       const result = await model.generateContent(prompt);
       let responseText = result.response.text().trim();
-      if (responseText.startsWith('```json')) {
-        responseText = responseText.substring(7, responseText.length - 3).trim();
-      } else if (responseText.startsWith('```')) {
-        responseText = responseText.substring(3, responseText.length - 3).trim();
-      }
       
-      const points = JSON.parse(responseText);
-      if (!Array.isArray(points) || points.length < 3) throw new Error("Invalid output");
+      let points;
+      try {
+        // Extract array brackets even if there is surrounding text/markdown
+        const match = responseText.match(/\[[\s\S]*\]/);
+        const jsonStr = match ? match[0] : responseText;
+        points = JSON.parse(jsonStr);
+      } catch (parseError) {
+        console.error("Raw AI Response:", responseText);
+        throw new Error("Invalid JSON format from AI");
+      }
+
+      if (!Array.isArray(points) || points.length < 3) throw new Error("Invalid points array");
       
       setVertices(points.map(p => ({ x: Math.round(p.x), y: Math.round(p.y) })));
       setSystemMessage({

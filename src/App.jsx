@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { doc, getDoc, serverTimestamp, setDoc, getDocs, collection, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, serverTimestamp, setDoc, getDocs, collection, updateDoc, query, where, orderBy, limit } from 'firebase/firestore';
 import { auth, db, isFirebaseConfigured, saveQuizScore, saveGameRecord, subscribeToAuth } from './firebase';
 import AdminDashboard from './AdminDashboard';
 import { GoogleGenerativeAI } from '@google/generative-ai';
@@ -1600,6 +1600,35 @@ const SectionKuiz = ({ lang, sessionUser }) => {
   const [showScore, setShowScore] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isAnswered, setIsAnswered] = useState(false);
+  
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [fetchingLeaderboard, setFetchingLeaderboard] = useState(false);
+
+  useEffect(() => {
+    if (showScore) {
+      const fetchLeaderboard = async () => {
+        setFetchingLeaderboard(true);
+        try {
+          const q = query(
+            collection(db, 'scores'),
+            where('type', '==', 'kuiz'),
+            orderBy('percentage', 'desc'),
+            limit(5)
+          );
+          const querySnapshot = await getDocs(q);
+          const topScores = [];
+          querySnapshot.forEach((doc) => {
+            topScores.push({ id: doc.id, ...doc.data() });
+          });
+          setLeaderboard(topScores);
+        } catch (error) {
+          console.error("Error fetching leaderboard:", error);
+        }
+        setFetchingLeaderboard(false);
+      };
+      fetchLeaderboard();
+    }
+  }, [showScore]);
 
   if (quizData.length === 0) return <div className="flex items-center justify-center min-h-[400px] text-slate-500"><Loader2 className="animate-spin mr-2"/> {lang === 'en' ? 'Generating questions...' : 'Menjana soalan...'}</div>;
 
@@ -1622,7 +1651,6 @@ const SectionKuiz = ({ lang, sessionUser }) => {
     } else {
       setShowScore(true);
       if (sessionUser && sessionUser.role !== 'admin') {
-        // Save score if it's a student (admins don't need their test scores saved, or maybe they do? Let's just save for all logged in users)
         saveQuizScore(sessionUser, score, quizData.length);
       }
     }
@@ -1635,6 +1663,7 @@ const SectionKuiz = ({ lang, sessionUser }) => {
     setShowScore(false);
     setSelectedAnswer(null);
     setIsAnswered(false);
+    setLeaderboard([]);
   };
 
   const getQuestionText = () => {
@@ -1687,7 +1716,7 @@ const SectionKuiz = ({ lang, sessionUser }) => {
     }
 
     return (
-      <div className="max-w-xl mx-auto bg-white rounded-3xl shadow-sm border border-slate-200 p-8 text-center animate-in fade-in zoom-in duration-500">
+      <div className="max-w-2xl mx-auto bg-white rounded-3xl shadow-sm border border-slate-200 p-8 text-center animate-in fade-in zoom-in duration-500">
         <div className="flex justify-center mb-6">
           <div className="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center">
             <Trophy className="text-yellow-500 w-12 h-12" />
@@ -1695,12 +1724,43 @@ const SectionKuiz = ({ lang, sessionUser }) => {
         </div>
         <h2 className="text-3xl font-bold text-slate-800 mb-2">{lang === 'en' ? 'Session Completed!' : 'Sesi Tamat!'}</h2>
         <p className="text-slate-500 mb-6">{message}</p>
+        
         <div className="bg-slate-50 rounded-2xl p-6 mb-8 border border-slate-200">
           <div className="text-5xl font-extrabold text-blue-600 mb-2">
             {score} <span className="text-2xl text-slate-400">/ {quizData.length}</span>
           </div>
           <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">{lang === 'en' ? 'Current Score' : 'Skor Semasa'}</p>
         </div>
+
+        {/* Leaderboard Section */}
+        <div className="mb-8 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+          <div className="bg-slate-800 text-white p-3 font-semibold text-sm tracking-wide uppercase flex items-center justify-center gap-2">
+            <Trophy className="w-4 h-4 text-yellow-400" />
+            {lang === 'en' ? 'Top 5 Leaderboard' : 'Papan Pendahulu Teratas (Top 5)'}
+          </div>
+          <div className="p-0">
+            {fetchingLeaderboard ? (
+              <div className="p-6 flex justify-center text-slate-400"><Loader2 className="w-6 h-6 animate-spin" /></div>
+            ) : leaderboard.length > 0 ? (
+              <ul className="divide-y divide-slate-100">
+                {leaderboard.map((item, index) => (
+                  <li key={item.id} className={`flex items-center justify-between p-4 ${index === 0 ? 'bg-yellow-50/50' : index === 1 ? 'bg-slate-50/50' : index === 2 ? 'bg-orange-50/30' : ''}`}>
+                    <div className="flex items-center gap-4">
+                      <div className={`w-8 h-8 flex items-center justify-center rounded-full font-bold text-sm ${index === 0 ? 'bg-yellow-400 text-white' : index === 1 ? 'bg-slate-300 text-slate-700' : index === 2 ? 'bg-orange-300 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                        {index + 1}
+                      </div>
+                      <div className="font-semibold text-slate-700">{item.userName || 'Unknown'}</div>
+                    </div>
+                    <div className="font-mono font-bold text-blue-600">{item.percentage}%</div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="p-6 text-sm text-slate-400">{lang === 'en' ? 'No records yet. Be the first!' : 'Belum ada rekod. Jadilah yang pertama!'}</div>
+            )}
+          </div>
+        </div>
+
         <button onClick={restartQuiz} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-blue-200">
           <RefreshCw className="w-5 h-5" /> {lang === 'en' ? 'Play Again (New Questions)' : 'Main Semula (Soalan Baharu)'}
         </button>

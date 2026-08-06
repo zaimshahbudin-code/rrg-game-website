@@ -106,3 +106,5 @@ export const subscribeToAuth = (callback) => {
 };
 
 export const logout = () => auth.signOut();
+
+export { collection, query, orderBy, limit, getDocs, where };

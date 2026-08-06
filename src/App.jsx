@@ -1361,7 +1361,6 @@ Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
   );
 };
 
-
 // =====================================================================
 // 3. KOMPONEN KUIZ (SEKSYEN 3)
 // =====================================================================
@@ -1377,7 +1376,26 @@ const generateQuestionsData = (num = 10) => {
     [{x:0,y:0}, {x:2,y:0}, {x:2,y:2}, {x:0,y:2}], 
     [{x:0,y:0}, {x:3,y:0}, {x:2,y:2}, {x:1,y:2}], 
     [{x:0,y:0}, {x:1,y:2}, {x:0,y:4}, {x:-1,y:2}], 
-    [{x:0,y:0}, {x:2,y:0}, {x:2,y:1}, {x:1,y:1}, {x:1,y:3}, {x:0,y:3}] 
+    [{x:0,y:0}, {x:2,y:0}, {x:2,y:1}, {x:1,y:1}, {x:1,y:3}, {x:0,y:3}],
+    [{x:0,y:0}, {x:1,y:0}, {x:1,y:3}, {x:2,y:3}, {x:2,y:4}, {x:-1,y:4}, {x:-1,y:3}, {x:0,y:3}],
+    [{x:-1,y:0}, {x:1,y:0}, {x:1,y:2}, {x:2,y:0}, {x:3,y:2}, {x:3,y:4}, {x:1,y:4}, {x:1,y:3}, {x:-1,y:3}, {x:-1,y:4}, {x:-3,y:4}, {x:-3,y:2}, {x:-2,y:0}],
+    [{x:0,y:2}, {x:1,y:4}, {x:-1,y:4}],
+    [{x:0,y:-2}, {x:1,y:-4}, {x:-1,y:-4}],
+    [{x:0,y:0}, {x:2,y:1}, {x:1,y:3}, {x:-1,y:3}, {x:-2,y:1}],
+    [{x:0,y:0}, {x:2,y:0}, {x:3,y:2}, {x:2,y:4}, {x:0,y:4}, {x:-1,y:2}],
+    [{x:-2,y:0}, {x:2,y:0}, {x:3,y:1}, {x:1,y:3}, {x:-1,y:3}, {x:-3,y:1}],
+    [{x:0,y:3}, {x:1,y:1}, {x:3,y:1}, {x:1,y:-1}, {x:2,y:-3}, {x:0,y:-1}, {x:-2,y:-3}, {x:-1,y:-1}, {x:-3,y:1}, {x:-1,y:1}],
+    [{x:-2,y:0}, {x:2,y:0}, {x:2,y:3}, {x:0,y:5}, {x:-2,y:3}],
+    [{x:0,y:0}, {x:1,y:1}, {x:2,y:0}, {x:2,y:2}, {x:0,y:2}],
+    [{x:0,y:0}, {x:4,y:0}, {x:4,y:1}, {x:1,y:1}, {x:1,y:4}, {x:0,y:4}],
+    [{x:-1,y:0}, {x:1,y:0}, {x:1,y:1}, {x:2,y:1}, {x:2,y:3}, {x:1,y:3}, {x:1,y:4}, {x:-1,y:4}, {x:-1,y:3}, {x:-2,y:3}, {x:-2,y:1}, {x:-1,y:1}],
+    [{x:0,y:0}, {x:2,y:0}, {x:1,y:-3}],
+    [{x:0,y:0}, {x:2,y:2}, {x:0,y:4}, {x:-2,y:2}],
+    [{x:0,y:0}, {x:3,y:1}, {x:4,y:3}, {x:1,y:4}],
+    [{x:0,y:0}, {x:4,y:0}, {x:5,y:2}, {x:1,y:2}],
+    [{x:-1,y:0}, {x:3,y:0}, {x:3,y:1}, {x:2,y:1}, {x:2,y:4}, {x:0,y:4}, {x:0,y:1}, {x:-1,y:1}],
+    [{x:0,y:0}, {x:2,y:0}, {x:2,y:4}, {x:0,y:4}, {x:0,y:2}, {x:-2,y:2}, {x:-2,y:0}],
+    [{x:0,y:0}, {x:1,y:-2}, {x:3,y:-2}, {x:4,y:0}, {x:2,y:2}]
   ];
 
   const questions = [];
@@ -1398,15 +1416,12 @@ const generateQuestionsData = (num = 10) => {
     let imageVertices = [];
 
     if (type === 'translasi') {
-      let dx = getRandomInt(-5, 5); let dy = getRandomInt(-5, 5);
-      if (dx === 0 && dy === 0) dx = 3; 
-      let newX = x + dx; let newY = y + dy;
-      correctStr = `(${newX}, ${newY})`;
-      
-      q.dx = dx; q.dy = dy; q.newX = newX; q.newY = newY;
-      
-      imageVertices = vertices.map(v => ({ x: v.x + dx, y: v.y + dy }));
-      q.visualData = { type: 'translasi', pt: {x, y}, correct: {x: newX, y: newY}, detail: {dx, dy}, vertices, imageVertices, ptLabel };
+      const dx = getRandomInt(-5, 5);
+      const dy = getRandomInt(-5, 5);
+      correctStr = `(${x + dx}, ${y + dy})`;
+      q.dx = dx; q.dy = dy; q.newX = x + dx; q.newY = y + dy;
+      imageVertices = vertices.map(v => ({x: v.x + dx, y: v.y + dy}));
+      q.visualData = { type: 'translasi', pt: {x, y}, correct: {x: x + dx, y: y + dy}, detail: `(${dx}, ${dy})`, vertices, imageVertices, ptLabel };
       distractors = [`(${x - dx}, ${y - dy})`, `(${x + dy}, ${y + dx})`, `(${x - dy}, ${y - dx})`];
     } 
     else if (type === 'pantulan') {
@@ -1433,22 +1448,25 @@ const generateQuestionsData = (num = 10) => {
     } 
     else { 
       const angles = [
-        { labelCode: '90cw', label: '90° ikut arah jam', calc: (v) => ({nx: v.y, ny: -v.x}) },
-        { labelCode: '90ccw', label: '90° lawan arah jam', calc: (v) => ({nx: -v.y, ny: v.x}) },
-        { labelCode: '180', label: '180°', calc: (v) => ({nx: -v.x, ny: -v.y}) }
+        { labelCode: '90cw', label: '90° ikut arah jam', calc: (v, cx, cy) => ({nx: (v.y - cy) + cx, ny: -(v.x - cx) + cy}) },
+        { labelCode: '90ccw', label: '90° lawan arah jam', calc: (v, cx, cy) => ({nx: -(v.y - cy) + cx, ny: (v.x - cx) + cy}) },
+        { labelCode: '180', label: '180°', calc: (v, cx, cy) => ({nx: -(v.x - cx) + cx, ny: -(v.y - cy) + cy}) }
       ];
       const angleObj = angles[getRandomInt(0, angles.length - 1)];
-      let {nx, ny} = angleObj.calc({x, y});
-      correctStr = `(${nx}, ${ny})`;
-      distractors = [`(${-x}, ${y})`, `(${x}, ${-y})`, `(${-ny}, ${nx})`];
+      const cx = getRandomInt(-3, 3);
+      const cy = getRandomInt(-3, 3);
       
-      q.angleCode = angleObj.labelCode; q.newX = nx; q.newY = ny;
+      let {nx, ny} = angleObj.calc({x, y}, cx, cy);
+      correctStr = `(${nx}, ${ny})`;
+      distractors = [`(${-x + cx}, ${y + cy})`, `(${x - cy}, ${-y + cx})`, `(${nx + 1}, ${ny + 1})`, `(${nx - 2}, ${ny + 2})`];
+      
+      q.angleCode = angleObj.labelCode; q.newX = nx; q.newY = ny; q.cx = cx; q.cy = cy;
       
       imageVertices = vertices.map(v => {
-        let {nx: vnx, ny: vny} = angleObj.calc({x: v.x, y: v.y});
+        let {nx: vnx, ny: vny} = angleObj.calc({x: v.x, y: v.y}, cx, cy);
         return {x: vnx, y: vny};
       });
-      q.visualData = { type: 'putaran', pt: {x, y}, correct: {x: nx, y: ny}, detail: angleObj.label, vertices, imageVertices, ptLabel };
+      q.visualData = { type: 'putaran', pt: {x, y}, correct: {x: nx, y: ny}, detail: angleObj.label, vertices, imageVertices, ptLabel, cx, cy };
     }
 
     let uniqueD = [...new Set(distractors)].filter(d => d !== correctStr);
@@ -1632,8 +1650,8 @@ const SectionKuiz = ({ lang, sessionUser }) => {
     } else {
       const angleEn = q.angleCode === '90cw' ? '90° clockwise' : q.angleCode === '90ccw' ? '90° anticlockwise' : '180°';
       return lang === 'en'
-        ? `The diagram shows an object with vertex ${q.ptLabel}(${q.x}, ${q.y}). The object is rotated ${angleEn} at the origin (0,0). Find the coordinates of the image vertex ${q.ptLabel}'.`
-        : `Graf menunjukkan sebuah objek dengan bucu ${q.ptLabel}(${q.x}, ${q.y}). Objek ini melalui rotasi ${q.angleCode === '90cw' ? '90° ikut arah jam' : q.angleCode === '90ccw' ? '90° lawan arah jam' : '180°'} pada origin (0,0). Cari koordinat bagi imej bucu ${q.ptLabel}'.`;
+        ? `The diagram shows an object with vertex ${q.ptLabel}(${q.x}, ${q.y}). The object is rotated ${angleEn} at the center (${q.cx}, ${q.cy}). Find the coordinates of the image vertex ${q.ptLabel}'.`
+        : `Graf menunjukkan sebuah objek dengan bucu ${q.ptLabel}(${q.x}, ${q.y}). Objek ini melalui rotasi ${q.angleCode === '90cw' ? '90° ikut arah jam' : q.angleCode === '90ccw' ? '90° lawan arah jam' : '180°'} pada pusat (${q.cx}, ${q.cy}). Cari koordinat bagi imej bucu ${q.ptLabel}'.`;
     }
   };
 
@@ -1650,8 +1668,8 @@ const SectionKuiz = ({ lang, sessionUser }) => {
     } else {
       const angleEn = q.angleCode === '90cw' ? '90° clockwise' : q.angleCode === '90ccw' ? '90° anticlockwise' : '180°';
       return lang === 'en'
-        ? `Rotation of ${angleEn} will change the original position (${q.x}, ${q.y}) to (${q.newX}, ${q.newY}).`
-        : `Rotasi ${q.angleCode === '90cw' ? '90° ikut arah jam' : q.angleCode === '90ccw' ? '90° lawan arah jam' : '180°'} menukarkan koordinat asal (${q.x}, ${q.y}) kepada imej (${q.newX}, ${q.newY}).`;
+        ? `Rotation ${angleEn} at center (${q.cx}, ${q.cy}). The point moves from (${q.x}, ${q.y}) to its image at (${q.newX}, ${q.newY}).`
+        : `Rotasi ${q.angleCode === '90cw' ? '90° ikut arah jam' : q.angleCode === '90ccw' ? '90° lawan arah jam' : '180°'} pada pusat (${q.cx}, ${q.cy}) mengubah kedudukan dari (${q.x}, ${q.y}) kepada (${q.newX}, ${q.newY}).`;
     }
   };
 

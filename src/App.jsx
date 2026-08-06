@@ -428,34 +428,6 @@ const SectionNota = ({ lang }) => {
         </div>
       </section>
 
-      <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h3 className="text-lg font-bold text-slate-900">{lang === 'en' ? 'Note Theme Colors' : 'Warna Layout Translasi & Pantulan'}</h3>
-            <p className="text-sm text-slate-600 mt-1">
-              {lang === 'en'
-                ? 'Choose a shared palette so the note sections look consistent and easier to read.'
-                : 'Pilih satu palette yang sama supaya kedua-dua bahagian nampak konsisten dan lebih kemas.'}
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            {Object.values(NOTE_LAYOUT_THEMES).map((theme) => {
-              const active = layoutThemeKey === theme.key;
-              return (
-                <button
-                  key={theme.key}
-                  type="button"
-                  onClick={() => setLayoutThemeKey(theme.key)}
-                  className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-bold transition-all ${active ? theme.buttonActive : theme.buttonIdle}`}
-                >
-                  <span className={`h-3 w-3 rounded-full bg-gradient-to-r ${theme.swatch}`} />
-                  {lang === 'en' ? theme.label.en : theme.label.ms}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
       {/* 11.2 Translasi */}
       <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">

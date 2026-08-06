@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, getDoc, serverTimestamp, setDoc, getDocs, collection, updateDoc } from 'firebase/firestore';
-import { auth, db, isFirebaseConfigured } from './firebase';
+import { auth, db, isFirebaseConfigured, saveQuizScore, saveGameRecord } from './firebase';
 import AdminDashboard from './AdminDashboard';
 import {
   BookOpen, CheckCircle, Maximize, MousePointerClick, Activity,
@@ -1514,7 +1514,7 @@ const CartesianGrid = ({ visualData, isAnswered, lang }) => {
   );
 };
 
-const SectionKuiz = ({ lang }) => {
+const SectionKuiz = ({ lang, sessionUser }) => {
   const [quizData, setQuizData] = useState(() => generateQuestionsData(10));
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
@@ -1542,6 +1542,10 @@ const SectionKuiz = ({ lang }) => {
       setIsAnswered(false);
     } else {
       setShowScore(true);
+      if (sessionUser && sessionUser.role !== 'admin') {
+        // Save score if it's a student (admins don't need their test scores saved, or maybe they do? Let's just save for all logged in users)
+        saveQuizScore(sessionUser, score, quizData.length);
+      }
     }
   };
 
@@ -2372,7 +2376,7 @@ const SectionRRGs = () => {
 
 
 
-const RRGCanvasGame = () => {
+const RRGCanvasGame = ({ sessionUser }) => {
   const canvasRef = useRef(null);
   const miniMapRef = useRef(null);
   const gameRef = useRef(null);
@@ -2434,6 +2438,18 @@ const RRGCanvasGame = () => {
       diceRolling: !!game.diceRolling,
     });
   }, []);
+
+  // Save game record when game is over
+  useEffect(() => {
+    if (hud.gameOver && sessionUser && sessionUser.role !== 'admin') {
+      // Find winner (highest score)
+      const sortedPlayers = [...hud.players].sort((a, b) => b.score - a.score);
+      const winner = sortedPlayers[0];
+      if (winner) {
+        saveGameRecord(sessionUser, winner.name, winner.score, hud.players.length);
+      }
+    }
+  }, [hud.gameOver, sessionUser, hud.players]);
 
   const nextActiveIndex = (game, fromIndex) => {
     for (let step = 1; step <= game.players.length * 2; step++) {
@@ -6094,8 +6110,8 @@ export default function App() {
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           {activeTab === 'nota' && <SectionNota lang={lang} />}
           {activeTab === 'makmal' && <SectionMakmal lang={lang} />}
-          {activeTab === 'kuiz' && <SectionKuiz lang={lang} />}
-          {activeTab === 'rrgs' && <RRGCanvasGame />}
+          {activeTab === 'kuiz' && <SectionKuiz lang={lang} sessionUser={sessionUser} />}
+          {activeTab === 'rrgs' && <RRGCanvasGame sessionUser={sessionUser} />}
           {activeTab === 'admin' && sessionUser.role === 'admin' && <AdminDashboard />}
         </div>
       </main>

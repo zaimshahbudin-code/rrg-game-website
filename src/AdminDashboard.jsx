@@ -1,40 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase';
-import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
-import { Users, CheckCircle2, XCircle, RefreshCw, ShieldAlert, Trash2 } from 'lucide-react';
+import { collection, getDocs, doc, updateDoc, query, orderBy, limit } from 'firebase/firestore';
+import { Users, CheckCircle2, XCircle, RefreshCw, ShieldAlert, Trophy, Target } from 'lucide-react';
 
 const AdminDashboard = () => {
+  const [activeTab, setActiveTab] = useState('users');
   const [users, setUsers] = useState([]);
+  const [quizScores, setQuizScores] = useState([]);
+  const [gameScores, setGameScores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const fetchUsers = async () => {
+  const fetchDashboardData = async () => {
     setLoading(true);
     setError('');
     try {
+      // Fetch Users
       const usersCol = collection(db, 'users');
       const userSnapshot = await getDocs(usersCol);
       const userList = userSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       
-      // Sort: Pending users first, then by date
       userList.sort((a, b) => {
         if (a.isApproved === b.isApproved) {
           return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
         }
         return a.isApproved ? 1 : -1;
       });
-      
       setUsers(userList);
+
+      // Fetch Scores
+      const scoresCol = collection(db, 'scores');
+      const q = query(scoresCol, orderBy('date', 'desc'), limit(100));
+      const scoreSnapshot = await getDocs(q);
+      const scoresList = scoreSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      
+      setQuizScores(scoresList.filter(s => s.type === 'kuiz').sort((a, b) => b.percentage - a.percentage));
+      setGameScores(scoresList.filter(s => s.type === 'rrg_game').sort((a, b) => b.winnerScore - a.winnerScore));
+      
     } catch (err) {
-      console.error("Error fetching users:", err);
-      setError('Gagal memuat turun senarai pengguna dari database.');
+      console.error("Error fetching dashboard data:", err);
+      setError('Gagal memuat turun data dari database.');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchDashboardData();
   }, []);
 
   const handleToggleApproval = async (userId, currentStatus) => {
@@ -91,10 +103,32 @@ const AdminDashboard = () => {
             <p className="text-slate-300 mt-2">Uruskan kelulusan dan peranan pelajar yang mendaftar.</p>
           </div>
           <button 
-            onClick={fetchUsers}
+            onClick={fetchDashboardData}
             className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg font-medium transition-colors"
           >
             <RefreshCw className="w-4 h-4" /> Refresh Data
+          </button>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex border-b border-slate-200 bg-slate-50/50">
+          <button
+            onClick={() => setActiveTab('users')}
+            className={`flex-1 py-4 px-4 text-sm font-bold flex items-center justify-center gap-2 border-b-2 transition-colors ${activeTab === 'users' ? 'border-blue-600 text-blue-700 bg-blue-50/50' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'}`}
+          >
+            <Users className="w-4 h-4" /> Pengurusan Pelajar
+          </button>
+          <button
+            onClick={() => setActiveTab('kuiz')}
+            className={`flex-1 py-4 px-4 text-sm font-bold flex items-center justify-center gap-2 border-b-2 transition-colors ${activeTab === 'kuiz' ? 'border-emerald-600 text-emerald-700 bg-emerald-50/50' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'}`}
+          >
+            <Target className="w-4 h-4" /> Papan Markah Kuiz
+          </button>
+          <button
+            onClick={() => setActiveTab('game')}
+            className={`flex-1 py-4 px-4 text-sm font-bold flex items-center justify-center gap-2 border-b-2 transition-colors ${activeTab === 'game' ? 'border-amber-500 text-amber-700 bg-amber-50/50' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'}`}
+          >
+            <Trophy className="w-4 h-4" /> Pemenang RRG
           </button>
         </div>
 
@@ -106,70 +140,160 @@ const AdminDashboard = () => {
             </div>
           )}
           
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 text-sm">
-                <th className="p-4 font-semibold">Nama / Emel</th>
-                <th className="p-4 font-semibold">Status Kelulusan</th>
-                <th className="p-4 font-semibold">Peranan (Role)</th>
-                <th className="p-4 font-semibold text-right">Tindakan</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {users.length === 0 ? (
-                <tr>
-                  <td colSpan="4" className="p-8 text-center text-slate-500">
-                    <Users className="w-12 h-12 mx-auto text-slate-300 mb-3" />
-                    Belum ada pengguna yang mendaftar.
-                  </td>
+          {activeTab === 'users' && (
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 text-sm">
+                  <th className="p-4 font-semibold">Nama / Emel</th>
+                  <th className="p-4 font-semibold">Status Kelulusan</th>
+                  <th className="p-4 font-semibold">Peranan (Role)</th>
+                  <th className="p-4 font-semibold text-right">Tindakan</th>
                 </tr>
-              ) : (
-                users.map(user => (
-                  <tr key={user.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="p-4">
-                      <div className="font-bold text-slate-800">{user.name}</div>
-                      <div className="text-sm text-slate-500">{user.email}</div>
-                      <div className="text-xs text-slate-400 mt-1">Daftar: {new Date(user.createdAt).toLocaleDateString('ms-MY')}</div>
-                    </td>
-                    <td className="p-4">
-                      {user.isApproved ? (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">
-                          <CheckCircle2 className="w-3.5 h-3.5" /> Diluluskan
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold animate-pulse">
-                          <XCircle className="w-3.5 h-3.5" /> Menunggu
-                        </span>
-                      )}
-                    </td>
-                    <td className="p-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => handleToggleApproval(user.id, user.isApproved)}
-                          className={`px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${user.isApproved ? 'bg-slate-100 text-slate-600 hover:bg-slate-200' : 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-md shadow-emerald-500/20'}`}
-                        >
-                          {user.isApproved ? 'Tarik Balik' : 'Luluskan'}
-                        </button>
-                        
-                        <button
-                          onClick={() => handleToggleRole(user.id, user.role)}
-                          title="Tukar Peranan"
-                          className="p-1.5 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-                        >
-                          <ShieldAlert className="w-4 h-4" />
-                        </button>
-                      </div>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {users.length === 0 ? (
+                  <tr>
+                    <td colSpan="4" className="p-8 text-center text-slate-500">
+                      <Users className="w-12 h-12 mx-auto text-slate-300 mb-3" />
+                      Belum ada pengguna yang mendaftar.
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  users.map(user => (
+                    <tr key={user.id} className="hover:bg-slate-50 transition-colors">
+                      <td className="p-4">
+                        <div className="font-bold text-slate-800">{user.name}</div>
+                        <div className="text-sm text-slate-500">{user.email}</div>
+                        <div className="text-xs text-slate-400 mt-1">Daftar: {new Date(user.createdAt).toLocaleDateString('ms-MY')}</div>
+                      </td>
+                      <td className="p-4">
+                        {user.isApproved ? (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">
+                            <CheckCircle2 className="w-3.5 h-3.5" /> Diluluskan
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold animate-pulse">
+                            <XCircle className="w-3.5 h-3.5" /> Menunggu
+                          </span>
+                        )}
+                      </td>
+                      <td className="p-4">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
+                          {user.role}
+                        </span>
+                      </td>
+                      <td className="p-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => handleToggleApproval(user.id, user.isApproved)}
+                            className={`px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${user.isApproved ? 'bg-slate-100 text-slate-600 hover:bg-slate-200' : 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-md shadow-emerald-500/20'}`}
+                          >
+                            {user.isApproved ? 'Tarik Balik' : 'Luluskan'}
+                          </button>
+                          
+                          <button
+                            onClick={() => handleToggleRole(user.id, user.role)}
+                            title="Tukar Peranan"
+                            className="p-1.5 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                          >
+                            <ShieldAlert className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
+
+          {activeTab === 'kuiz' && (
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-emerald-50 border-b border-emerald-200 text-emerald-800 text-sm">
+                  <th className="p-4 font-semibold">Nama Pelajar</th>
+                  <th className="p-4 font-semibold text-center">Markah</th>
+                  <th className="p-4 font-semibold text-center">Peratusan</th>
+                  <th className="p-4 font-semibold text-right">Tarikh & Masa</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {quizScores.length === 0 ? (
+                  <tr>
+                    <td colSpan="4" className="p-8 text-center text-slate-500">
+                      <Target className="w-12 h-12 mx-auto text-emerald-200 mb-3" />
+                      Belum ada rekod markah kuiz.
+                    </td>
+                  </tr>
+                ) : (
+                  quizScores.map((score, index) => (
+                    <tr key={score.id} className="hover:bg-slate-50 transition-colors">
+                      <td className="p-4">
+                        <div className="font-bold text-slate-800 flex items-center gap-2">
+                          {index === 0 && <Trophy className="w-4 h-4 text-amber-500" />}
+                          {score.userName}
+                        </div>
+                      </td>
+                      <td className="p-4 text-center font-bold text-slate-700">
+                        {score.score} / {score.total}
+                      </td>
+                      <td className="p-4 text-center">
+                        <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold ${score.percentage >= 80 ? 'bg-emerald-100 text-emerald-700' : score.percentage >= 50 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>
+                          {score.percentage}%
+                        </span>
+                      </td>
+                      <td className="p-4 text-right text-sm text-slate-500">
+                        {new Date(score.date).toLocaleString('ms-MY', { dateStyle: 'short', timeStyle: 'short' })}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
+
+          {activeTab === 'game' && (
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-amber-50 border-b border-amber-200 text-amber-800 text-sm">
+                  <th className="p-4 font-semibold">Nama Pemenang</th>
+                  <th className="p-4 font-semibold text-center">Wang Terkumpul</th>
+                  <th className="p-4 font-semibold">Dihoskan Oleh</th>
+                  <th className="p-4 font-semibold text-right">Tarikh & Masa</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {gameScores.length === 0 ? (
+                  <tr>
+                    <td colSpan="4" className="p-8 text-center text-slate-500">
+                      <Trophy className="w-12 h-12 mx-auto text-amber-200 mb-3" />
+                      Belum ada rekod pemenang permainan RRG.
+                    </td>
+                  </tr>
+                ) : (
+                  gameScores.map((score, index) => (
+                    <tr key={score.id} className="hover:bg-slate-50 transition-colors">
+                      <td className="p-4">
+                        <div className="font-bold text-slate-800 flex items-center gap-2">
+                          {index === 0 && <Trophy className="w-4 h-4 text-amber-500" />}
+                          {score.winnerName}
+                        </div>
+                      </td>
+                      <td className="p-4 text-center font-bold text-amber-600 text-lg">
+                        RM{score.winnerScore}
+                      </td>
+                      <td className="p-4 text-sm text-slate-600">
+                        {score.hostName} ({score.playerCount} Pemain)
+                      </td>
+                      <td className="p-4 text-right text-sm text-slate-500">
+                        {new Date(score.date).toLocaleString('ms-MY', { dateStyle: 'short', timeStyle: 'short' })}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

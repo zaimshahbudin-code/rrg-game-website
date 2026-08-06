@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot, updateDoc, getDocs } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot, updateDoc, getDocs, addDoc } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -63,6 +63,41 @@ export const registerWithEmail = async (name, email, password) => {
   } catch (error) {
     console.error("Error registering:", error);
     throw error;
+  }
+};
+
+// Score Saving Helpers
+export const saveQuizScore = async (user, score, total) => {
+  if (!user || !user.uid) return;
+  try {
+    await addDoc(collection(db, 'scores'), {
+      type: 'kuiz',
+      userId: user.uid,
+      userName: user.name || user.email,
+      score: score,
+      total: total,
+      percentage: Math.round((score / total) * 100),
+      date: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error("Error saving quiz score:", error);
+  }
+};
+
+export const saveGameRecord = async (user, gameWinnerName, gameWinnerScore, playerCount) => {
+  if (!user || !user.uid) return;
+  try {
+    await addDoc(collection(db, 'scores'), {
+      type: 'rrg_game',
+      hostId: user.uid,
+      hostName: user.name || user.email,
+      winnerName: gameWinnerName,
+      winnerScore: gameWinnerScore,
+      playerCount: playerCount,
+      date: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error("Error saving game record:", error);
   }
 };
 

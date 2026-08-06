@@ -849,8 +849,8 @@ Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
       const points = getLocalShapeFromPrompt(cleanedPrompt);
       setVertices(points);
       setSystemMessage({
-        type: "success",
-        text: lang === "en" ? "Shape studio created: " + cleanedPrompt : "Studio bentuk menjana: " + cleanedPrompt
+        type: "error",
+        text: `AI Error: ${e.message || 'Unknown error'}. Gagal menjana ${cleanedPrompt}.`
       });
     } finally {
       setProgress(1);

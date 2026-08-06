@@ -2418,9 +2418,8 @@ const SectionRRGs = () => {
   );
 };
 
-
-
 const RRGCanvasGame = ({ sessionUser }) => {
+  const [resetTrigger, setResetTrigger] = useState(0);
   const canvasRef = useRef(null);
   const miniMapRef = useRef(null);
   const gameRef = useRef(null);
@@ -2481,6 +2480,32 @@ const RRGCanvasGame = ({ sessionUser }) => {
       animating: !!game.animating,
       diceRolling: !!game.diceRolling,
     });
+
+    // Auto-Save Logic
+    if (game.gameOver) {
+      localStorage.removeItem('rrg_save');
+    } else if (!game.animating && !game.diceRolling) {
+      try {
+        const saveData = {
+          currentPlayer: game.currentPlayer,
+          players: game.players.map(p => ({
+            id: p.id, name: p.name, x: p.x, y: p.y, score: p.score, skipTurns: p.skipTurns, extraTurns: p.extraTurns, finished: p.finished, finishOrder: p.finishOrder, color: p.color, ring: p.ring
+          })),
+          dice: game.dice,
+          card: game.card,
+          selected: game.selected,
+          hintLevel: game.hintLevel,
+          finishCount: game.finishCount,
+          message: game.message,
+          drawCard: game.drawCard,
+          lastActionCard: game.lastActionCard,
+          solutionPreview: game.solutionPreview
+        };
+        localStorage.setItem('rrg_save', JSON.stringify(saveData));
+      } catch (e) {
+        console.warn("Failed to auto-save game", e);
+      }
+    }
   }, []);
 
   // Save game record when game is over
@@ -3369,7 +3394,17 @@ const RRGCanvasGame = ({ sessionUser }) => {
       lighthouse: { sx: 462, sy: 438, sw: 72, sh: 86, dw: 76, dh: 88 },
     };
 
+    let savedState = null;
+    try {
+      const saved = localStorage.getItem('rrg_save');
+      if (saved) savedState = JSON.parse(saved);
+    } catch (e) {
+      console.warn("Failed to load saved game", e);
+    }
+
     const game = {
+      canvas,
+      ctx,
       gridToPixel,
       camX: 0,
       camY: 0,
@@ -3382,19 +3417,19 @@ const RRGCanvasGame = ({ sessionUser }) => {
       camStartY: 0,
       dragDistance: 0,
       isDragging: false,
-      currentPlayer: 0,
-      dice: null,
-      card: null,
-      selected: null,
-      hintLevel: 0,
-      finishCount: 0,
+      currentPlayer: savedState ? savedState.currentPlayer : 0,
+      dice: savedState ? savedState.dice : null,
+      card: savedState ? savedState.card : null,
+      selected: savedState ? savedState.selected : null,
+      hintLevel: savedState ? savedState.hintLevel : 0,
+      finishCount: savedState ? savedState.finishCount : 0,
       gameOver: false,
       animating: false,
-      message: 'Misi bermula di Bukit Kristal. Semua pemain menerima RM100.',
-      players: makePlayers(),
-      drawCard: null,
-      lastActionCard: null,
-      solutionPreview: null,
+      message: savedState ? savedState.message : 'Misi bermula di Bukit Kristal. Semua pemain menerima RM100.',
+      players: savedState ? savedState.players.map(p => ({ ...p, trail: [], motion: null, motionLift: 0, motionTilt: 0, motionStretch: 0, motionTransformRotation: 0, landingPulseAt: 0, drawX: p.x, drawY: p.y })) : makePlayers(),
+      drawCard: savedState ? savedState.drawCard : null,
+      lastActionCard: savedState ? savedState.lastActionCard : null,
+      solutionPreview: savedState ? savedState.solutionPreview : null,
       effects: [],
       cameraKick: null,
       diceRolling: false,
@@ -5576,7 +5611,14 @@ const RRGCanvasGame = ({ sessionUser }) => {
       canvas.removeEventListener('mouseleave', onPointerUp);
       canvas.removeEventListener('wheel', onWheel);
     };
-  }, [getAxisSegmentDuration, getSegmentDuration, makePlayers, showPopup, submitAnswer, syncHud]);
+  }, [resetTrigger, getAxisSegmentDuration, getSegmentDuration, makePlayers, showPopup, submitAnswer, syncHud]);
+
+  const handleRestartGame = () => {
+    if (window.confirm("Adakah anda pasti mahu memulakan semula permainan? Semua data yang belum tamat akan dipadam.")) {
+      localStorage.removeItem('rrg_save');
+      setResetTrigger(prev => prev + 1);
+    }
+  };
 
   const activePlayer = hud.players[hud.currentPlayer];
   const diceLabel = hud.diceRolling ? `${hud.dice?.symbol || '🎲'} Memilih warna...` : hud.dice ? `${hud.dice.symbol} ${hud.dice.label}` : 'Belum roll';
@@ -5587,6 +5629,9 @@ const RRGCanvasGame = ({ sessionUser }) => {
       <div className="rrg-game-hud">
         <div className="rrg-hud-left">
           <div className="rrg-title-bar">🏝️ RRG — PULAU IDAMAN</div>
+          <button onClick={handleRestartGame} className="mt-2 text-xs bg-red-500/80 hover:bg-red-600 text-white px-3 py-1.5 rounded shadow-sm font-bold transition flex items-center gap-1">
+            <RefreshCw className="w-3 h-3" /> Mula Semula
+          </button>
         </div>
         <div className="rrg-hud-right">
           <div className="rrg-hud-panel"><span>Giliran</span><b>{activePlayer?.name || 'Pemain'}</b></div>

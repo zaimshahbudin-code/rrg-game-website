@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { doc, getDoc, serverTimestamp, setDoc, getDocs, collection, updateDoc } from 'firebase/firestore';
 import { auth, db, isFirebaseConfigured } from './firebase';
+import AdminDashboard from './AdminDashboard';
 import {
   BookOpen, CheckCircle, Maximize, MousePointerClick, Activity,
   Move, FlipHorizontal, RotateCw, CheckCircle2, XCircle, Trophy,
@@ -5682,6 +5683,12 @@ const LoginPage = ({ onLogin }) => {
     const profileSnap = await getDoc(profileRef);
     const profile = profileSnap.exists() ? profileSnap.data() : {};
     const name = profile.name || credential.user.displayName || getDisplayName(email);
+    
+    if (profile.role !== 'admin' && profile.isApproved !== true) {
+      await auth.signOut();
+      setError('Akaun anda sedang diproses. Sila tunggu kelulusan cikgu untuk mula bermain.');
+      return;
+    }
 
     await setDoc(profileRef, {
       name,
@@ -5778,6 +5785,7 @@ const LoginPage = ({ onLogin }) => {
       name,
       email,
       role: 'Pelajar',
+      isApproved: false,
       emailVerified: false,
       createdAt: serverTimestamp(),
       lastLoginAt: null,
@@ -5785,7 +5793,7 @@ const LoginPage = ({ onLogin }) => {
 
     setRegisterData({ name: '', email: '', password: '', confirmPassword: '' });
     setLoginData({ email, password: '' });
-    setSuccess('Akaun berjaya didaftarkan. Firebase sudah hantar email verification. Sila buka inbox dan klik link verify sebelum login.');
+    setSuccess('Akaun berjaya didaftarkan. Sila tunggu kelulusan cikgu sebelum anda boleh log masuk.');
     setError('');
     setIsRegister(false);
   };
@@ -5877,8 +5885,9 @@ const LoginPage = ({ onLogin }) => {
             {error && !isRegister && <p className="auth-error">{error}</p>}
             {success && !isRegister && <p className="auth-success">{success}</p>}
             <button type="submit" className="auth-primary-button" disabled={isSubmitting}>{isSubmitting && !isRegister ? 'Memproses...' : 'Login'}</button>
-
-
+            <p className="auth-mobile-switch">
+              Belum ada akaun? <button type="button" onClick={showRegister}>Daftar</button>
+            </p>
           </form>
         </div>
 
@@ -5953,10 +5962,17 @@ const LoginPage = ({ onLogin }) => {
           </video>
           <div className="auth-overlay-content">
             <div className="auth-overlay-icon">
-              <UserRound className="w-7 h-7" />
+              {isRegister ? <LogIn className="w-7 h-7" /> : <UserRound className="w-7 h-7" />}
             </div>
-            <h2>Selamat Datang</h2>
-            <p>Sila log masuk menggunakan emel dan kata laluan yang telah didaftarkan oleh guru anda.</p>
+            <h2>{isRegister ? 'Welcome Back' : 'Start Your Journey Now'}</h2>
+            <p>
+              {isRegister
+                ? 'Login semula untuk memulakan permainan. Akaun anda memerlukan kelulusan admin.'
+                : 'Daftar akaun pelajar untuk bermain. Anda perlu menunggu kelulusan admin selepas mendaftar.'}
+            </p>
+            <button type="button" className="auth-ghost-button" onClick={isRegister ? showLogin : showRegister}>
+              {isRegister ? 'Login Sekarang' : 'Daftar Sekarang'}
+            </button>
           </div>
         </div>
       </div>
@@ -5999,7 +6015,7 @@ export default function App() {
           </div>
           
           <div className="flex items-center gap-3 w-full md:flex-1 justify-between md:justify-end">
-            <nav className="grid grid-cols-4 flex-1 min-w-0 gap-1 bg-blue-800/50 p-1 rounded-full backdrop-blur-sm">
+            <nav className={`grid ${sessionUser.role === 'admin' ? 'grid-cols-5' : 'grid-cols-4'} flex-1 min-w-0 gap-1 bg-blue-800/50 p-1 rounded-full backdrop-blur-sm`}>
               <button 
                 onClick={() => setActiveTab('nota')}
                 className={`w-full justify-center px-2 sm:px-4 md:px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap ${activeTab === 'nota' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
@@ -6024,6 +6040,14 @@ export default function App() {
               >
                 <Shapes className="w-4 h-4 shrink-0"/> RRGs
               </button>
+              {sessionUser.role === 'admin' && (
+                <button 
+                  onClick={() => setActiveTab('admin')}
+                  className={`w-full justify-center px-2 sm:px-4 md:px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap ${activeTab === 'admin' ? 'bg-amber-100 text-amber-800 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
+                >
+                  <ShieldCheck className="w-4 h-4 shrink-0"/> Admin
+                </button>
+              )}
             </nav>
 
             <div className="hidden lg:flex items-center gap-2 text-xs font-bold text-slate-600 bg-white/70 border border-slate-200 px-3 py-2 rounded-lg">
@@ -6072,6 +6096,7 @@ export default function App() {
           {activeTab === 'makmal' && <SectionMakmal lang={lang} />}
           {activeTab === 'kuiz' && <SectionKuiz lang={lang} />}
           {activeTab === 'rrgs' && <RRGCanvasGame />}
+          {activeTab === 'admin' && sessionUser.role === 'admin' && <AdminDashboard />}
         </div>
       </main>
 

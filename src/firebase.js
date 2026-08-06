@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot } from "firebase/firestore";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification } from "firebase/auth";
+import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot, updateDoc, getDocs } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -36,6 +36,32 @@ export const loginWithEmail = async (email, password) => {
     return user;
   } catch (error) {
     console.error("Error logging in:", error);
+    throw error;
+  }
+};
+
+export const registerWithEmail = async (name, email, password) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    
+    // Create pending user profile
+    const userRef = doc(db, 'users', user.uid);
+    await setDoc(userRef, {
+      uid: user.uid,
+      name: name,
+      email: user.email,
+      role: 'Pelajar',
+      isApproved: false,
+      createdAt: new Date().toISOString(),
+    });
+    
+    // Attempt to send email verification (optional but good practice)
+    await sendEmailVerification(user);
+    
+    return user;
+  } catch (error) {
+    console.error("Error registering:", error);
     throw error;
   }
 };

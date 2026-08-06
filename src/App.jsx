@@ -816,45 +816,29 @@ Rules:
 - Output ONLY valid JSON array with no markdown blocks or backticks.
 Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
 
-      const modelsToTry = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-pro", "gemini-1.5-pro"];
-      let responseText = "";
-      let success = false;
-      let lastError = null;
-      let usedModel = "";
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
+      });
 
-      for (const modelName of modelsToTry) {
-        try {
-          const model = genAI.getGenerativeModel({ model: modelName });
-          const result = await model.generateContent(prompt);
-          responseText = result.response.text().trim();
-          success = true;
-          usedModel = modelName;
-          break;
-        } catch (err) {
-          console.warn(`Model ${modelName} failed:`, err);
-          lastError = err;
-        }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || `HTTP Error ${response.status}`);
       }
 
-      if (!success) {
-        let availableModels = "None/Invalid Key";
-        try {
-          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
-          const data = await response.json();
-          if (data.models) {
-            availableModels = data.models.map(m => m.name.replace('models/', '')).join(", ");
-          } else if (data.error) {
-            availableModels = `API Error: ${data.error.message}`;
-          }
-        } catch (fetchErr) {
-          availableModels = "Could not fetch models list.";
-        }
-        throw new Error(`Model ditutup untuk akaun anda. Model tersedia: ${availableModels}`);
+      const data = await response.json();
+      if (!data.candidates || data.candidates.length === 0) {
+        throw new Error("No candidates returned from API");
       }
-      
+
+      const responseText = data.candidates[0].content.parts[0].text.trim();
+      const usedModel = "gemini-flash-latest";
+
       let points;
       try {
-        // Extract array brackets even if there is surrounding text/markdown
         const match = responseText.match(/\[[\s\S]*\]/);
         const jsonStr = match ? match[0] : responseText;
         points = JSON.parse(jsonStr);

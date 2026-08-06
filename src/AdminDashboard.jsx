@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase';
-import { collection, getDocs, doc, updateDoc, query, orderBy, limit } from 'firebase/firestore';
-import { Users, CheckCircle2, XCircle, RefreshCw, ShieldAlert, Trophy, Target } from 'lucide-react';
+import { collection, getDocs, doc, updateDoc, query, orderBy, limit, deleteDoc } from 'firebase/firestore';
+import { Users, CheckCircle2, XCircle, RefreshCw, ShieldAlert, Trophy, Target, Trash2 } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('users');
@@ -78,6 +78,22 @@ const AdminDashboard = () => {
     } catch (err) {
       console.error("Error updating role:", err);
       alert('Gagal mengemas kini peranan pengguna.');
+    }
+  };
+
+  const handleDeleteScore = async (scoreId, type) => {
+    if (!window.confirm('Adakah anda pasti mahu memadam rekod ini secara kekal?')) return;
+    
+    try {
+      await deleteDoc(doc(db, 'scores', scoreId));
+      if (type === 'kuiz') {
+        setQuizScores(quizScores.filter(s => s.id !== scoreId));
+      } else {
+        setGameScores(gameScores.filter(s => s.id !== scoreId));
+      }
+    } catch (err) {
+      console.error("Error deleting score:", err);
+      alert('Gagal memadam rekod.');
     }
   };
 
@@ -215,12 +231,13 @@ const AdminDashboard = () => {
                   <th className="p-4 font-semibold text-center">Markah</th>
                   <th className="p-4 font-semibold text-center">Peratusan</th>
                   <th className="p-4 font-semibold text-right">Tarikh & Masa</th>
+                  <th className="p-4 font-semibold text-right">Tindakan</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {quizScores.length === 0 ? (
                   <tr>
-                    <td colSpan="4" className="p-8 text-center text-slate-500">
+                    <td colSpan="5" className="p-8 text-center text-slate-500">
                       <Target className="w-12 h-12 mx-auto text-emerald-200 mb-3" />
                       Belum ada rekod markah kuiz.
                     </td>
@@ -245,6 +262,11 @@ const AdminDashboard = () => {
                       <td className="p-4 text-right text-sm text-slate-500">
                         {new Date(score.date).toLocaleString('ms-MY', { dateStyle: 'short', timeStyle: 'short' })}
                       </td>
+                      <td className="p-4 text-right">
+                        <button onClick={() => handleDeleteScore(score.id, 'kuiz')} className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Padam Rekod">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </td>
                     </tr>
                   ))
                 )}
@@ -260,12 +282,13 @@ const AdminDashboard = () => {
                   <th className="p-4 font-semibold text-center">Wang Terkumpul</th>
                   <th className="p-4 font-semibold">Dihoskan Oleh</th>
                   <th className="p-4 font-semibold text-right">Tarikh & Masa</th>
+                  <th className="p-4 font-semibold text-right">Tindakan</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {gameScores.length === 0 ? (
                   <tr>
-                    <td colSpan="4" className="p-8 text-center text-slate-500">
+                    <td colSpan="5" className="p-8 text-center text-slate-500">
                       <Trophy className="w-12 h-12 mx-auto text-amber-200 mb-3" />
                       Belum ada rekod pemenang permainan RRG.
                     </td>
@@ -287,6 +310,11 @@ const AdminDashboard = () => {
                       </td>
                       <td className="p-4 text-right text-sm text-slate-500">
                         {new Date(score.date).toLocaleString('ms-MY', { dateStyle: 'short', timeStyle: 'short' })}
+                      </td>
+                      <td className="p-4 text-right">
+                        <button onClick={() => handleDeleteScore(score.id, 'game')} className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Padam Rekod">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </td>
                     </tr>
                   ))

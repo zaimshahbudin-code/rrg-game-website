@@ -1581,17 +1581,16 @@ const SectionKuiz = ({ lang, sessionUser }) => {
       const fetchLeaderboard = async () => {
         setFetchingLeaderboard(true);
         try {
-          const q = query(
-            collection(db, 'scores'),
-            where('type', '==', 'kuiz'),
-            orderBy('percentage', 'desc'),
-            limit(5)
-          );
+          const q = query(collection(db, 'scores'), orderBy('date', 'desc'), limit(100));
           const querySnapshot = await getDocs(q);
-          const topScores = [];
+          const allScores = [];
           querySnapshot.forEach((doc) => {
-            topScores.push({ id: doc.id, ...doc.data() });
+            allScores.push({ id: doc.id, ...doc.data() });
           });
+          const topScores = allScores
+            .filter(s => s.type === 'kuiz')
+            .sort((a, b) => b.percentage - a.percentage)
+            .slice(0, 5);
           setLeaderboard(topScores);
         } catch (error) {
           console.error("Error fetching leaderboard:", error);
@@ -1614,17 +1613,17 @@ const SectionKuiz = ({ lang, sessionUser }) => {
     if (index === q.jawapanBetul) setScore(score + 1);
   };
 
-  const handleNextQuestion = () => {
+  const handleNextQuestion = async () => {
     const nextQuestion = currentQuestion + 1;
     if (nextQuestion < quizData.length) {
       setCurrentQuestion(nextQuestion);
       setSelectedAnswer(null);
       setIsAnswered(false);
     } else {
-      setShowScore(true);
       if (sessionUser && sessionUser.role !== 'admin') {
-        saveQuizScore(sessionUser, score, quizData.length);
+        await saveQuizScore(sessionUser, score, quizData.length);
       }
+      setShowScore(true);
     }
   };
 

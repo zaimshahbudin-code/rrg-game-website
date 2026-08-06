@@ -1587,10 +1587,19 @@ const SectionKuiz = ({ lang, sessionUser }) => {
           querySnapshot.forEach((doc) => {
             allScores.push({ id: doc.id, ...doc.data() });
           });
-          const topScores = allScores
+          const kuizScores = allScores
             .filter(s => s.type === 'kuiz')
-            .sort((a, b) => b.percentage - a.percentage)
-            .slice(0, 5);
+            .sort((a, b) => b.percentage - a.percentage);
+
+          const uniqueUsers = new Set();
+          const topScores = [];
+          for (const score of kuizScores) {
+            if (!uniqueUsers.has(score.userName)) {
+              uniqueUsers.add(score.userName);
+              topScores.push(score);
+              if (topScores.length === 5) break;
+            }
+          }
           setLeaderboard(topScores);
         } catch (error) {
           console.error("Error fetching leaderboard:", error);

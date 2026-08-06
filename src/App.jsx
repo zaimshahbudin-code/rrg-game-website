@@ -804,12 +804,7 @@ const SectionMakmal = ({ lang }) => {
 
     try {
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      if (!apiKey) {
-        throw new Error("No API Key");
-      }
-      
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       
       const prompt = `You are an assistant for a Cartesian plane shape generator for kids. 
 The user wants to generate a shape based on this text: "${cleanedPrompt}".
@@ -821,8 +816,27 @@ Rules:
 - Output ONLY valid JSON array with no markdown blocks or backticks.
 Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
 
-      const result = await model.generateContent(prompt);
-      let responseText = result.response.text().trim();
+      const modelsToTry = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-pro", "gemini-1.5-pro"];
+      let responseText = "";
+      let success = false;
+      let lastError = null;
+
+      for (const modelName of modelsToTry) {
+        try {
+          const model = genAI.getGenerativeModel({ model: modelName });
+          const result = await model.generateContent(prompt);
+          responseText = result.response.text().trim();
+          success = true;
+          break;
+        } catch (err) {
+          console.warn(`Model ${modelName} failed:`, err);
+          lastError = err;
+        }
+      }
+
+      if (!success) {
+        throw lastError || new Error("All Gemini models failed");
+      }
       
       let points;
       try {

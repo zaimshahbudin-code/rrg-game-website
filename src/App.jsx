@@ -3,6 +3,7 @@ import { createUserWithEmailAndPassword, sendEmailVerification, sendPasswordRese
 import { doc, getDoc, serverTimestamp, setDoc, getDocs, collection, updateDoc } from 'firebase/firestore';
 import { auth, db, isFirebaseConfigured, saveQuizScore, saveGameRecord, subscribeToAuth } from './firebase';
 import AdminDashboard from './AdminDashboard';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import {
   BookOpen, CheckCircle, Maximize, MousePointerClick, Activity,
   Move, FlipHorizontal, RotateCw, CheckCircle2, XCircle, Trophy,
@@ -801,18 +802,57 @@ const SectionMakmal = ({ lang }) => {
     setIsGenerating(true);
     setSystemMessage(null);
 
-    await new Promise(resolve => setTimeout(resolve, 260));
-    const points = getLocalShapeFromPrompt(cleanedPrompt);
+    try {
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      if (!apiKey) {
+        throw new Error("No API Key");
+      }
+      
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      
+      const prompt = `You are an assistant for a Cartesian plane shape generator for kids. 
+The user wants to generate a shape based on this text: "${cleanedPrompt}".
+Output a JSON array of coordinates {x, y}. 
+Rules:
+- Coordinates must be integers between -10 and 10.
+- Provide enough points to form a recognizable polygon representing the user's request.
+- Ensure points are ordered sequentially to form a valid non-intersecting polygon.
+- Output ONLY valid JSON array with no markdown blocks or backticks.
+Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
 
-    setVertices(points);
-    setProgress(1);
-    setPromptText("");
-    resetView();
-    setSystemMessage({
-      type: "success",
-      text: lang === "en" ? "Shape studio created: " + cleanedPrompt : "Studio bentuk menjana: " + cleanedPrompt
-    });
-    setIsGenerating(false);
+      const result = await model.generateContent(prompt);
+      let responseText = result.response.text().trim();
+      if (responseText.startsWith('```json')) {
+        responseText = responseText.substring(7, responseText.length - 3).trim();
+      } else if (responseText.startsWith('```')) {
+        responseText = responseText.substring(3, responseText.length - 3).trim();
+      }
+      
+      const points = JSON.parse(responseText);
+      if (!Array.isArray(points) || points.length < 3) throw new Error("Invalid output");
+      
+      setVertices(points.map(p => ({ x: Math.round(p.x), y: Math.round(p.y) })));
+      setSystemMessage({
+        type: "success",
+        text: lang === "en" ? "AI generated: " + cleanedPrompt : "AI menjana: " + cleanedPrompt
+      });
+    } catch (e) {
+      console.warn("AI Generation failed, falling back to local shapes.", e);
+      // Fallback to local
+      await new Promise(resolve => setTimeout(resolve, 260));
+      const points = getLocalShapeFromPrompt(cleanedPrompt);
+      setVertices(points);
+      setSystemMessage({
+        type: "success",
+        text: lang === "en" ? "Shape studio created: " + cleanedPrompt : "Studio bentuk menjana: " + cleanedPrompt
+      });
+    } finally {
+      setProgress(1);
+      setPromptText("");
+      resetView();
+      setIsGenerating(false);
+    }
   };
 
   const handleGenerateAI = () => generateLocalShapeFromText(promptText);
@@ -1069,7 +1109,11 @@ const SectionMakmal = ({ lang }) => {
           <div className="shape-studio mb-5 bg-gradient-to-br from-purple-50 to-fuchsia-50 p-4 rounded-xl border border-purple-100 relative overflow-hidden">
             <div className="flex items-start justify-between gap-3 mb-3">
               <label className="text-sm font-bold text-purple-900 flex items-center gap-1.5"><Wand2 className="w-4 h-4"/> {lang === 'en' ? 'Shape Studio' : 'Studio Bentuk'}</label>
-              <span className="shape-studio-badge">{lang === 'en' ? 'Local' : 'Tanpa server'}</span>
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${import.meta.env.VITE_GEMINI_API_KEY ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-500'}`}>
+                {import.meta.env.VITE_GEMINI_API_KEY 
+                  ? (lang === 'en' ? 'AI Active' : 'AI Aktif') 
+                  : (lang === 'en' ? 'Local' : 'Tanpa server')}
+              </span>
             </div>
             <div className="flex gap-2 relative z-10">
               <input type="text" value={promptText} onChange={(e) => setPromptText(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleGenerateAI()} placeholder={lang === 'en' ? 'Try: star, house, arrow' : 'Cuba: bintang, rumah, anak panah'} className="flex-1 p-2.5 bg-white border border-purple-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none shadow-sm" />

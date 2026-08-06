@@ -1,35 +1,47 @@
-import { getApp, getApps, initializeApp } from 'firebase/app';
-import { getAnalytics, isSupported } from 'firebase/analytics';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot } from "firebase/firestore";
 
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  apiKey: "AIzaSyA6I-tP_viGeAepADdPHnAoKHIpTvxi_wc",
+  authDomain: "rrg-game.firebaseapp.com",
+  projectId: "rrg-game",
+  storageBucket: "rrg-game.firebasestorage.app",
+  messagingSenderId: "253063914434",
+  appId: "1:253063914434:web:1051860a84c26ca19eec5b",
+  measurementId: "G-0QYGSXX650"
 };
 
-const requiredFirebaseConfig = [
-  firebaseConfig.apiKey,
-  firebaseConfig.authDomain,
-  firebaseConfig.projectId,
-  firebaseConfig.storageBucket,
-  firebaseConfig.messagingSenderId,
-  firebaseConfig.appId,
-];
+// Initialize Firebase
+export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const isFirebaseConfigured = true;
 
-export const isFirebaseConfigured = requiredFirebaseConfig.every(Boolean);
+// Authentication Helpers
+export const loginWithEmail = async (email, password) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    
+    // Update last login in Firestore
+    const userRef = doc(db, 'users', user.uid);
+    await setDoc(userRef, {
+      uid: user.uid,
+      email: user.email,
+      lastLogin: new Date().toISOString(),
+    }, { merge: true });
+    
+    return user;
+  } catch (error) {
+    console.error("Error logging in:", error);
+    throw error;
+  }
+};
 
-const app = isFirebaseConfigured
-  ? getApps().length ? getApp() : initializeApp(firebaseConfig)
-  : null;
+export const subscribeToAuth = (callback) => {
+  return onAuthStateChanged(auth, callback);
+};
 
-export const auth = app ? getAuth(app) : null;
-export const db = app ? getFirestore(app) : null;
-export const analyticsPromise = app && firebaseConfig.measurementId && typeof window !== 'undefined'
-  ? isSupported().then((supported) => (supported ? getAnalytics(app) : null)).catch(() => null)
-  : Promise.resolve(null);
+export const logout = () => auth.signOut();

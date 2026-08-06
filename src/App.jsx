@@ -5878,16 +5878,7 @@ const LoginPage = ({ onLogin }) => {
             {success && !isRegister && <p className="auth-success">{success}</p>}
             <button type="submit" className="auth-primary-button" disabled={isSubmitting}>{isSubmitting && !isRegister ? 'Memproses...' : 'Login'}</button>
 
-            <div className="auth-divider"><span>or use your account</span></div>
-            <div className="auth-social-row" aria-label="Social sign in options">
-              <span aria-hidden="true">f</span>
-              <span aria-hidden="true">G</span>
-              <span aria-hidden="true">in</span>
-            </div>
 
-            <p className="auth-mobile-switch">
-              Belum ada akaun? <button type="button" onClick={showRegister}>Daftar</button>
-            </p>
           </form>
         </div>
 
@@ -5962,17 +5953,10 @@ const LoginPage = ({ onLogin }) => {
           </video>
           <div className="auth-overlay-content">
             <div className="auth-overlay-icon">
-              {isRegister ? <LogIn className="w-7 h-7" /> : <UserRound className="w-7 h-7" />}
+              <UserRound className="w-7 h-7" />
             </div>
-            <h2>{isRegister ? 'Welcome Back' : 'Start Your Journey Now'}</h2>
-            <p>
-              {isRegister
-                ? 'Login semula untuk sambung pembelajaran dan misi transformasi anda.'
-                : 'Daftar akaun pelajar untuk mula belajar transformasi isometri.'}
-            </p>
-            <button type="button" className="auth-ghost-button" onClick={isRegister ? showLogin : showRegister}>
-              {isRegister ? 'Login Sekarang' : 'Daftar Sekarang'}
-            </button>
+            <h2>Selamat Datang</h2>
+            <p>Sila log masuk menggunakan emel dan kata laluan yang telah didaftarkan oleh guru anda.</p>
           </div>
         </div>
       </div>

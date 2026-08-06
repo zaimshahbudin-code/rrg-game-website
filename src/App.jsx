@@ -6117,10 +6117,19 @@ export default function App() {
       } else {
         setSessionUser(null);
       }
-      setSessionLoading(false);
+    setSessionLoading(false);
     });
     return () => unsubscribe();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      setSessionUser(null);
+    } catch (e) {
+      console.error("Logout error", e);
+    }
+  };
 
   if (sessionLoading) {
     return <div className="flex h-screen items-center justify-center bg-slate-50"><Loader2 className="w-10 h-10 animate-spin text-blue-600" /></div>;
@@ -6190,7 +6199,7 @@ export default function App() {
             <div className="hidden lg:flex items-center gap-2 text-xs font-bold text-slate-600 bg-white/70 border border-slate-200 px-3 py-2 rounded-lg">
               <UserRound className="w-4 h-4" /> {sessionUser.name}
             </div>
-            <button onClick={() => setSessionUser(null)} className="hidden lg:flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-white hover:bg-slate-800">
+            <button onClick={handleLogout} className="hidden lg:flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-white hover:bg-slate-800">
               <LogOut className="w-4 h-4" /> Keluar
             </button>
 

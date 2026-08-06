@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, getDoc, serverTimestamp, setDoc, getDocs, collection, updateDoc } from 'firebase/firestore';
-import { auth, db, isFirebaseConfigured, saveQuizScore, saveGameRecord } from './firebase';
+import { auth, db, isFirebaseConfigured, saveQuizScore, saveGameRecord, subscribeToAuth } from './firebase';
 import AdminDashboard from './AdminDashboard';
 import {
   BookOpen, CheckCircle, Maximize, MousePointerClick, Activity,
@@ -6004,6 +6004,38 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('nota');
   const [lang, setLang] = useState('ms'); // 'ms' untuk Bahasa Melayu, 'en' untuk English
   const [sessionUser, setSessionUser] = useState(null);
+  const [sessionLoading, setSessionLoading] = useState(true);
+
+  useEffect(() => {
+    if (!isFirebaseConfigured) {
+      setSessionLoading(false);
+      return;
+    }
+    const unsubscribe = subscribeToAuth(async (user) => {
+      if (user) {
+        try {
+          const userRef = doc(db, 'users', user.uid);
+          const userDoc = await getDoc(userRef);
+          if (userDoc.exists() && userDoc.data().isApproved) {
+            setSessionUser({ ...userDoc.data(), uid: user.uid });
+          } else {
+            setSessionUser(null);
+          }
+        } catch (e) {
+          console.error("Error fetching user session:", e);
+          setSessionUser(null);
+        }
+      } else {
+        setSessionUser(null);
+      }
+      setSessionLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  if (sessionLoading) {
+    return <div className="flex h-screen items-center justify-center bg-slate-50"><Loader2 className="w-10 h-10 animate-spin text-blue-600" /></div>;
+  }
 
   if (!sessionUser) {
     return <LoginPage onLogin={setSessionUser} />;

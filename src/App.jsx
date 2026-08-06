@@ -837,7 +837,19 @@ Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
       }
 
       if (!success) {
-        throw lastError || new Error("All Gemini models failed");
+        let availableModels = "None/Invalid Key";
+        try {
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+          const data = await response.json();
+          if (data.models) {
+            availableModels = data.models.map(m => m.name.replace('models/', '')).join(", ");
+          } else if (data.error) {
+            availableModels = `API Error: ${data.error.message}`;
+          }
+        } catch (fetchErr) {
+          availableModels = "Could not fetch models list.";
+        }
+        throw new Error(`Model ditutup untuk akaun anda. Model tersedia: ${availableModels}`);
       }
       
       let points;

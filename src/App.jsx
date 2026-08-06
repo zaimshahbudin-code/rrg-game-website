@@ -820,6 +820,7 @@ Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
       let responseText = "";
       let success = false;
       let lastError = null;
+      let usedModel = "";
 
       for (const modelName of modelsToTry) {
         try {
@@ -827,6 +828,7 @@ Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
           const result = await model.generateContent(prompt);
           responseText = result.response.text().trim();
           success = true;
+          usedModel = modelName;
           break;
         } catch (err) {
           console.warn(`Model ${modelName} failed:`, err);
@@ -854,7 +856,7 @@ Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
       setVertices(points.map(p => ({ x: Math.round(p.x), y: Math.round(p.y) })));
       setSystemMessage({
         type: "success",
-        text: lang === "en" ? "AI generated: " + cleanedPrompt : "AI menjana: " + cleanedPrompt
+        text: lang === "en" ? `AI (${usedModel}) generated: ${cleanedPrompt}` : `AI (${usedModel}) menjana: ${cleanedPrompt}`
       });
     } catch (e) {
       console.warn("AI Generation failed, falling back to local shapes.", e);

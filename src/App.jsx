@@ -2577,8 +2577,9 @@ const RRGCanvasGame = ({ sessionUser }) => {
     });
 
     // Auto-Save Logic
+    const saveKey = `rrg_save_${sessionUser?.uid || 'guest'}`;
     if (game.gameOver) {
-      localStorage.removeItem('rrg_save');
+      localStorage.removeItem(saveKey);
     } else if (!game.animating && !game.diceRolling) {
       try {
         const saveData = {
@@ -2596,12 +2597,12 @@ const RRGCanvasGame = ({ sessionUser }) => {
           lastActionCard: game.lastActionCard,
           solutionPreview: game.solutionPreview
         };
-        localStorage.setItem('rrg_save', JSON.stringify(saveData));
+        localStorage.setItem(saveKey, JSON.stringify(saveData));
       } catch (e) {
         console.warn("Failed to auto-save game", e);
       }
     }
-  }, []);
+  }, [sessionUser?.uid]);
 
   // Save game record when game is over
   useEffect(() => {
@@ -3491,7 +3492,8 @@ const RRGCanvasGame = ({ sessionUser }) => {
 
     let savedState = null;
     try {
-      const saved = localStorage.getItem('rrg_save');
+      const saveKey = `rrg_save_${sessionUser?.uid || 'guest'}`;
+      const saved = localStorage.getItem(saveKey);
       if (saved) savedState = JSON.parse(saved);
     } catch (e) {
       console.warn("Failed to load saved game", e);

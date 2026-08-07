@@ -11,6 +11,12 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const formatDate = (dateVal) => {
+    if (!dateVal) return 'Belum log masuk';
+    if (dateVal.toDate) return dateVal.toDate().toLocaleString('ms-MY', { dateStyle: 'short', timeStyle: 'short' });
+    return new Date(dateVal).toLocaleString('ms-MY', { dateStyle: 'short', timeStyle: 'short' });
+  };
+
   const fetchDashboardData = async () => {
     setLoading(true);
     setError('');
@@ -181,6 +187,7 @@ const AdminDashboard = () => {
                         <div className="font-bold text-slate-800">{user.name}</div>
                         <div className="text-sm text-slate-500">{user.email}</div>
                         <div className="text-xs text-slate-400 mt-1">Daftar: {new Date(user.createdAt).toLocaleDateString('ms-MY')}</div>
+                        <div className="text-xs text-blue-500 font-medium mt-0.5">Login Akhir: {formatDate(user.lastLoginAt)}</div>
                       </td>
                       <td className="p-4">
                         {user.isApproved ? (

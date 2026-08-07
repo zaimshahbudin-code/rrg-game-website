@@ -1953,24 +1953,24 @@ const RRG_PENALTY_CARDS = [
 
 const RRG_ITEMS = [
   // 4 Money
-  { x: 4, y: 4, kind: 'money', label: 'RM', amount: 50 }, { x: -6, y: 0, kind: 'money', label: 'RM', amount: 50 },
-  { x: -6, y: -4, kind: 'money', label: 'RM', amount: 50 }, { x: 2, y: -4, kind: 'money', label: 'RM', amount: 50 },
+  { x: -4, y: 0, kind: 'money', label: 'RM', amount: 50 }, { x: 0, y: -2, kind: 'money', label: 'RM', amount: 50 },
+  { x: 6, y: 0, kind: 'money', label: 'RM', amount: 50 }, { x: -2, y: 0, kind: 'money', label: 'RM', amount: 50 },
   // 4 Diamond
-  { x: 8, y: 8, kind: 'diamond', label: 'Berlian', amount: 100 }, { x: 0, y: 12, kind: 'diamond', label: 'Berlian', amount: 100 },
-  { x: -12, y: 4, kind: 'diamond', label: 'Berlian', amount: 100 }, { x: 10, y: -12, kind: 'diamond', label: 'Berlian', amount: 100 },
+  { x: -5, y: 2, kind: 'diamond', label: 'Berlian', amount: 100 }, { x: 2, y: -3, kind: 'diamond', label: 'Berlian', amount: 100 },
+  { x: -1, y: 3, kind: 'diamond', label: 'Berlian', amount: 100 }, { x: 2, y: 0, kind: 'diamond', label: 'Berlian', amount: 100 },
   // 4 Chest
-  { x: 10, y: 10, kind: 'chest', label: 'Peti emas', amount: 200 }, { x: -12, y: 0, kind: 'chest', label: 'Peti emas', amount: 200 },
-  { x: -12, y: -8, kind: 'chest', label: 'Peti emas', amount: 200 }, { x: 0, y: -12, kind: 'chest', label: 'Peti emas', amount: 200 },
+  { x: 4, y: 0, kind: 'chest', label: 'Peti emas', amount: 200 }, { x: 0, y: 8, kind: 'chest', label: 'Peti emas', amount: 200 },
+  { x: -6, y: 0, kind: 'chest', label: 'Peti emas', amount: 200 }, { x: 5, y: -6, kind: 'chest', label: 'Peti emas', amount: 200 },
   // 8 Reward
-  { x: 2, y: 2, kind: 'reward', label: 'Mentol' }, { x: 0, y: 8, kind: 'reward', label: 'Mentol' },
-  { x: 2, y: 6, kind: 'reward', label: 'Mentol' }, { x: -6, y: 4, kind: 'reward', label: 'Mentol' },
-  { x: -9, y: -6, kind: 'reward', label: 'Mentol' }, { x: 5, y: -6, kind: 'reward', label: 'Mentol' },
-  { x: -6, y: -12, kind: 'reward', label: 'Mentol' }, { x: 7, y: -4, kind: 'reward', label: 'Mentol' },
+  { x: 0, y: 6, kind: 'reward', label: 'Mentol' }, { x: -8, y: 0, kind: 'reward', label: 'Mentol' },
+  { x: 0, y: 2, kind: 'reward', label: 'Mentol' }, { x: 8, y: 0, kind: 'reward', label: 'Mentol' },
+  { x: -7, y: 0, kind: 'reward', label: 'Mentol' }, { x: -1, y: -2, kind: 'reward', label: 'Mentol' },
+  { x: -4, y: 1, kind: 'reward', label: 'Mentol' }, { x: 6, y: 5, kind: 'reward', label: 'Mentol' },
   // 8 Penalty (Bom)
-  { x: 6, y: 6, kind: 'penalty', label: 'Bom' }, { x: 0, y: 4, kind: 'penalty', label: 'Bom' },
-  { x: 4, y: 10, kind: 'penalty', label: 'Bom' }, { x: -3, y: -2, kind: 'penalty', label: 'Bom' },
-  { x: 0, y: -6, kind: 'penalty', label: 'Bom' }, { x: -6, y: -6, kind: 'penalty', label: 'Bom' },
-  { x: 5, y: -2, kind: 'penalty', label: 'Bom' }, { x: -3, y: -8, kind: 'penalty', label: 'Bom' },
+  { x: 2, y: 2, kind: 'penalty', label: 'Bom' }, { x: 0, y: 4, kind: 'penalty', label: 'Bom' },
+  { x: -3, y: -2, kind: 'penalty', label: 'Bom' }, { x: 0, y: -4, kind: 'penalty', label: 'Bom' },
+  { x: 4, y: -6, kind: 'penalty', label: 'Bom' }, { x: 0, y: -6, kind: 'penalty', label: 'Bom' },
+  { x: -4, y: -6, kind: 'penalty', label: 'Bom' }, { x: 1, y: 3, kind: 'penalty', label: 'Bom' },
 ];
 
 const RRG_COLORS = [

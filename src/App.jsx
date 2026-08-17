@@ -2000,6 +2000,75 @@ const RRG_PLAYER_OFFSETS = [
   { x: 0.2, y: 0.16 },
 ];
 
+const RRG_SHAPE_VERTICES = [
+  {
+    name: 'Rumah Pentagon',
+    labels: ['A', 'B', 'C', 'D', 'E'],
+    relative: [
+      { dx: 0, dy: 0 },
+      { dx: 0, dy: 1 },
+      { dx: 1, dy: 2 },
+      { dx: 2, dy: 1 },
+      { dx: 2, dy: 0 },
+    ],
+  },
+  {
+    name: 'Menara L',
+    labels: ['A', 'B', 'C', 'D', 'E', 'F'],
+    relative: [
+      { dx: 0, dy: 0 },
+      { dx: 0, dy: 2 },
+      { dx: 1, dy: 2 },
+      { dx: 1, dy: 1 },
+      { dx: 2, dy: 1 },
+      { dx: 2, dy: 0 },
+    ],
+  },
+  {
+    name: 'Segitiga Tiga Bucu',
+    labels: ['A', 'B', 'C'],
+    relative: [
+      { dx: 0, dy: 0 },
+      { dx: 1, dy: 2 },
+      { dx: 2, dy: 0 },
+    ],
+  },
+  {
+    name: 'Trapezium Segi Empat',
+    labels: ['A', 'B', 'C', 'D'],
+    relative: [
+      { dx: 0, dy: 0 },
+      { dx: 1, dy: 1 },
+      { dx: 2, dy: 1 },
+      { dx: 3, dy: 0 },
+    ],
+  },
+];
+
+const getPlayerObjectPolygon = (player, index = 0) => {
+  if (!player) return null;
+  const shapeDef = RRG_SHAPE_VERTICES[index % RRG_SHAPE_VERTICES.length];
+  const vertices = shapeDef.relative.map((rel, i) => ({
+    label: shapeDef.labels[i],
+    x: player.x + rel.dx,
+    y: player.y + rel.dy,
+  }));
+  return { name: shapeDef.name, vertices };
+};
+
+const getTransformedPolygon = (polygon, card) => {
+  if (!polygon || !card) return null;
+  const transformedVertices = polygon.vertices.map((v) => {
+    const raw = getRrgRawTransformPoint({ x: v.x, y: v.y }, card);
+    return {
+      label: `${v.label}'`,
+      x: clampBoard(raw.x),
+      y: clampBoard(raw.y),
+    };
+  });
+  return { name: `${polygon.name} (Imej)`, vertices: transformedVertices };
+};
+
 const HINT_COST = 30;
 const WRONG_COST = 20;
 const RRG_ACTION_ZONE_RADIUS = 2.25;
@@ -2419,14 +2488,39 @@ const SectionRRGs = () => {
                 </g>
               ))}
               {players.map((player, index) => {
-                const color = RRG_COLORS[index];
+                const color = RRG_COLORS[index % RRG_COLORS.length];
+                const poly = getPlayerObjectPolygon(player, index);
+                if (!poly) return null;
+                const pointsString = poly.vertices.map(v => `${v.x},${-v.y}`).join(' ');
                 return (
-                  <g key={player.id} className="rrg-token" transform={`translate(${player.x + (index - (players.length - 1) / 2) * 0.18} ${-player.y})`} pointerEvents="none">
-                    <circle r="0.34" fill={color.bg} stroke={color.ring} strokeWidth="0.12" />
-                    <text y="0.13" textAnchor="middle" fontSize="0.34" fontWeight="900" fill="white">{player.id}</text>
+                  <g key={player.id} className="rrg-token" pointerEvents="none">
+                    <polygon points={pointsString} fill={color.bg} fillOpacity="0.4" stroke={color.bg} strokeWidth="0.12" />
+                    {poly.vertices.map(v => (
+                      <g key={v.label}>
+                        <circle cx={v.x} cy={-v.y} r="0.22" fill={color.bg} stroke="white" strokeWidth="0.06" />
+                        <text x={v.x} y={-v.y - 0.28} textAnchor="middle" fontSize="0.32" fontWeight="900" fill="#0f172a">{v.label}</text>
+                      </g>
+                    ))}
                   </g>
                 );
               })}
+              {(() => {
+                const activePoly = getPlayerObjectPolygon(activePlayer, current);
+                const targetPoly = getTransformedPolygon(activePoly, card);
+                if (!targetPoly) return null;
+                const targetPointsString = targetPoly.vertices.map(v => `${v.x},${-v.y}`).join(' ');
+                return (
+                  <g pointerEvents="none">
+                    <polygon points={targetPointsString} fill="rgba(37,99,235,0.18)" stroke="#2563eb" strokeWidth="0.1" strokeDasharray="0.15 0.1" />
+                    {targetPoly.vertices.map(v => (
+                      <g key={v.label}>
+                        <circle cx={v.x} cy={-v.y} r="0.2" fill="#2563eb" stroke="white" strokeWidth="0.05" />
+                        <text x={v.x} y={-v.y - 0.28} textAnchor="middle" fontSize="0.3" fontWeight="900" fill="#1d4ed8">{v.label}</text>
+                      </g>
+                    ))}
+                  </g>
+                );
+              })()}
             </svg>
           </div>
         </section>
@@ -2441,6 +2535,44 @@ const SectionRRGs = () => {
               <div className="w-12 h-12 rounded-lg flex items-center justify-center text-white font-black text-lg" style={{ background: RRG_COLORS[current]?.bg }}>{activePlayer?.id}</div>
             </div>
             <p className="mt-3 text-sm text-slate-600">Kedudukan: <b>({activePlayer?.x}, {activePlayer?.y})</b> | Wang: <b>RM{activePlayer?.score}</b></p>
+            
+            {(() => {
+              const activePoly = getPlayerObjectPolygon(activePlayer, current);
+              const targetPoly = getTransformedPolygon(activePoly, card);
+              if (!activePoly) return null;
+              return (
+                <div className="mt-4 p-3.5 rounded-xl bg-blue-50/70 border border-blue-200">
+                  <p className="text-xs font-extrabold text-blue-900 uppercase tracking-wide">Bentuk 2D & Koordinat Bucu (Silibus Tkt 2)</p>
+                  <p className="text-xs font-bold text-blue-700 mt-1">Bentuk Objek: <b>{activePoly.name}</b></p>
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {activePoly.vertices.map(v => (
+                      <span key={v.label} className="px-2 py-1 rounded bg-white text-blue-900 text-xs font-mono font-bold border border-blue-100 shadow-sm">
+                        {v.label}({v.x}, {v.y})
+                      </span>
+                    ))}
+                  </div>
+
+                  {targetPoly && (
+                    <div className="mt-3 pt-3 border-t border-blue-200/80">
+                      <p className="text-xs font-extrabold text-blue-900 uppercase tracking-wide">Pemetaan Bucu Imej Hasil Transformasi:</p>
+                      <div className="space-y-1 mt-2">
+                        {activePoly.vertices.map((v, i) => {
+                          const tv = targetPoly.vertices[i];
+                          return (
+                            <div key={v.label} className="flex items-center justify-between text-xs font-mono font-bold bg-white/90 px-2 py-1 rounded border border-blue-100">
+                              <span className="text-slate-700">{v.label}({v.x}, {v.y})</span>
+                              <span className="text-blue-600 font-sans">➔</span>
+                              <span className="text-blue-800">{tv.label}({tv.x}, {tv.y})</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+
             <div className="mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200 min-h-[130px]">
               <p className="text-sm font-bold text-slate-800">{dice ? `Dadu: ${dice.label}` : 'Dadu belum dilambung'}</p>
               <p className="mt-2 text-sm text-slate-600">{card ? `${card.title}: ${card.text}` : message}</p>

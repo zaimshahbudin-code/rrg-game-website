@@ -5703,6 +5703,28 @@ const RRGCanvasGame = ({ sessionUser }) => {
           ctx.restore();
         }
         drawPlayerToken(player, index, pos.px, pos.py, 'object', { size: tokenSize, bounce, label: true, scaleX, scaleY, shadowScale, rotation });
+        
+        // Draw 2D Polygon Vertex labels (A, B, C, D, E) on Canvas
+        const poly = getPlayerObjectPolygon(player, index);
+        if (poly) {
+          ctx.save();
+          ctx.font = 'bold 9px Inter';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          poly.vertices.forEach(v => {
+            const vPos = gridToPixel(v.x, v.y);
+            ctx.fillStyle = player.color;
+            ctx.beginPath();
+            ctx.arc(vPos.px, vPos.py, 7, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(v.label, vPos.px, vPos.py);
+          });
+          ctx.restore();
+        }
       });
 
       game.effects = game.effects.filter((effect) => performance.now() - effect.startedAt < 950);
@@ -5864,6 +5886,43 @@ const RRGCanvasGame = ({ sessionUser }) => {
         <h3>{hud.card ? hud.card.title : 'Roll dadu warna'}</h3>
         <p>{hud.card ? hud.card.text : hud.message}</p>
         {hud.card?.cardImage && <img className="rrg-current-card-img" src={hud.card.cardImage} alt={hud.card.title} />}
+        
+        {/* Form 2 2D Polygon Vertex Mapping Panel */}
+        {(() => {
+          const activePoly = getPlayerObjectPolygon(activePlayer, hud.currentPlayer);
+          const targetPoly = getTransformedPolygon(activePoly, hud.card);
+          if (!activePoly) return null;
+          return (
+            <div className="mt-3 p-2.5 rounded-lg bg-slate-900/90 text-white border border-blue-400/40 text-xs">
+              <p className="font-extrabold text-blue-300 uppercase tracking-wide text-[10px]">📐 Bentuk 2D (Tingkatan 2): <span className="text-white font-bold">{activePoly.name}</span></p>
+              <div className="flex flex-wrap gap-1 mt-1.5">
+                {activePoly.vertices.map(v => (
+                  <span key={v.label} className="px-1.5 py-0.5 rounded bg-slate-800 text-blue-200 text-[10px] font-mono font-bold border border-slate-700">
+                    {v.label}({v.x},{v.y})
+                  </span>
+                ))}
+              </div>
+              {targetPoly && (
+                <div className="mt-2 pt-2 border-t border-slate-700/80">
+                  <p className="font-extrabold text-amber-300 uppercase tracking-wide text-[10px]">Pemetaan Bucu Imej Transformasi:</p>
+                  <div className="space-y-1 mt-1 max-h-32 overflow-y-auto pr-1">
+                    {activePoly.vertices.map((v, i) => {
+                      const tv = targetPoly.vertices[i];
+                      return (
+                        <div key={v.label} className="flex items-center justify-between font-mono text-[10px] bg-slate-800/90 px-1.5 py-0.5 rounded border border-slate-700">
+                          <span className="text-slate-300">{v.label}({v.x},{v.y})</span>
+                          <span className="text-amber-400">➔</span>
+                          <span className="text-blue-300 font-bold">{tv.label}({tv.x},{tv.y})</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })()}
+
         {!hud.card && hud.lastActionCard?.cardImage && (
           <div className="rrg-last-card">
             <span>Kad item terakhir</span>

@@ -5704,28 +5704,80 @@ const RRGCanvasGame = ({ sessionUser }) => {
         }
         drawPlayerToken(player, index, pos.px, pos.py, 'object', { size: tokenSize, bounce, label: true, scaleX, scaleY, shadowScale, rotation });
         
-        // Draw 2D Polygon Vertex labels (A, B, C, D, E) on Canvas
+        // Draw 2D Polygon Shape (House Shape) directly on the grid lines
         const poly = getPlayerObjectPolygon(player, index);
-        if (poly) {
+        if (poly && poly.vertices.length > 0) {
           ctx.save();
-          ctx.font = 'bold 9px Inter';
+          ctx.beginPath();
+          poly.vertices.forEach((v, vIndex) => {
+            const vPos = gridToPixel(v.x, v.y);
+            if (vIndex === 0) ctx.moveTo(vPos.px, vPos.py);
+            else ctx.lineTo(vPos.px, vPos.py);
+          });
+          ctx.closePath();
+          ctx.fillStyle = player.color + '44';
+          ctx.fill();
+          ctx.strokeStyle = player.color;
+          ctx.lineWidth = 3.5;
+          ctx.stroke();
+
+          ctx.font = 'bold 10px Inter';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          poly.vertices.forEach(v => {
+          poly.vertices.forEach((v) => {
             const vPos = gridToPixel(v.x, v.y);
             ctx.fillStyle = player.color;
             ctx.beginPath();
-            ctx.arc(vPos.px, vPos.py, 7, 0, Math.PI * 2);
+            ctx.arc(vPos.px, vPos.py, 9, 0, Math.PI * 2);
             ctx.fill();
             ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 1.5;
+            ctx.lineWidth = 2;
             ctx.stroke();
             ctx.fillStyle = '#ffffff';
-            ctx.fillText(v.label, vPos.px, vPos.py);
+            ctx.fillText(v.label, vPos.px, vPos.py + 0.5);
           });
           ctx.restore();
         }
       });
+
+      // Draw Transformed Image 2D Polygon Shape (A', B', C', D', E') on Grid Lines
+      const activePlayerObj = game.players[game.currentPlayer];
+      const activePoly = getPlayerObjectPolygon(activePlayerObj, game.currentPlayer);
+      const targetPoly = getTransformedPolygon(activePoly, game.card);
+      if (targetPoly && targetPoly.vertices.length > 0) {
+        ctx.save();
+        ctx.beginPath();
+        targetPoly.vertices.forEach((v, vIndex) => {
+          const vPos = gridToPixel(v.x, v.y);
+          if (vIndex === 0) ctx.moveTo(vPos.px, vPos.py);
+          else ctx.lineTo(vPos.px, vPos.py);
+        });
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(37, 99, 235, 0.25)';
+        ctx.fill();
+        ctx.setLineDash([8, 6]);
+        ctx.strokeStyle = '#2563eb';
+        ctx.lineWidth = 3.5;
+        ctx.stroke();
+
+        ctx.setLineDash([]);
+        ctx.font = 'bold 10px Inter';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        targetPoly.vertices.forEach((v) => {
+          const vPos = gridToPixel(v.x, v.y);
+          ctx.fillStyle = '#2563eb';
+          ctx.beginPath();
+          ctx.arc(vPos.px, vPos.py, 9, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.fillStyle = '#ffffff';
+          ctx.fillText(v.label, vPos.px, vPos.py + 0.5);
+        });
+        ctx.restore();
+      }
 
       game.effects = game.effects.filter((effect) => performance.now() - effect.startedAt < 950);
       game.effects.forEach((effect) => {

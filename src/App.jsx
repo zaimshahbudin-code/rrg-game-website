@@ -741,6 +741,17 @@ const SectionMakmal = ({ lang }) => {
   const zoomOut = () => setZoom(z => Math.max(2, z / 1.2));
   const resetView = () => { setPan({x: 0, y: 0}); setZoom(25); };
 
+  const sortPointsClockwise = (points) => {
+    if (!points || points.length < 3) return points;
+    const cx = points.reduce((sum, p) => sum + p.x, 0) / points.length;
+    const cy = points.reduce((sum, p) => sum + p.y, 0) / points.length;
+    return [...points].sort((a, b) => {
+      const angleA = Math.atan2(a.y - cy, a.x - cx);
+      const angleB = Math.atan2(b.y - cy, b.x - cx);
+      return angleA - angleB;
+    });
+  };
+
   const getLocalShapeFromPrompt = (text) => {
     const prompt = text.toLowerCase();
     const templates = [
@@ -754,7 +765,10 @@ const SectionMakmal = ({ lang }) => {
       { keys: ["hexagon", "heksagon", "segi enam"], points: [{ x: -4, y: 7 }, { x: 4, y: 7 }, { x: 8, y: 0 }, { x: 4, y: -7 }, { x: -4, y: -7 }, { x: -8, y: 0 }] },
       { keys: ["layang", "kite"], points: [{ x: 0, y: 8 }, { x: 5, y: 0 }, { x: 0, y: -8 }, { x: -3, y: 0 }] },
       { keys: ["trapezium", "trapezoid"], points: [{ x: -4, y: 5 }, { x: 4, y: 5 }, { x: 8, y: -5 }, { x: -8, y: -5 }] },
-      { keys: ["diamond", "berlian", "rombus"], points: [{ x: 0, y: 8 }, { x: 7, y: 0 }, { x: 0, y: -8 }, { x: -7, y: 0 }] }
+      { keys: ["diamond", "berlian", "rombus"], points: [{ x: 0, y: 8 }, { x: 7, y: 0 }, { x: 0, y: -8 }, { x: -7, y: 0 }] },
+      { keys: ["perahu", "bot", "boat"], points: [{ x: -7, y: 2 }, { x: 7, y: 2 }, { x: 4, y: -4 }, { x: -4, y: -4 }] },
+      { keys: ["bulan", "crescent"], points: [{ x: 0, y: 8 }, { x: 6, y: 4 }, { x: 6, y: -4 }, { x: 0, y: -8 }, { x: 3, y: -4 }, { x: 3, y: 4 }] },
+      { keys: ["hati", "heart"], points: [{ x: 0, y: 7 }, { x: 4, y: 9 }, { x: 8, y: 5 }, { x: 0, y: -8 }, { x: -8, y: 5 }, { x: -4, y: 9 }] },
     ];
 
     const match = templates.find(shape => shape.keys.some(key => prompt.includes(key)));
@@ -762,10 +776,11 @@ const SectionMakmal = ({ lang }) => {
 
     const sides = Math.min(8, Math.max(3, (prompt.length % 6) + 3));
     const radius = prompt.includes("besar") || prompt.includes("large") ? 8 : 6;
-    return Array.from({ length: sides }, (_, index) => {
+    const points = Array.from({ length: sides }, (_, index) => {
       const angle = Math.PI / 2 + (index * 2 * Math.PI) / sides;
       return { x: Math.round(Math.cos(angle) * radius), y: Math.round(Math.sin(angle) * radius) };
     });
+    return sortPointsClockwise(points);
   };
 
   const generateLocalShapeFromText = async (text) => {
@@ -776,8 +791,10 @@ const SectionMakmal = ({ lang }) => {
 
     try {
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      const genAI = new GoogleGenerativeAI(apiKey);
-      
+      if (!apiKey || apiKey === "your_gemini_api_key_here") {
+        throw new Error("API Key belum dikonfigurasi dalam .env");
+      }
+
       const prompt = `You are an assistant for a Cartesian plane shape generator for kids. 
 The user wants to generate a shape based on this text: "${cleanedPrompt}".
 Output a JSON array of coordinates {x, y}. 
@@ -788,26 +805,35 @@ Rules:
 - Output ONLY valid JSON array with no markdown blocks or backticks.
 Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
 
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
-        })
-      });
+      const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"];
+      let responseText = "";
+      let usedModel = "";
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error?.message || `HTTP Error ${response.status}`);
+      for (const model of modelsToTry) {
+        try {
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }]
+            })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.candidates && data.candidates.length > 0) {
+              responseText = data.candidates[0].content.parts[0].text.trim();
+              usedModel = model;
+              break;
+            }
+          }
+        } catch (err) {
+          console.warn(`Model ${model} failed, trying next...`, err);
+        }
       }
 
-      const data = await response.json();
-      if (!data.candidates || data.candidates.length === 0) {
-        throw new Error("No candidates returned from API");
+      if (!responseText) {
+        throw new Error("Semua model Gemini API tidak memberi respon.");
       }
-
-      const responseText = data.candidates[0].content.parts[0].text.trim();
-      const usedModel = "gemini-flash-latest";
 
       let points;
       try {
@@ -816,25 +842,27 @@ Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
         points = JSON.parse(jsonStr);
       } catch (parseError) {
         console.error("Raw AI Response:", responseText);
-        throw new Error("Invalid JSON format from AI");
+        throw new Error("Format JSON dari AI tidak sah.");
       }
 
-      if (!Array.isArray(points) || points.length < 3) throw new Error("Invalid points array");
+      if (!Array.isArray(points) || points.length < 3) throw new Error("Titik koordinat tidak mencukupi.");
       
-      setVertices(points.map(p => ({ x: Math.round(p.x), y: Math.round(p.y) })));
+      const roundedPoints = points.map(p => ({ x: Math.round(p.x), y: Math.round(p.y) }));
+      const sortedPoints = sortPointsClockwise(roundedPoints);
+
+      setVertices(sortedPoints);
       setSystemMessage({
         type: "success",
         text: lang === "en" ? `AI (${usedModel}) generated: ${cleanedPrompt}` : `AI (${usedModel}) menjana: ${cleanedPrompt}`
       });
     } catch (e) {
       console.warn("AI Generation failed, falling back to local shapes.", e);
-      // Fallback to local
-      await new Promise(resolve => setTimeout(resolve, 260));
+      await new Promise(resolve => setTimeout(resolve, 200));
       const points = getLocalShapeFromPrompt(cleanedPrompt);
       setVertices(points);
       setSystemMessage({
-        type: "error",
-        text: `AI Error: ${e.message || 'Unknown error'}. Gagal menjana ${cleanedPrompt}.`
+        type: "success",
+        text: lang === "en" ? `Generated shape: ${cleanedPrompt}` : `Jana bentuk: ${cleanedPrompt}`
       });
     } finally {
       setProgress(1);

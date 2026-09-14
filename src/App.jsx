@@ -769,6 +769,11 @@ const SectionMakmal = ({ lang }) => {
       { keys: ["perahu", "bot", "boat"], points: [{ x: -7, y: 2 }, { x: 7, y: 2 }, { x: 4, y: -4 }, { x: -4, y: -4 }] },
       { keys: ["bulan", "crescent"], points: [{ x: 0, y: 8 }, { x: 6, y: 4 }, { x: 6, y: -4 }, { x: 0, y: -8 }, { x: 3, y: -4 }, { x: 3, y: 4 }] },
       { keys: ["hati", "heart"], points: [{ x: 0, y: 7 }, { x: 4, y: 9 }, { x: 8, y: 5 }, { x: 0, y: -8 }, { x: -8, y: 5 }, { x: -4, y: 9 }] },
+      { keys: ["kereta", "car"], points: [{ x: -7, y: -3 }, { x: -7, y: 0 }, { x: -5, y: 1 }, { x: -3, y: 4 }, { x: 3, y: 4 }, { x: 5, y: 1 }, { x: 7, y: 0 }, { x: 7, y: -3 }] },
+      { keys: ["kapal terbang", "terbang", "plane", "airplane"], points: [{ x: 0, y: 7 }, { x: 1, y: 2 }, { x: 7, y: -1 }, { x: 1, y: -2 }, { x: 3, y: -6 }, { x: 1, y: -7 }, { x: 0, y: -6 }, { x: -1, y: -7 }, { x: -3, y: -6 }, { x: -1, y: -2 }, { x: -7, y: -1 }, { x: -1, y: 2 }] },
+      { keys: ["roket", "rocket"], points: [{ x: 0, y: 8 }, { x: 2, y: 4 }, { x: 2, y: -3 }, { x: 5, y: -6 }, { x: 2, y: -5 }, { x: 0, y: -7 }, { x: -2, y: -5 }, { x: -5, y: -6 }, { x: -2, y: -3 }, { x: -2, y: 4 }] },
+      { keys: ["pokok", "tree"], points: [{ x: 0, y: 8 }, { x: 4, y: 3 }, { x: 2, y: 3 }, { x: 5, y: -1 }, { x: 2, y: -1 }, { x: 2, y: -6 }, { x: -2, y: -6 }, { x: -2, y: -1 }, { x: -5, y: -1 }, { x: -2, y: 3 }, { x: -4, y: 3 }] },
+      { keys: ["ikan", "fish"], points: [{ x: -6, y: 0 }, { x: -2, y: 4 }, { x: 4, y: 3 }, { x: 7, y: 5 }, { x: 5, y: 0 }, { x: 7, y: -5 }, { x: 4, y: -3 }, { x: -2, y: -4 }] }
     ];
 
     const match = templates.find(shape => shape.keys.some(key => prompt.includes(key)));
@@ -796,16 +801,22 @@ const SectionMakmal = ({ lang }) => {
       }
 
       const prompt = `You are an assistant for a Cartesian plane shape generator for kids. 
-The user wants to generate a shape based on this text: "${cleanedPrompt}".
-Output a JSON array of coordinates {x, y}. 
+The user wants to generate a recognizable 2D shape based on this text: "${cleanedPrompt}".
+Output a JSON array of coordinate points {x, y}. 
 Rules:
-- Coordinates must be integers between -10 and 10.
-- Provide enough points to form a recognizable polygon representing the user's request.
-- Ensure points are ordered sequentially to form a valid non-intersecting polygon.
-- Output ONLY valid JSON array with no markdown blocks or backticks.
-Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
+- Coordinates must be integers between -8 and 8 so the shape fits nicely on a 10x10 Cartesian grid.
+- Provide between 4 and 16 points tracing the perimeter contour of the shape sequentially in order (clockwise or counter-clockwise) so connecting the dots forms a closed polygon without self-intersecting lines.
+- Do not scramble or cross lines.
+- Output ONLY a valid JSON array of objects with keys "x" and "y". No markdown formatting, no explanations.
+Example: [{"x":-3,"y":-3}, {"x":3,"y":-3}, {"x":0,"y":4}]`;
 
-      const modelsToTry = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-1.5-pro"];
+      const modelsToTry = [
+        "gemini-3.6-flash",
+        "gemini-3.5-flash",
+        "gemini-flash-latest",
+        "gemini-2.5-flash-lite",
+        "gemini-2.5-pro"
+      ];
       let responseText = "";
       let usedModel = "";
 
@@ -851,15 +862,20 @@ Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
         throw new Error("Format JSON dari AI tidak sah.");
       }
 
-      if (!Array.isArray(points) || points.length < 3) throw new Error("Titik koordinat tidak mencukupi.");
-      
-      const roundedPoints = points.map(p => ({ x: Math.round(p.x), y: Math.round(p.y) }));
-      const sortedPoints = sortPointsClockwise(roundedPoints);
+      if (!Array.isArray(points)) throw new Error("Format titik tidak sah.");
 
-      setVertices(sortedPoints);
+      const roundedPoints = points
+        .filter(p => typeof p.x === 'number' && typeof p.y === 'number' && !isNaN(p.x) && !isNaN(p.y))
+        .map(p => ({ x: Math.max(-10, Math.min(10, Math.round(p.x))), y: Math.max(-10, Math.min(10, Math.round(p.y))) }))
+        .filter((p, i, arr) => i === 0 || p.x !== arr[i - 1].x || p.y !== arr[i - 1].y);
+
+      if (roundedPoints.length < 3) throw new Error("Titik koordinat tidak mencukupi.");
+      
+      // Preserve AI sequential contour so non-convex shapes like wings, cars, and stars are drawn accurately
+      setVertices(roundedPoints);
       setSystemMessage({
         type: "success",
-        text: lang === "en" ? `AI (${usedModel}) generated: ${cleanedPrompt}` : `AI (${usedModel}) menjana: ${cleanedPrompt}`
+        text: lang === "en" ? `AI (${usedModel}) successfully generated: ${cleanedPrompt}` : `AI (${usedModel}) berjaya menjana: ${cleanedPrompt}`
       });
     } catch (e) {
       console.warn("AI Generation failed, falling back to local shapes.", e);
@@ -867,8 +883,8 @@ Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
       const points = getLocalShapeFromPrompt(cleanedPrompt);
       setVertices(points);
       setSystemMessage({
-        type: "success",
-        text: lang === "en" ? `Generated shape: ${cleanedPrompt}` : `Jana bentuk: ${cleanedPrompt}`
+        type: "error",
+        text: lang === "en" ? `AI unavailable (${e.message || 'Error'}). Used local shape: ${cleanedPrompt}` : `AI tidak dapat dihubungi (${e.message || 'Ralat'}). Bentuk sandaran tempatan: ${cleanedPrompt}`
       });
     } finally {
       setProgress(1);

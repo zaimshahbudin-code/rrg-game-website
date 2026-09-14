@@ -3944,17 +3944,22 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       console.warn("Failed to load saved game", e);
     }
 
-    const initialZoom = Math.min(0.85, Math.max(0.45, (window.innerWidth || 1200) / 2600));
+    const getFitZoom = () => {
+      const rect = canvas.getBoundingClientRect();
+      const w = rect.width || window.innerWidth || 1200;
+      const h = rect.height || (window.innerHeight - 120) || 600;
+      return Math.min(w / BOARD_W, h / BOARD_H) * 0.94;
+    };
 
     const game = {
       canvas,
       ctx,
       gridToPixel,
-      camX: 0,
-      camY: 0,
-      camTargetX: 0,
-      camTargetY: 0,
-      zoom: initialZoom,
+      camX: BOARD_CX,
+      camY: BOARD_CY,
+      camTargetX: BOARD_CX,
+      camTargetY: BOARD_CY,
+      zoom: 0.22,
       dragStartX: 0,
       dragStartY: 0,
       camStartX: 0,
@@ -3984,16 +3989,23 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       lastTime: performance.now(),
     };
     gameRef.current = game;
-    if (game.players && game.players[0]) {
-      centerOnPlayer(game, game.players[0], true);
-    }
     syncHud(game);
 
+    let hasFitZoomInitially = false;
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
       canvas.width = Math.max(1, Math.floor(rect.width * dpr));
       canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      if (!hasFitZoomInitially && rect.width > 0 && rect.height > 0) {
+        hasFitZoomInitially = true;
+        const fit = getFitZoom();
+        game.zoom = fit;
+        game.camX = BOARD_CX;
+        game.camY = BOARD_CY;
+        game.camTargetX = BOARD_CX;
+        game.camTargetY = BOARD_CY;
+      }
     };
     resize();
 
@@ -4028,7 +4040,8 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
         const pts = Array.from(activePointers.values());
         const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
         const scale = dist / pinchStartDist;
-        game.zoom = Math.max(0.25, Math.min(2.5, pinchStartZoom * scale));
+        const minZ = Math.min(0.08, getFitZoom() * 0.6);
+        game.zoom = Math.max(minZ, Math.min(3.0, pinchStartZoom * scale));
       } else if (game.isDragging && activePointers.size === 1) {
         const dx = event.clientX - game.dragStartX;
         const dy = event.clientY - game.dragStartY;
@@ -4067,7 +4080,8 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
 
     const onWheel = (event) => {
       const delta = event.deltaY > 0 ? 0.9 : 1.1;
-      game.zoom = Math.max(0.25, Math.min(2.5, game.zoom * delta));
+      const minZ = Math.min(0.08, getFitZoom() * 0.6);
+      game.zoom = Math.max(minZ, Math.min(3.0, game.zoom * delta));
       event.preventDefault();
     };
 
@@ -5026,6 +5040,57 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     }
   };
 
+  const handleZoomIn = () => {
+    if (!gameRef.current) return;
+    const g = gameRef.current;
+    g.zoom = Math.min(3.0, g.zoom * 1.25);
+  };
+
+  const handleZoomOut = () => {
+    if (!gameRef.current) return;
+    const g = gameRef.current;
+    const rect = g.canvas?.getBoundingClientRect();
+    const w = rect?.width || window.innerWidth || 1200;
+    const h = rect?.height || (window.innerHeight - 120) || 600;
+    const fitZ = Math.min(w / 2758, h / 2758) * 0.94;
+    const minZ = Math.min(0.08, fitZ * 0.6);
+    g.zoom = Math.max(minZ, g.zoom / 1.25);
+  };
+
+  const handleFitFullMap = () => {
+    if (!gameRef.current) return;
+    const g = gameRef.current;
+    const rect = g.canvas?.getBoundingClientRect();
+    const w = rect?.width || window.innerWidth || 1200;
+    const h = rect?.height || (window.innerHeight - 120) || 600;
+    const fitZ = Math.min(w / 2758, h / 2758) * 0.94;
+    g.zoom = fitZ;
+    g.camTargetX = 1376.0;
+    g.camTargetY = 1376.0;
+  };
+
+  const handleFocusPlayer = () => {
+    if (!gameRef.current) return;
+    const g = gameRef.current;
+    const p = g.players[g.currentPlayer];
+    if (p) {
+      centerOnPlayer(g, p);
+      const rect = g.canvas?.getBoundingClientRect();
+      const h = rect?.height || 600;
+      const fitZ = Math.min((rect?.width || 1200) / 2758, h / 2758) * 0.94;
+      g.zoom = Math.max(fitZ * 1.8, 0.45);
+    }
+  };
+
+  const handleMinimapClick = (event) => {
+    if (!gameRef.current || !miniMapRef.current) return;
+    const rect = miniMapRef.current.getBoundingClientRect();
+    const clickX = (event.clientX - rect.left) / rect.width;
+    const clickY = (event.clientY - rect.top) / rect.height;
+    gameRef.current.camTargetX = clickX * 2758;
+    gameRef.current.camTargetY = clickY * 2758;
+  };
+
   const activePlayer = hud.players[hud.currentPlayer];
   const activePlayerDisplayName = getPlayerDisplayName(activePlayer, lang);
   const diceLabel = hud.diceRolling
@@ -5040,9 +5105,31 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       <div className="rrg-game-hud">
         <div className="rrg-hud-left">
           <div className="rrg-title-bar">🏝️ RRG — {lang === 'en' ? 'DREAM ISLAND' : 'PULAU IDAMAN'}</div>
-          <button onClick={handleRestartGame} className="mt-2 text-xs bg-red-500/80 hover:bg-red-600 text-white px-3 py-1.5 rounded shadow-sm font-bold transition flex items-center gap-1">
-            <RefreshCw className="w-3 h-3" /> {lang === 'en' ? 'Restart' : 'Mula Semula'}
-          </button>
+          <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+            <button
+              type="button"
+              onClick={handleFitFullMap}
+              className="text-xs bg-indigo-600/90 hover:bg-indigo-600 text-white px-2.5 py-1.5 rounded shadow-sm font-bold transition flex items-center gap-1"
+              title={lang === 'en' ? 'Fit and view whole board' : 'Muat dan lihat keseluruhan papan'}
+            >
+              <Maximize className="w-3.5 h-3.5" /> {lang === 'en' ? 'Full Board' : 'Peta Penuh'}
+            </button>
+            <button
+              type="button"
+              onClick={handleFocusPlayer}
+              className="text-xs bg-slate-700/90 hover:bg-slate-700 text-white px-2.5 py-1.5 rounded shadow-sm font-bold transition flex items-center gap-1"
+              title={lang === 'en' ? 'Focus current player' : 'Fokus pemain semasa'}
+            >
+              📍 {lang === 'en' ? 'Focus Player' : 'Fokus Pemain'}
+            </button>
+            <button
+              type="button"
+              onClick={handleRestartGame}
+              className="text-xs bg-red-500/80 hover:bg-red-600 text-white px-2.5 py-1.5 rounded shadow-sm font-bold transition flex items-center gap-1"
+            >
+              <RefreshCw className="w-3 h-3" /> {lang === 'en' ? 'Restart' : 'Mula Semula'}
+            </button>
+          </div>
         </div>
         <div className="rrg-hud-right">
           <div className="rrg-hud-panel"><span>{lang === 'en' ? 'Current Turn' : 'Giliran Semasa'}</span><b>{activePlayerDisplayName || (lang === 'en' ? 'Player 1' : 'Pemain 1')}</b></div>
@@ -5152,7 +5239,24 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
         <button type="button" onClick={submitAnswer} disabled={!hud.card || !hud.selected || hud.gameOver || hud.animating}>✅ {lang === 'en' ? 'Check' : 'Semak'}</button>
         <button type="button" onClick={() => resetGame()} disabled={hud.animating}>↻ Reset</button>
       </div>
-      <div className="rrg-minimap"><canvas ref={miniMapRef} width="140" height="140" /></div>
+      <div className="rrg-view-controls">
+        <button type="button" onClick={handleZoomIn} title={lang === 'en' ? 'Zoom In' : 'Zum Masuk'}>
+          <ZoomIn className="w-4 h-4" />
+        </button>
+        <button type="button" onClick={handleZoomOut} title={lang === 'en' ? 'Zoom Out' : 'Zum Keluar'}>
+          <ZoomOut className="w-4 h-4" />
+        </button>
+        <button type="button" onClick={handleFitFullMap} title={lang === 'en' ? 'Fit Whole Map' : 'Lihat Keseluruhan Peta'}>
+          <Maximize className="w-4 h-4" />
+        </button>
+      </div>
+      <div
+        className="rrg-minimap"
+        onClick={handleMinimapClick}
+        title={lang === 'en' ? 'Click minimap to jump camera' : 'Klik minimap untuk navigasi kamera'}
+      >
+        <canvas ref={miniMapRef} width="140" height="140" />
+      </div>
       <div className="rrg-controls-hint">
         <span><kbd>Click</kbd> {lang === 'en' ? 'Select coord' : 'Pilih koordinat'}</span>
         <span><kbd>WASD</kbd> {lang === 'en' ? 'Adjust selection' : 'Laras pilihan'}</span>

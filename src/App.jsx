@@ -6999,8 +6999,23 @@ const saveStoredUsers = (users) => {
 
 const normalizeEmail = (email) => email.trim().toLowerCase();
 
-const getFirebaseAuthMessage = (error) => {
+const getFirebaseAuthMessage = (error, lang = 'en') => {
   const code = error?.code || '';
+  if (lang === 'en') {
+    if (code === 'auth/email-already-in-use') return 'This email is already registered. Please sign in or use another email.';
+    if (code === 'auth/invalid-email') return 'Invalid email address format.';
+    if (code === 'auth/weak-password') return 'Password is too weak. Please use at least 6 characters.';
+    if (code === 'auth/operation-not-allowed') return 'Email/Password sign-in is not enabled in Firebase Authentication.';
+    if (code === 'auth/invalid-credential' || code === 'auth/user-not-found' || code === 'auth/wrong-password') return 'Incorrect email or password.';
+    if (code === 'auth/network-request-failed') return 'Network connection failed. Please check your internet connection.';
+    if (code === 'auth/too-many-requests') return 'Too many attempts. Please wait a moment before trying again.';
+    if (code === 'auth/unauthorized-domain') return 'Domain is not authorized in Firebase Authentication settings.';
+    if (code === 'permission-denied') return 'Firestore access denied. Check your Firestore Database security rules.';
+    if (code === 'failed-precondition') return 'Firestore Database is not ready. Please initialize database in Firebase Console.';
+    if (code === 'unavailable' || code === 'deadline-exceeded') return 'Firestore/Firebase service temporarily unavailable. Please try again.';
+    return 'Firebase error: ' + (code || 'unknown') + '. ' + (error?.message || 'Check Authentication and Firestore.');
+  }
+
   if (code === 'auth/email-already-in-use') return 'Emel ini sudah didaftarkan dalam Firebase. Sila login atau guna emel lain.';
   if (code === 'auth/invalid-email') return 'Format emel tidak sah.';
   if (code === 'auth/weak-password') return 'Kata laluan terlalu lemah. Guna sekurang-kurangnya 6 aksara.';
@@ -7015,7 +7030,7 @@ const getFirebaseAuthMessage = (error) => {
   return 'Firebase error: ' + (code || 'unknown') + '. ' + (error?.message || 'Semak Authentication dan Firestore.');
 };
 
-const LoginPage = ({ onLogin }) => {
+const LoginPage = ({ onLogin, lang = 'en', onLangChange }) => {
   const [isRegister, setIsRegister] = useState(false);
   const [loginData, setLoginData] = useState(() => ({ email: localStorage.getItem('rrg_remembered_email') || '', password: '' }));
   const [registerData, setRegisterData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
@@ -7025,7 +7040,7 @@ const LoginPage = ({ onLogin }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const getDisplayName = (email) => {
-    const prefix = email.split('@')[0] || 'Pelajar';
+    const prefix = email.split('@')[0] || (lang === 'en' ? 'Student' : 'Pelajar');
     return prefix.charAt(0).toUpperCase() + prefix.slice(1);
   };
 
@@ -7039,7 +7054,7 @@ const LoginPage = ({ onLogin }) => {
     const user = users.find((item) => item.email === email && item.password === password);
 
     if (!user) {
-      setError('Emel atau kata laluan tidak betul. Jika belum ada akaun, sila daftar dahulu.');
+      setError(lang === 'en' ? 'Incorrect email or password. If you do not have an account, please register first.' : 'Emel atau kata laluan tidak betul. Jika belum ada akaun, sila daftar dahulu.');
       return;
     }
 
@@ -7078,11 +7093,11 @@ const LoginPage = ({ onLogin }) => {
   const handleForgotPassword = async () => {
     const email = normalizeEmail(loginData.email);
     if (!email) {
-      setError('Masukkan emel dahulu sebelum reset kata laluan.');
+      setError(lang === 'en' ? 'Please enter your email before resetting password.' : 'Masukkan emel dahulu sebelum reset kata laluan.');
       return;
     }
     if (!isFirebaseConfigured) {
-      setError('Reset kata laluan hanya tersedia selepas Firebase aktif.');
+      setError(lang === 'en' ? 'Password reset is only available when Firebase is configured.' : 'Reset kata laluan hanya tersedia selepas Firebase aktif.');
       return;
     }
 
@@ -7092,9 +7107,9 @@ const LoginPage = ({ onLogin }) => {
 
     try {
       await sendPasswordResetEmail(auth, email);
-      setSuccess('Link reset kata laluan sudah dihantar. Sila semak inbox emel anda.');
+      setSuccess(lang === 'en' ? 'Password reset link sent! Please check your email inbox.' : 'Link reset kata laluan sudah dihantar. Sila semak inbox emel anda.');
     } catch (firebaseError) {
-      setError(getFirebaseAuthMessage(firebaseError));
+      setError(getFirebaseAuthMessage(firebaseError, lang));
     } finally {
       setIsSubmitting(false);
     }
@@ -7106,7 +7121,7 @@ const LoginPage = ({ onLogin }) => {
     const password = loginData.password;
 
     if (!email || !password.trim()) {
-      setError('Masukkan emel dan kata laluan dahulu.');
+      setError(lang === 'en' ? 'Please enter your email and password.' : 'Masukkan emel dan kata laluan dahulu.');
       return;
     }
 
@@ -7118,7 +7133,7 @@ const LoginPage = ({ onLogin }) => {
       if (isFirebaseConfigured) await handleFirebaseLogin(email, password);
       else handleLocalLogin(email, password);
     } catch (firebaseError) {
-      setError(getFirebaseAuthMessage(firebaseError));
+      setError(getFirebaseAuthMessage(firebaseError, lang));
     } finally {
       setIsSubmitting(false);
     }
@@ -7129,7 +7144,7 @@ const LoginPage = ({ onLogin }) => {
     const alreadyExists = users.some((user) => user.email === email);
 
     if (alreadyExists) {
-      setError('Emel ini sudah didaftarkan. Sila login atau guna emel lain.');
+      setError(lang === 'en' ? 'This email is already registered. Please sign in or use another email.' : 'Emel ini sudah didaftarkan. Sila login atau guna emel lain.');
       return;
     }
 
@@ -7145,7 +7160,7 @@ const LoginPage = ({ onLogin }) => {
     saveStoredUsers([...users, newUser]);
     setRegisterData({ name: '', email: '', password: '', confirmPassword: '' });
     setLoginData({ email, password: '' });
-    setSuccess('Akaun berjaya didaftarkan dalam database browser. Sila login dengan emel dan kata laluan tadi.');
+    setSuccess(lang === 'en' ? 'Account registered successfully in browser database! Please log in with your credentials.' : 'Akaun berjaya didaftarkan dalam database browser. Sila login dengan emel dan kata laluan tadi.');
     setError('');
     setIsRegister(false);
   };
@@ -7167,7 +7182,7 @@ const LoginPage = ({ onLogin }) => {
 
     setRegisterData({ name: '', email: '', password: '', confirmPassword: '' });
     setLoginData({ email, password: '' });
-    setSuccess('Akaun berjaya didaftarkan! Anda boleh terus log masuk sekarang.');
+    setSuccess(lang === 'en' ? 'Account registered successfully! You can now log in.' : 'Akaun berjaya didaftarkan! Anda boleh terus log masuk sekarang.');
     setError('');
     setIsRegister(false);
   };
@@ -7179,15 +7194,15 @@ const LoginPage = ({ onLogin }) => {
     const password = registerData.password;
 
     if (!name || !email || !password.trim() || !registerData.confirmPassword.trim()) {
-      setError('Lengkapkan semua maklumat pendaftaran.');
+      setError(lang === 'en' ? 'Please complete all registration fields.' : 'Lengkapkan semua maklumat pendaftaran.');
       return;
     }
     if (password.length < 6) {
-      setError('Kata laluan mesti sekurang-kurangnya 6 aksara.');
+      setError(lang === 'en' ? 'Password must be at least 6 characters long.' : 'Kata laluan mesti sekurang-kurangnya 6 aksara.');
       return;
     }
     if (password !== registerData.confirmPassword) {
-      setError('Kata laluan dan pengesahan kata laluan tidak sama.');
+      setError(lang === 'en' ? 'Passwords do not match.' : 'Kata laluan dan pengesahan kata laluan tidak sama.');
       return;
     }
 
@@ -7199,7 +7214,7 @@ const LoginPage = ({ onLogin }) => {
       if (isFirebaseConfigured) await handleFirebaseRegister(name, email, password);
       else handleLocalRegister(name, email, password);
     } catch (firebaseError) {
-      setError(getFirebaseAuthMessage(firebaseError));
+      setError(getFirebaseAuthMessage(firebaseError, lang));
     } finally {
       setIsSubmitting(false);
     }
@@ -7209,7 +7224,25 @@ const LoginPage = ({ onLogin }) => {
   const showRegister = () => { setIsRegister(true); setError(''); setSuccess(''); };
 
   return (
-    <div className="auth-page min-h-screen flex items-center justify-center px-5 py-8">
+    <div className="auth-page min-h-screen flex items-center justify-center px-5 py-8 relative">
+      {/* Floating Language Switcher */}
+      <div className="absolute top-5 right-5 z-50 flex items-center bg-slate-900/60 backdrop-blur-md p-1 rounded-full border border-white/20 shadow-xl">
+        <button
+          type="button"
+          onClick={() => onLangChange && onLangChange('en')}
+          className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${lang === 'en' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-200 hover:text-white'}`}
+        >
+          EN
+        </button>
+        <button
+          type="button"
+          onClick={() => onLangChange && onLangChange('ms')}
+          className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${lang === 'ms' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-200 hover:text-white'}`}
+        >
+          BM
+        </button>
+      </div>
+
       <video className="auth-bg-video" autoPlay muted loop playsInline aria-hidden="true">
         <source src="/assets/auth/transformasi-bg.mp4" type="video/mp4" />
       </video>
@@ -7219,16 +7252,20 @@ const LoginPage = ({ onLogin }) => {
           <form onSubmit={handleLogin} className="auth-form">
             <div className="auth-brand">
               <Calculator className="w-6 h-6" />
-              <span>Transformasi Isometri</span>
+              <span>{lang === 'en' ? 'Isometric Transformations' : 'Transformasi Isometri'}</span>
               <small className="auth-db-pill">{isFirebaseConfigured ? 'Firebase' : 'Demo DB'}</small>
             </div>
-            <h1>Login Here</h1>
-            <p className="auth-subtitle">Masuk untuk sambung nota, kuiz dan misi RRG anda.</p>
+            <h1>{lang === 'en' ? 'Sign In' : 'Log Masuk'}</h1>
+            <p className="auth-subtitle">
+              {lang === 'en'
+                ? 'Sign in to access your notes, quizzes, and RRG missions.'
+                : 'Masuk untuk sambung nota, kuiz dan misi RRG anda.'}
+            </p>
 
             <div className="auth-input-group">
               <input
                 type="email"
-                placeholder="Alamat emel"
+                placeholder={lang === 'en' ? 'Email address' : 'Alamat emel'}
                 value={loginData.email}
                 onChange={(event) => { setLoginData({ ...loginData, email: event.target.value }); setError(''); }}
                 required
@@ -7237,7 +7274,7 @@ const LoginPage = ({ onLogin }) => {
             <div className="auth-input-group">
               <input
                 type="password"
-                placeholder="Kata laluan"
+                placeholder={lang === 'en' ? 'Password' : 'Kata laluan'}
                 minLength="6"
                 value={loginData.password}
                 onChange={(event) => { setLoginData({ ...loginData, password: event.target.value }); setError(''); }}
@@ -7252,15 +7289,20 @@ const LoginPage = ({ onLogin }) => {
                   checked={rememberLogin}
                   onChange={(event) => setRememberLogin(event.target.checked)}
                 />
-                <span>Remember me</span>
+                <span>{lang === 'en' ? 'Remember me' : 'Ingat saya'}</span>
               </label>
-              <button type="button" className="auth-link-button" onClick={handleForgotPassword}>Forgot password?</button>
+              <button type="button" className="auth-link-button" onClick={handleForgotPassword}>
+                {lang === 'en' ? 'Forgot password?' : 'Lupa kata laluan?'}
+              </button>
             </div>
             {error && !isRegister && <p className="auth-error">{error}</p>}
             {success && !isRegister && <p className="auth-success">{success}</p>}
-            <button type="submit" className="auth-primary-button" disabled={isSubmitting}>{isSubmitting && !isRegister ? 'Memproses...' : 'Login'}</button>
+            <button type="submit" className="auth-primary-button" disabled={isSubmitting}>
+              {isSubmitting && !isRegister ? (lang === 'en' ? 'Signing in...' : 'Memproses...') : (lang === 'en' ? 'Sign In' : 'Log Masuk')}
+            </button>
             <p className="auth-mobile-switch">
-              Belum ada akaun? <button type="button" onClick={showRegister}>Daftar</button>
+              {lang === 'en' ? "Don't have an account? " : 'Belum ada akaun? '}
+              <button type="button" onClick={showRegister}>{lang === 'en' ? 'Register' : 'Daftar'}</button>
             </p>
           </form>
         </div>
@@ -7269,16 +7311,20 @@ const LoginPage = ({ onLogin }) => {
           <form onSubmit={handleRegister} className="auth-form">
             <div className="auth-brand">
               <ShieldCheck className="w-6 h-6" />
-              <span>Akaun Pelajar</span>
+              <span>{lang === 'en' ? 'Student Account' : 'Akaun Pelajar'}</span>
               <small className="auth-db-pill">{isFirebaseConfigured ? 'Firebase' : 'Demo DB'}</small>
             </div>
-            <h1>Register Here</h1>
-            <p className="auth-subtitle">{isFirebaseConfigured ? 'Cipta akaun baru dan sahkan emel sebelum login.' : 'Cipta akaun demo dalam browser peranti ini.'}</p>
+            <h1>{lang === 'en' ? 'Create Account' : 'Daftar Akaun'}</h1>
+            <p className="auth-subtitle">
+              {lang === 'en'
+                ? (isFirebaseConfigured ? 'Create a student account to get started immediately.' : 'Create a demo account in this browser.')
+                : (isFirebaseConfigured ? 'Cipta akaun pelajar untuk mula bermain segera.' : 'Cipta akaun demo dalam browser peranti ini.')}
+            </p>
 
             <div className="auth-input-group">
               <input
                 type="text"
-                placeholder="Nama penuh"
+                placeholder={lang === 'en' ? 'Full name' : 'Nama penuh'}
                 value={registerData.name}
                 onChange={(event) => { setRegisterData({ ...registerData, name: event.target.value }); setError(''); }}
                 required
@@ -7287,7 +7333,7 @@ const LoginPage = ({ onLogin }) => {
             <div className="auth-input-group">
               <input
                 type="email"
-                placeholder="Alamat emel"
+                placeholder={lang === 'en' ? 'Email address' : 'Alamat emel'}
                 value={registerData.email}
                 onChange={(event) => { setRegisterData({ ...registerData, email: event.target.value }); setError(''); }}
                 required
@@ -7296,7 +7342,7 @@ const LoginPage = ({ onLogin }) => {
             <div className="auth-input-group">
               <input
                 type="password"
-                placeholder="Kata laluan"
+                placeholder={lang === 'en' ? 'Password (min. 6 characters)' : 'Kata laluan (min. 6 aksara)'}
                 minLength="6"
                 value={registerData.password}
                 onChange={(event) => { setRegisterData({ ...registerData, password: event.target.value }); setError(''); }}
@@ -7306,7 +7352,7 @@ const LoginPage = ({ onLogin }) => {
             <div className="auth-input-group">
               <input
                 type="password"
-                placeholder="Sahkan kata laluan"
+                placeholder={lang === 'en' ? 'Confirm password' : 'Sahkan kata laluan'}
                 minLength="6"
                 value={registerData.confirmPassword}
                 onChange={(event) => { setRegisterData({ ...registerData, confirmPassword: event.target.value }); setError(''); }}
@@ -7315,9 +7361,11 @@ const LoginPage = ({ onLogin }) => {
             </div>
 
             {error && isRegister && <p className="auth-error">{error}</p>}
-            <button type="submit" className="auth-primary-button" disabled={isSubmitting}>{isSubmitting && isRegister ? 'Mendaftar...' : 'Register'}</button>
+            <button type="submit" className="auth-primary-button" disabled={isSubmitting}>
+              {isSubmitting && isRegister ? (lang === 'en' ? 'Creating account...' : 'Mendaftar...') : (lang === 'en' ? 'Create Account' : 'Daftar')}
+            </button>
 
-            <div className="auth-divider"><span>or register with</span></div>
+            <div className="auth-divider"><span>{lang === 'en' ? 'or register with' : 'atau daftar dengan'}</span></div>
             <div className="auth-social-row" aria-label="Social register options">
               <span aria-hidden="true">f</span>
               <span aria-hidden="true">G</span>
@@ -7325,7 +7373,8 @@ const LoginPage = ({ onLogin }) => {
             </div>
 
             <p className="auth-mobile-switch">
-              Dah ada akaun? <button type="button" onClick={showLogin}>Login</button>
+              {lang === 'en' ? 'Already have an account? ' : 'Dah ada akaun? '}
+              <button type="button" onClick={showLogin}>{lang === 'en' ? 'Sign In' : 'Log Masuk'}</button>
             </p>
           </form>
         </div>
@@ -7338,14 +7387,14 @@ const LoginPage = ({ onLogin }) => {
             <div className="auth-overlay-icon">
               {isRegister ? <LogIn className="w-7 h-7" /> : <UserRound className="w-7 h-7" />}
             </div>
-            <h2>{isRegister ? 'Welcome Back' : 'Start Your Journey Now'}</h2>
+            <h2>{isRegister ? (lang === 'en' ? 'Welcome Back!' : 'Selamat Kembali!') : (lang === 'en' ? 'Start Your Journey Now' : 'Mulakan Pengembaraan Anda')}</h2>
             <p>
               {isRegister
-                ? 'Login semula untuk memulakan permainan. Akaun anda memerlukan kelulusan admin.'
-                : 'Daftar akaun pelajar untuk bermain. Anda perlu menunggu kelulusan admin selepas mendaftar.'}
+                ? (lang === 'en' ? 'Sign in to resume your math adventure and game missions.' : 'Log masuk semula untuk memulakan permainan dan pengembaraan matematik anda.')
+                : (lang === 'en' ? 'Register a student account to master transformations and play the RRG game!' : 'Daftar akaun pelajar untuk menerokai transformasi isometri dan bermain game RRG!')}
             </p>
             <button type="button" className="auth-ghost-button" onClick={isRegister ? showLogin : showRegister}>
-              {isRegister ? 'Login Sekarang' : 'Daftar Sekarang'}
+              {isRegister ? (lang === 'en' ? 'Sign In' : 'Log Masuk Sekarang') : (lang === 'en' ? 'Register Now' : 'Daftar Sekarang')}
             </button>
           </div>
         </div>
@@ -7360,9 +7409,14 @@ const LoginPage = ({ onLogin }) => {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('nota');
-  const [lang, setLang] = useState('ms'); // 'ms' untuk Bahasa Melayu, 'en' untuk English
+  const [lang, setLang] = useState(() => localStorage.getItem('rrg_lang') || 'en'); // Default to English ('en') or saved user preference
   const [sessionUser, setSessionUser] = useState(null);
   const [sessionLoading, setSessionLoading] = useState(true);
+
+  const handleLanguageChange = (newLang) => {
+    setLang(newLang);
+    localStorage.setItem('rrg_lang', newLang);
+  };
 
   useEffect(() => {
     if (!isFirebaseConfigured) {
@@ -7405,7 +7459,7 @@ export default function App() {
   }
 
   if (!sessionUser) {
-    return <LoginPage onLogin={setSessionUser} />;
+    return <LoginPage onLogin={setSessionUser} lang={lang} onLangChange={handleLanguageChange} />;
   }
 
   return (
@@ -7424,8 +7478,8 @@ export default function App() {
             </div>
             {/* Butang Dwibahasa untuk paparan peranti kecil (Mobile) */}
             <div className="md:hidden flex bg-blue-900/40 p-1 rounded-full backdrop-blur-sm">
-              <button onClick={() => setLang('ms')} className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${lang === 'ms' ? 'bg-white text-blue-800 shadow' : 'text-blue-200 hover:bg-blue-800'}`}>BM</button>
-              <button onClick={() => setLang('en')} className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${lang === 'en' ? 'bg-white text-blue-800 shadow' : 'text-blue-200 hover:bg-blue-800'}`}>EN</button>
+              <button onClick={() => handleLanguageChange('ms')} className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${lang === 'ms' ? 'bg-white text-blue-800 shadow' : 'text-blue-200 hover:bg-blue-800'}`}>BM</button>
+              <button onClick={() => handleLanguageChange('en')} className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${lang === 'en' ? 'bg-white text-blue-800 shadow' : 'text-blue-200 hover:bg-blue-800'}`}>EN</button>
             </div>
           </div>
           
@@ -7469,13 +7523,13 @@ export default function App() {
               <UserRound className="w-4 h-4" /> {sessionUser.name}
             </div>
             <button onClick={handleLogout} className="hidden lg:flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-white hover:bg-slate-800">
-              <LogOut className="w-4 h-4" /> Keluar
+              <LogOut className="w-4 h-4" /> {lang === 'en' ? 'Log Out' : 'Keluar'}
             </button>
 
             {/* Butang Dwibahasa paparan Desktop */}
             <div className="hidden md:flex bg-blue-900/40 p-1 rounded-full backdrop-blur-sm ml-2">
-              <button onClick={() => setLang('ms')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${lang === 'ms' ? 'bg-white text-blue-800 shadow' : 'text-blue-200 hover:bg-blue-800'}`}>BM</button>
-              <button onClick={() => setLang('en')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${lang === 'en' ? 'bg-white text-blue-800 shadow' : 'text-blue-200 hover:bg-blue-800'}`}>EN</button>
+              <button onClick={() => handleLanguageChange('ms')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${lang === 'ms' ? 'bg-white text-blue-800 shadow' : 'text-blue-200 hover:bg-blue-800'}`}>BM</button>
+              <button onClick={() => handleLanguageChange('en')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${lang === 'en' ? 'bg-white text-blue-800 shadow' : 'text-blue-200 hover:bg-blue-800'}`}>EN</button>
             </div>
           </div>
         </div>

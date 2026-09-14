@@ -2223,82 +2223,25 @@ const RRG_PENALTY_CARDS = [
 ];
 
 const RRG_ITEMS = [
-  // Beg Duit (Money Bags "RM" on physical board)
-  { x: -3, y: 11, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-  { x: 9, y: 11, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-  { x: -2, y: 8, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-  { x: 5, y: 6, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-  { x: -7, y: 3, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-  { x: 7, y: 2, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-  { x: -4, y: -2, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-  { x: 7, y: -3, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-  { x: 12, y: -3, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-  { x: -13, y: -4, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-  { x: 12, y: -5, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-  { x: -4, y: -6, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-  { x: 6, y: -7, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-  { x: -7, y: -11, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-  { x: -2, y: -12, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-  { x: 7, y: -12, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-  { x: 12, y: -12, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
-
-  // Berlian (Diamonds on physical board)
-  { x: -6, y: 5, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
-  { x: -1, y: 4, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
-  { x: 4, y: 4, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
-  { x: 11, y: 4, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
-  { x: 12, y: 10, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
-  { x: -1, y: -4, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
-  { x: 3, y: -4, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
-  { x: -7, y: -7, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
-  { x: 4, y: -7, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
-  { x: 10, y: -7, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
-  { x: 12, y: -9, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
-
-  // Peti Emas (Gold Chests on physical board)
-  { x: -12, y: 11, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
-  { x: 7, y: 8, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
-  { x: -8, y: 6, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
-  { x: 11, y: 6, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
-  { x: -9, y: -2, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
-  { x: 6, y: -1, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
-  { x: -5, y: -4, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
-  { x: 5, y: -7, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
-  { x: -12, y: -8, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
-  { x: 13, y: -8, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
-
-  // Checkpoints / Titik Sasaran (Green circles with dark center on physical board)
-  { x: 1, y: 6, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
-  { x: -6, y: 7, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
-  { x: 11, y: 9, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
-  { x: -10, y: 8, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
-  { x: -11, y: 4, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
-  { x: -10, y: -2, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
-  { x: 8, y: -2, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
-  { x: -4, y: -4, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
-  { x: 8, y: -8, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
-  { x: -10, y: -9, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
-  { x: 8, y: -12, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
-
-  // Zon Bahaya Bukit Kristal (Volcano radiation perimeter)
-  { x: -2, y: 2, kind: 'penalty', label: 'Zon Bahaya', label_en: 'Hazard Zone' },
-  { x: 2, y: 2, kind: 'penalty', label: 'Zon Bahaya', label_en: 'Hazard Zone' },
-  { x: -2, y: -2, kind: 'penalty', label: 'Zon Bahaya', label_en: 'Hazard Zone' },
-  { x: 2, y: -2, kind: 'penalty', label: 'Zon Bahaya', label_en: 'Hazard Zone' },
-];
-
-const RRG_LANDMARKS = [
-  { x: 0, y: 0, type: 'crystal', label: 'Bukit Kristal', label_en: 'Crystal Hill' },
-  { x: -5, y: -6, type: 'waterfall', label: 'Air Terjun', label_en: 'Waterfall' },
-  { x: 14, y: 7, type: 'lighthouse', label: 'Rumah Api', label_en: 'Lighthouse' },
-  { x: 6, y: 3, type: 'factory', label: 'Kilang', label_en: 'Factory' },
-  { x: 8, y: -4, type: 'clinic', label: 'Klinik', label_en: 'Clinic' },
-  { x: 5, y: -7, type: 'village', label: 'Kampung', label_en: 'Village' },
-  { x: 8, y: 10, type: 'harbor', label: 'Pelabuhan', label_en: 'Harbor' },
-  { x: 6, y: 8, type: 'bridge', label: 'Jambatan', label_en: 'Bridge' },
-  { x: -9, y: 8, type: 'ranch', label: 'Ladang Ternakan', label_en: 'Ranch' },
-  { x: -8, y: 5, type: 'farm', label: 'Kebun', label_en: 'Farm' },
-  { x: 10, y: 0, type: 'market', label: 'Pasar', label_en: 'Market' },
+  // 4 Money
+  { x: 2, y: 6, kind: 'money', label: 'RM', label_en: 'RM', amount: 50 }, { x: -2, y: -8, kind: 'money', label: 'RM', label_en: 'RM', amount: 50 },
+  { x: 8, y: -4, kind: 'money', label: 'RM', label_en: 'RM', amount: 50 }, { x: -6, y: -2, kind: 'money', label: 'RM', label_en: 'RM', amount: 50 },
+  // 4 Diamond
+  { x: 6, y: 8, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 }, { x: -8, y: -4, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
+  { x: 10, y: 4, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 }, { x: -4, y: 10, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
+  // 4 Chest
+  { x: 8, y: 8, kind: 'chest', label: 'Peti emas', label_en: 'Gold Chest', amount: 200 }, { x: -8, y: 6, kind: 'chest', label: 'Peti emas', label_en: 'Gold Chest', amount: 200 },
+  { x: 10, y: -10, kind: 'chest', label: 'Peti emas', label_en: 'Gold Chest', amount: 200 }, { x: -10, y: -8, kind: 'chest', label: 'Peti emas', label_en: 'Gold Chest', amount: 200 },
+  // 8 Reward
+  { x: 0, y: 10, kind: 'reward', label: 'Mentol', label_en: 'Bulb' }, { x: 10, y: 0, kind: 'reward', label: 'Mentol', label_en: 'Bulb' },
+  { x: 0, y: -10, kind: 'reward', label: 'Mentol', label_en: 'Bulb' }, { x: -10, y: 0, kind: 'reward', label: 'Mentol', label_en: 'Bulb' },
+  { x: 4, y: -2, kind: 'reward', label: 'Mentol', label_en: 'Bulb' }, { x: -2, y: 4, kind: 'reward', label: 'Mentol', label_en: 'Bulb' },
+  { x: 7, y: 5, kind: 'reward', label: 'Mentol', label_en: 'Bulb' }, { x: -7, y: -5, kind: 'reward', label: 'Mentol', label_en: 'Bulb' },
+  // 8 Penalty (Bom)
+  { x: 4, y: 4, kind: 'penalty', label: 'Bom', label_en: 'Bomb' }, { x: -4, y: -6, kind: 'penalty', label: 'Bom', label_en: 'Bomb' },
+  { x: 6, y: -6, kind: 'penalty', label: 'Bom', label_en: 'Bomb' }, { x: -6, y: 4, kind: 'penalty', label: 'Bom', label_en: 'Bomb' },
+  { x: 0, y: 8, kind: 'penalty', label: 'Bom', label_en: 'Bomb' }, { x: 0, y: -8, kind: 'penalty', label: 'Bom', label_en: 'Bomb' },
+  { x: 8, y: 0, kind: 'penalty', label: 'Bom', label_en: 'Bomb' }, { x: -8, y: 0, kind: 'penalty', label: 'Bom', label_en: 'Bomb' },
 ];
 
 const RRG_COLORS = [
@@ -2606,7 +2549,7 @@ const getRrgItemAt = (point) => {
     .filter(({ item, distance }) => distance <= getRrgItemRadius(item))
     .sort((a, b) => a.distance - b.distance)[0]?.item || null;
 };
-const isRrgSafeZone = (point) => Math.abs(point.x) >= 14 || Math.abs(point.y) >= 14;
+const isRrgSafeZone = (point) => Math.abs(point.x) >= 15 || Math.abs(point.y) >= 15;
 
 const playRrgSound = (kind) => {
   if (typeof window === 'undefined') return;
@@ -2638,17 +2581,6 @@ const playRrgSound = (kind) => {
     gain.gain.setValueAtTime(0.0001, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.28, ctx.currentTime + 0.03);
     gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.58);
-  } else if (kind === 'click') {
-    const osc = ctx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(560, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(840, ctx.currentTime + 0.04);
-    osc.connect(gain);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.05);
-    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
   } else {
     const osc = ctx.createOscillator();
     osc.type = 'sine';
@@ -3920,17 +3852,43 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
 
     const ctx = canvas.getContext('2d');
     const mmCtx = miniMap.getContext('2d');
-    const BOARD_W = 2758;
-    const BOARD_H = 2758;
-    const BOARD_CX = 1376.0;
-    const BOARD_CY = 1376.0;
-    const CELL = 86.5;
-    const MAP_W = BOARD_W;
-    const MAP_H = BOARD_H;
-    const gridToPixel = (gx, gy) => ({
-      px: BOARD_CX + gx * CELL,
-      py: BOARD_CY - gy * CELL,
-    });
+    const GRID_MIN = -15;
+    const GRID_MAX = 15;
+    const GRID_SIZE = GRID_MAX - GRID_MIN + 1;
+    const CELL = 75;
+    const MAP_W = GRID_SIZE * CELL;
+    const MAP_H = GRID_SIZE * CELL;
+    const HAZARD_RADIUS = 3.5;
+
+    const islandPoly = [
+      [-12,14],[-8,14.5],[-3,14.5],[0,13],[4,14],[8,13.5],[10,12],
+      [12,10],[13,8],[14,5],[14.5,2],[14,0],[14.5,-3],[13,-6],
+      [12,-9],[11,-11],[9,-13],[6,-14],[3,-14.5],[0,-14],[-3,-14.5],
+      [-6,-14],[-9,-13],[-11,-11],[-13,-8],[-14,-5],[-14.5,-2],
+      [-14,2],[-14.5,5],[-14,8],[-13,11],[-12,14],
+    ];
+
+    const rng = (seed) => {
+      let value = seed;
+      return () => {
+        value = (value * 16807) % 2147483647;
+        return (value - 1) / 2147483646;
+      };
+    };
+    const rand = rng(77);
+
+    const isOnIsland = (gx, gy) => {
+      let inside = false;
+      for (let i = 0, j = islandPoly.length - 1; i < islandPoly.length; j = i++) {
+        const xi = islandPoly[i][0];
+        const yi = islandPoly[i][1];
+        const xj = islandPoly[j][0];
+        const yj = islandPoly[j][1];
+        if (((yi > gy) !== (yj > gy)) && (gx < ((xj - xi) * (gy - yi)) / (yj - yi) + xi)) inside = !inside;
+      }
+      return inside;
+    };
+    const gridToPixel = (gx, gy) => ({ px: (gx - GRID_MIN) * CELL + CELL / 2, py: (GRID_MAX - gy) * CELL + CELL / 2 });
     const screenToGrid = (clientX, clientY, game) => {
       const rect = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
@@ -3939,21 +3897,311 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       const mapX = (sx - canvas.width / 2) / (game.zoom * dpr) + game.camX;
       const mapY = (sy - canvas.height / 2) / (game.zoom * dpr) + game.camY;
       return {
-        x: clampBoard(Math.round((mapX - BOARD_CX) / CELL)),
-        y: clampBoard(Math.round((BOARD_CY - mapY) / CELL)),
+        x: clampBoard(Math.round(((mapX - CELL / 2) / CELL) + GRID_MIN)),
+        y: clampBoard(Math.round(GRID_MAX - ((mapY - CELL / 2) / CELL))),
       };
     };
 
+    const trees = [];
+    for (let i = 0; i < 54; i++) {
+      const gx = rand() * 28 - 14;
+      const gy = rand() * 28 - 14;
+      if (isOnIsland(gx, gy) && Math.sqrt(gx * gx + gy * gy) > HAZARD_RADIUS + 0.8) {
+        trees.push({
+          x: gx,
+          y: gy,
+          size: 0.34 + rand() * 0.42,
+          type: rand() > 0.5 ? 'palm' : 'tree',
+          phase: rand() * Math.PI * 2,
+          lean: -0.08 + rand() * 0.16,
+        });
+      }
+    }
+
+    const boats = [];
+    for (let i = 0; i < 12; i++) {
+      const baseAngle = (i / 12) * Math.PI * 2;
+      // Add a bit of random offset to the angle so they don't look perfectly rigid
+      const angle = baseAngle + (-0.1 + rand() * 0.2);
+      
+      let radius = 12 + rand() * 3;
+      let bx = Math.cos(angle) * radius;
+      let by = Math.sin(angle) * radius;
+      
+      // Push the boat outwards until it is safely off the island (in the water)
+      while (isOnIsland(bx, by)) {
+        radius += 1.5;
+        bx = Math.cos(angle) * radius;
+        by = Math.sin(angle) * radius;
+      }
+      
+      boats.push({
+        x: bx,
+        y: by,
+        type: rand() > 0.5 ? 'speedboat' : 'sailboat',
+        phase: rand() * Math.PI * 2,
+        scale: 0.82 + rand() * 0.34,
+        heading: angle + Math.PI / 2,
+      });
+    }
+
+    const landmarks = [
+      { x: 0, y: -1, type: 'crystal', label: 'Bukit Kristal', label_ms: 'Bukit Kristal', label_en: 'Crystal Hill', size: 1.45 },
+      { x: -8, y: 5, type: 'farm', label: 'Kebun', label_ms: 'Kebun', label_en: 'Farm', size: 1.05 },
+      { x: 6, y: 3, type: 'factory', label: 'Kilang', label_ms: 'Kilang', label_en: 'Factory', size: 1.05 },
+      { x: -5, y: -6, type: 'waterfall', label: 'Air Terjun', label_ms: 'Air Terjun', label_en: 'Waterfall', size: 1.12 },
+      { x: 8, y: -4, type: 'clinic', label: 'Klinik', label_ms: 'Klinik', label_en: 'Clinic', size: 1 },
+      { x: 5, y: -7, type: 'village', label: 'Kampung', label_ms: 'Kampung', label_en: 'Village', size: 1.05 },
+      { x: 8, y: 10, type: 'harbor', label: 'Pelabuhan', label_ms: 'Pelabuhan', label_en: 'Harbor', size: 1.02 },
+      { x: 14, y: 7, type: 'lighthouse', label: 'Rumah Api', label_ms: 'Rumah Api', label_en: 'Lighthouse', size: 1.05 },
+      { x: 6, y: 8, type: 'bridge', label: 'Jambatan', label_ms: 'Jambatan', label_en: 'Bridge', size: 0.96 },
+      { x: -9, y: 8, type: 'ranch', label: 'Ladang', label_ms: 'Ladang', label_en: 'Ranch', size: 0.98 },
+      { x: 10, y: 0, type: 'market', label: 'Pasar', label_ms: 'Pasar', label_en: 'Market', size: 0.98 },
+    ];
+
+    const paths = [
+      [{ x: 0, y: -1 }, { x: -4, y: 2 }, { x: -8, y: 5 }, { x: -12, y: 12 }],
+      [{ x: 0, y: -1 }, { x: 4, y: 2 }, { x: 8, y: 5 }, { x: 14, y: 7 }],
+      [{ x: 0, y: -1 }, { x: 2, y: -5 }, { x: 5, y: -7 }, { x: 3, y: -14 }],
+      [{ x: 0, y: -1 }, { x: -3, y: -4 }, { x: -5, y: -6 }, { x: -10, y: -12 }],
+    ];
+    const riverPath = [{ x: -4.2, y: -3.6 }, { x: -5, y: -6 }, { x: -6.4, y: -8.2 }, { x: -8.7, y: -10.7 }, { x: -11.2, y: -13 }];
+
+    const sandSpecks = [];
+    for (let i = 0; i < 620; i++) {
+      const gx = rand() * 31 - 15.5;
+      const gy = rand() * 31 - 15.5;
+      if (isOnIsland(gx, gy)) {
+        sandSpecks.push({ x: gx, y: gy, r: 0.018 + rand() * 0.055, alpha: 0.06 + rand() * 0.15, dark: rand() > 0.62 });
+      }
+    }
+
+    const stones = [];
+    for (let i = 0; i < 36; i++) {
+      const gx = rand() * 28 - 14;
+      const gy = rand() * 28 - 14;
+      if (isOnIsland(gx, gy) && Math.sqrt(gx * gx + gy * gy) > HAZARD_RADIUS + 1.1) {
+        stones.push({ x: gx, y: gy, rx: 4 + rand() * 7, ry: 2.5 + rand() * 4, rot: rand() * Math.PI, alpha: 0.12 + rand() * 0.13 });
+      }
+    }
+
     const textureSources = {
-      officialBoard: '/rrg-board-official.webp',
       water: '/assets/rrgs/textures/air_new.jpg',
+      sand: '/assets/rrgs/textures/pasir.png',
+      buildings: '/assets/rrgs/textures/bangunan.png',
+      cloud: '/assets/rrgs/textures/cloud.jpg',
+      proBomb: '/assets/rrgs/textures/simple_bomb.jpg',
+      proChest: '/assets/rrgs/textures/simple_chest.jpg',
+      stylizedSpeedboat: '/assets/rrgs/textures/stylized_speedboat.jpg',
+      stylizedSailboat: '/assets/rrgs/textures/stylized_sailboat.jpg',
+    };
+    const landmarkAssetPath = (name) => `/assets/rrgs/landmarks/${name}.png?v=transparent-cut-2`;
+    const landmarkAssetSources = {
+      crystal: landmarkAssetPath('crystal'),
+      farm: landmarkAssetPath('farm'),
+      factory: landmarkAssetPath('factory'),
+      waterfall: landmarkAssetPath('waterfall'),
+      clinic: landmarkAssetPath('clinic'),
+      village: landmarkAssetPath('village'),
+      harbor: landmarkAssetPath('harbor'),
+      lighthouse: landmarkAssetPath('lighthouse'),
+      bridge: landmarkAssetPath('bridge'),
+      ranch: landmarkAssetPath('ranch'),
+      market: landmarkAssetPath('market'),
     };
     const textures = Object.fromEntries(Object.entries(textureSources).map(([key, src]) => {
       const image = new Image();
       image.src = src;
+      if (key === 'cloud') {
+        image.onload = () => {
+          const c = document.createElement('canvas');
+          c.width = image.width;
+          c.height = image.height;
+          const ctx = c.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, c.width, c.height);
+          ctx.globalCompositeOperation = 'difference';
+          ctx.drawImage(image, 0, 0);
+          textures.cloudShadow = c;
+        };
+      } else if (key === 'proBomb' || key === 'proChest' || key === 'stylizedSpeedboat' || key === 'stylizedSailboat') {
+        image.onload = () => {
+          const c = document.createElement('canvas');
+          c.width = image.width;
+          c.height = image.height;
+          const ctx = c.getContext('2d');
+          ctx.drawImage(image, 0, 0);
+          const imgData = ctx.getImageData(0, 0, c.width, c.height);
+          const data = imgData.data;
+          for (let i = 0; i < data.length; i += 4) {
+             const r = data[i], g = data[i+1], b = data[i+2];
+             const distanceToGreen = Math.abs(r - 0) + Math.abs(g - 255) + Math.abs(b - 0);
+             if (distanceToGreen < 150) {
+                data[i+3] = 0;
+             } else if (g > r + 30 && g > b + 30) {
+                data[i+3] = Math.max(0, 255 - (g - Math.max(r, b)) * 2);
+                data[i+1] = Math.min(r, b);
+             }
+          }
+          ctx.putImageData(imgData, 0, 0);
+          textures[`${key}Transparent`] = c;
+        };
+      }
       return [key, image];
     }));
+    const landmarkImages = Object.fromEntries(Object.entries(landmarkAssetSources).map(([key, src]) => {
+      const image = new Image();
+      image.src = src;
+      return [key, image];
+    }));
+    const landmarkRenderCache = new WeakMap();
     const isTextureReady = (image) => image?.complete && image.naturalWidth > 0;
+    const makeRoadTexture = () => {
+      const roadCanvas = document.createElement('canvas');
+      roadCanvas.width = 192;
+      roadCanvas.height = 192;
+      const roadCtx = roadCanvas.getContext('2d');
+      const base = roadCtx.createLinearGradient(0, 0, 192, 192);
+      base.addColorStop(0, '#b7824b');
+      base.addColorStop(0.46, '#c99558');
+      base.addColorStop(1, '#a96f3d');
+      roadCtx.fillStyle = base;
+      roadCtx.fillRect(0, 0, 192, 192);
+
+      for (let i = 0; i < 900; i++) {
+        const x = (Math.sin(i * 12.9898) * 43758.5453) % 1;
+        const y = (Math.sin(i * 78.233) * 24634.6345) % 1;
+        const px = Math.abs(x) * 192;
+        const py = Math.abs(y) * 192;
+        const tone = 95 + Math.floor(Math.abs(Math.sin(i * 4.37)) * 105);
+        const alpha = 0.035 + Math.abs(Math.cos(i * 2.91)) * 0.055;
+        roadCtx.fillStyle = `rgba(${tone + 42}, ${Math.max(72, tone - 12)}, ${Math.max(38, tone - 42)}, ${alpha})`;
+        roadCtx.fillRect(px, py, 1.1, 1.1);
+      }
+
+      for (let i = 0; i < 54; i++) {
+        const px = Math.abs((Math.sin(i * 31.41) * 1000) % 1) * 192;
+        const py = Math.abs((Math.cos(i * 18.77) * 1000) % 1) * 192;
+        const r = 1.4 + Math.abs(Math.sin(i * 6.21)) * 2.8;
+        roadCtx.fillStyle = i % 3 === 0 ? 'rgba(84, 52, 26, 0.12)' : 'rgba(255, 232, 178, 0.11)';
+        roadCtx.beginPath();
+        roadCtx.ellipse(px, py, r * 1.8, r, Math.sin(i) * Math.PI, 0, Math.PI * 2);
+        roadCtx.fill();
+      }
+
+      return roadCanvas;
+    };
+    const roadTexture = makeRoadTexture();
+    const LANDMARK_DRAW_BASE = 94;
+    const landmarkAssetMeta = {
+      crystal: { drawScale: 1.28, shadowScale: 1.14, labelFactor: 0.36, crop: { left: 0.09, right: 0.09, top: 0.08, bottom: 0.18 }, fadeStart: 0.64 },
+      farm: { drawScale: 1.08, shadowScale: 1.02, labelFactor: 0.33, crop: { left: 0.1, right: 0.1, top: 0.08, bottom: 0.22 }, fadeStart: 0.62 },
+      factory: { drawScale: 1.14, shadowScale: 1.12, labelFactor: 0.35, crop: { left: 0.09, right: 0.09, top: 0.07, bottom: 0.2 }, fadeStart: 0.58, fadeMid: 0.8, maskOuter: 0.58 },
+      waterfall: { drawScale: 1.12, shadowScale: 1.08, labelFactor: 0.35, crop: { left: 0.08, right: 0.08, top: 0.07, bottom: 0.18 }, fadeStart: 0.61, maskOuter: 0.56 },
+      clinic: { drawScale: 1.02, shadowScale: 1.0, labelFactor: 0.33, crop: { left: 0.1, right: 0.1, top: 0.08, bottom: 0.21 }, fadeStart: 0.6 },
+      village: { drawScale: 1.18, shadowScale: 1.12, labelFactor: 0.36, crop: { left: 0.09, right: 0.09, top: 0.07, bottom: 0.22 }, fadeStart: 0.6, maskOuter: 0.58 },
+      harbor: { drawScale: 1.16, shadowScale: 1.16, labelFactor: 0.35, crop: { left: 0.08, right: 0.08, top: 0.07, bottom: 0.2 }, fadeStart: 0.56, fadeMid: 0.78, maskOuter: 0.62 },
+      lighthouse: { drawScale: 1.08, shadowScale: 0.98, labelFactor: 0.35, crop: { left: 0.1, right: 0.1, top: 0.05, bottom: 0.18 }, fadeStart: 0.62 },
+      bridge: { drawScale: 1.18, shadowScale: 1.2, labelFactor: 0.31, crop: { left: 0.07, right: 0.07, top: 0.08, bottom: 0.18 }, fadeStart: 0.55, fadeMid: 0.76, maskOuter: 0.64 },
+      ranch: { drawScale: 1.1, shadowScale: 1.04, labelFactor: 0.34, crop: { left: 0.1, right: 0.1, top: 0.08, bottom: 0.22 }, fadeStart: 0.61 },
+      market: { drawScale: 1.08, shadowScale: 1.06, labelFactor: 0.34, crop: { left: 0.1, right: 0.1, top: 0.07, bottom: 0.2 }, fadeStart: 0.6 },
+    };
+    const landmarkAnimationMeta = {
+      crystal: { speed: 1.28, float: 0.85, sway: 0.012, breath: 0.018, shadow: 0.08 },
+      farm: { speed: 0.9, float: 0.2, sway: 0.006, breath: 0.006, shadow: 0.025 },
+      factory: { speed: 0.82, float: 0.12, sway: 0.004, breath: 0.004, shake: 0.28, shadow: 0.035 },
+      waterfall: { speed: 1.18, float: 0.18, sway: 0.004, breath: 0.008, shadow: 0.04 },
+      clinic: { speed: 0.95, float: 0.16, sway: 0.004, breath: 0.006, shadow: 0.025 },
+      village: { speed: 0.86, float: 0.2, sway: 0.006, breath: 0.007, shadow: 0.03 },
+      harbor: { speed: 1.08, float: 0.38, sway: 0.01, breath: 0.01, shadow: 0.045 },
+      lighthouse: { speed: 0.92, float: 0.16, sway: 0.007, breath: 0.006, shadow: 0.026 },
+      bridge: { speed: 0.74, float: 0.1, sway: 0.002, breath: 0.004, shadow: 0.02 },
+      ranch: { speed: 0.9, float: 0.2, sway: 0.006, breath: 0.006, shadow: 0.025 },
+      market: { speed: 1.0, float: 0.18, sway: 0.006, breath: 0.008, shadow: 0.03 },
+    };
+    const getStablePhase = (landmark) => {
+      const raw = Math.sin(landmark.x * 12.9898 + landmark.y * 78.233 + landmark.label.length * 9.17) * 43758.5453;
+      return Math.abs(raw % 1) * Math.PI * 2;
+    };
+    const getLandmarkMotion = (landmark) => {
+      const meta = landmarkAnimationMeta[landmark.type] || {};
+      const phase = getStablePhase(landmark);
+      const t = game.time * (meta.speed || 1) + phase;
+      const fineT = game.time * ((meta.speed || 1) * 1.7) + phase * 0.67;
+      const shake = meta.shake
+        ? Math.sin(game.time * 17 + phase) * meta.shake + Math.sin(game.time * 23 + phase * 0.5) * meta.shake * 0.45
+        : 0;
+
+      return {
+        phase,
+        x: shake,
+        floatY: Math.sin(t) * (meta.float || 0),
+        sway: Math.sin(t * 0.72) * (meta.sway || 0),
+        scaleX: 1 + Math.sin(fineT) * (meta.breath || 0),
+        scaleY: 1 - Math.sin(fineT) * (meta.breath || 0) * 0.55,
+        shadowPulse: Math.sin(t + Math.PI / 3) * (meta.shadow || 0),
+      };
+    };
+    const getProcessedLandmarkImage = (landmarkType) => {
+      const image = landmarkImages[landmarkType];
+      if (!isTextureReady(image)) return null;
+      const cached = landmarkRenderCache.get(image);
+      if (cached) return cached;
+
+      const meta = landmarkAssetMeta[landmarkType] || {};
+      const crop = meta.crop || {};
+      const width = image.naturalWidth || image.width;
+      const height = image.naturalHeight || image.height;
+      const sx = Math.round(width * (crop.left || 0));
+      const sy = Math.round(height * (crop.top || 0));
+      const sw = Math.max(1, width - sx - Math.round(width * (crop.right || 0)));
+      const sh = Math.max(1, height - sy - Math.round(height * (crop.bottom || 0)));
+
+      const canvas = document.createElement('canvas');
+      canvas.width = sw;
+      canvas.height = sh;
+      const renderCtx = canvas.getContext('2d');
+      renderCtx.drawImage(image, sx, sy, sw, sh, 0, 0, sw, sh);
+
+      renderCtx.globalCompositeOperation = 'destination-in';
+
+      const radial = renderCtx.createRadialGradient(
+        sw * 0.5,
+        sh * 0.45,
+        Math.min(sw, sh) * 0.18,
+        sw * 0.5,
+        sh * 0.5,
+        Math.max(sw, sh) * (meta.maskOuter || 0.56),
+      );
+      radial.addColorStop(0, 'rgba(0,0,0,1)');
+      radial.addColorStop(0.68, 'rgba(0,0,0,1)');
+      radial.addColorStop(1, 'rgba(0,0,0,0)');
+      renderCtx.fillStyle = radial;
+      renderCtx.fillRect(0, 0, sw, sh);
+
+      const bottomFade = renderCtx.createLinearGradient(0, 0, 0, sh);
+      bottomFade.addColorStop(0, 'rgba(0,0,0,1)');
+      bottomFade.addColorStop(meta.fadeStart || 0.6, 'rgba(0,0,0,1)');
+      bottomFade.addColorStop(meta.fadeMid || 0.82, 'rgba(0,0,0,0.5)');
+      bottomFade.addColorStop(1, 'rgba(0,0,0,0)');
+      renderCtx.fillStyle = bottomFade;
+      renderCtx.fillRect(0, 0, sw, sh);
+
+      renderCtx.globalCompositeOperation = 'source-over';
+      const processed = { canvas, width: sw, height: sh };
+      landmarkRenderCache.set(image, processed);
+      return processed;
+    };
+    const buildingSpriteMap = {
+      farm: { sx: 4, sy: 40, sw: 68, sh: 68, dw: 70, dh: 70 },
+      ranch: { sx: 80, sy: 40, sw: 68, sh: 68, dw: 70, dh: 70 },
+      village: { sx: 154, sy: 40, sw: 68, sh: 68, dw: 72, dh: 72 },
+      factory: { sx: 6, sy: 640, sw: 78, sh: 72, dw: 82, dh: 76 },
+      clinic: { sx: 632, sy: 178, sw: 74, sh: 70, dw: 78, dh: 74 },
+      market: { sx: 716, sy: 178, sw: 74, sh: 70, dw: 78, dh: 74 },
+      harbor: { sx: 632, sy: 1190, sw: 84, sh: 70, dw: 88, dh: 72 },
+      lighthouse: { sx: 462, sy: 438, sw: 72, sh: 86, dw: 76, dh: 88 },
+    };
 
     let savedState = null;
     try {
@@ -3969,22 +4217,15 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       console.warn("Failed to load saved game", e);
     }
 
-    const getFitZoom = () => {
-      const rect = canvas.getBoundingClientRect();
-      const w = rect.width || window.innerWidth || 1200;
-      const h = rect.height || (window.innerHeight - 120) || 600;
-      return Math.min(w / BOARD_W, h / BOARD_H) * 0.94;
-    };
-
     const game = {
       canvas,
       ctx,
       gridToPixel,
-      camX: BOARD_CX,
-      camY: BOARD_CY,
-      camTargetX: BOARD_CX,
-      camTargetY: BOARD_CY,
-      zoom: 0.22,
+      camX: 0,
+      camY: 0,
+      camTargetX: 0,
+      camTargetY: 0,
+      zoom: 1,
       dragStartX: 0,
       dragStartY: 0,
       camStartX: 0,
@@ -4014,151 +4255,55 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       lastTime: performance.now(),
     };
     gameRef.current = game;
+    if (game.players && game.players[0]) {
+      centerOnPlayer(game, game.players[0], true);
+    }
     syncHud(game);
 
-    let hasFitZoomInitially = false;
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
       canvas.width = Math.max(1, Math.floor(rect.width * dpr));
       canvas.height = Math.max(1, Math.floor(rect.height * dpr));
-      if (!hasFitZoomInitially && rect.width > 0 && rect.height > 0) {
-        hasFitZoomInitially = true;
-        const fit = getFitZoom();
-        game.zoom = fit;
-        game.camX = BOARD_CX;
-        game.camY = BOARD_CY;
-        game.camTargetX = BOARD_CX;
-        game.camTargetY = BOARD_CY;
-      }
     };
     resize();
 
-    const activePointers = new Map();
-    let pinchStartDist = 0;
-    let pinchStartZoom = 1;
-
     const onPointerDown = (event) => {
-      try {
-        canvas.setPointerCapture(event.pointerId);
-      } catch (e) {}
-      activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-      if (activePointers.size === 1) {
-        game.isDragging = true;
-        game.dragStartX = event.clientX;
-        game.dragStartY = event.clientY;
-        game.camStartX = game.camX;
-        game.camStartY = game.camY;
-        game.camTargetX = game.camX;
-        game.camTargetY = game.camY;
-        game.dragDistance = 0;
-      } else if (activePointers.size === 2) {
-        game.isDragging = false;
-        const pts = Array.from(activePointers.values());
-        pinchStartDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
-        pinchStartZoom = game.zoom;
-      }
+      game.isDragging = true;
+      game.dragStartX = event.clientX;
+      game.dragStartY = event.clientY;
+      game.camStartX = game.camX;
+      game.camStartY = game.camY;
+      game.camTargetX = game.camX;
+      game.camTargetY = game.camY;
+      game.dragDistance = 0;
     };
-
     const onPointerMove = (event) => {
-      if (!game.isDragging) {
-        game.hoverCoord = screenToGrid(event.clientX, event.clientY, game);
-      }
-
-      if (!activePointers.has(event.pointerId)) return;
-      activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-
-      if (activePointers.size === 2 && pinchStartDist > 0) {
-        const pts = Array.from(activePointers.values());
-        const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
-        const scale = dist / pinchStartDist;
-        const minZ = Math.min(0.08, getFitZoom() * 0.6);
-        game.zoom = Math.max(minZ, Math.min(3.0, pinchStartZoom * scale));
-      } else if (game.isDragging && activePointers.size === 1) {
-        const dx = event.clientX - game.dragStartX;
-        const dy = event.clientY - game.dragStartY;
-        game.dragDistance = Math.max(game.dragDistance, Math.abs(dx) + Math.abs(dy));
-        game.camX = game.camStartX - dx / game.zoom;
-        game.camY = game.camStartY - dy / game.zoom;
-        game.camTargetX = game.camX;
-        game.camTargetY = game.camY;
-      }
+      if (!game.isDragging) return;
+      const dx = event.clientX - game.dragStartX;
+      const dy = event.clientY - game.dragStartY;
+      game.dragDistance = Math.max(game.dragDistance, Math.abs(dx) + Math.abs(dy));
+      game.camX = game.camStartX - dx / game.zoom;
+      game.camY = game.camStartY - dy / game.zoom;
+      game.camTargetX = game.camX;
+      game.camTargetY = game.camY;
     };
-
     const onPointerUp = (event) => {
-      try {
-        canvas.releasePointerCapture(event.pointerId);
-      } catch (e) {}
-      const wasDragging = game.isDragging;
-      const dragDist = game.dragDistance;
-      activePointers.delete(event.pointerId);
-
-      if (activePointers.size === 0) {
-        game.isDragging = false;
-        if (wasDragging && dragDist < 8 && !game.gameOver && !game.animating) {
-          const clickedGrid = screenToGrid(event.clientX, event.clientY, game);
-          game.selected = clickedGrid;
-
-          // Add interactive ripple shockwave
-          game.effects.push({
-            id: Math.random().toString(),
-            type: 'ripple',
-            x: clickedGrid.x,
-            y: clickedGrid.y,
-            startedAt: performance.now(),
-            duration: 750,
-          });
-
-          const item = RRG_ITEMS.find((it) => it.x === clickedGrid.x && it.y === clickedGrid.y);
-          const landmark = RRG_LANDMARKS.find((lm) => Math.hypot(lm.x - clickedGrid.x, lm.y - clickedGrid.y) < 1.4);
-
-          if (game.card) {
-            game.message = lang === 'en'
-              ? `Selected coordinate: (${clickedGrid.x}, ${clickedGrid.y}). Press Check Answer.`
-              : `Pilihan koordinat: (${clickedGrid.x}, ${clickedGrid.y}). Tekan Semak Jawapan.`;
-            playRrgSound('coin');
-          } else {
-            const activeP = game.players[game.currentPlayer];
-            const dist = Math.hypot(clickedGrid.x - activeP.x, clickedGrid.y - activeP.y).toFixed(1);
-            let detail = '';
-            if (item) {
-              detail = lang === 'en'
-                ? ` · ${item.label_en || item.label} (+RM${item.amount || 0})`
-                : ` · ${item.label} (+RM${item.amount || 0})`;
-              playRrgSound('coin');
-            } else if (landmark) {
-              detail = ` · ${lang === 'en' ? landmark.label_en : landmark.label}`;
-              playRrgSound('correct');
-            } else {
-              detail = isRrgSafeZone(clickedGrid)
-                ? (lang === 'en' ? ' · 🚤 Safe Zone (Rescue Boat)' : ' · 🚤 Zon Selamat (Bot Penyelamat)')
-                : '';
-              playRrgSound('click');
-            }
-            game.message = lang === 'en'
-              ? `Coordinate (${clickedGrid.x}, ${clickedGrid.y})${detail} · Distance from ${activeP.name}: ${dist} units`
-              : `Koordinat (${clickedGrid.x}, ${clickedGrid.y})${detail} · Jarak dari ${activeP.name}: ${dist} unit`;
-          }
-          syncHud(game);
-        }
-      } else if (activePointers.size === 1) {
-        const remaining = Array.from(activePointers.values())[0];
-        game.isDragging = true;
-        game.dragStartX = remaining.x;
-        game.dragStartY = remaining.y;
-        game.camStartX = game.camX;
-        game.camStartY = game.camY;
-        game.dragDistance = 20;
+      if (!game.isDragging) return;
+      game.isDragging = false;
+      if (game.dragDistance < 6 && game.card && !game.gameOver && !game.animating) {
+        game.selected = screenToGrid(event.clientX, event.clientY, game);
+        game.message = lang === 'en'
+          ? `Selected coordinate: (${game.selected.x}, ${game.selected.y}). Press Check Answer.`
+          : `Pilihan koordinat: (${game.selected.x}, ${game.selected.y}). Tekan Semak Jawapan.`;
+        syncHud(game);
       }
     };
-
     const onWheel = (event) => {
       const delta = event.deltaY > 0 ? 0.9 : 1.1;
-      const minZ = Math.min(0.08, getFitZoom() * 0.6);
-      game.zoom = Math.max(minZ, Math.min(3.0, game.zoom * delta));
+      game.zoom = Math.max(0.34, Math.min(3, game.zoom * delta));
       event.preventDefault();
     };
-
     const onKeyDown = (event) => {
       if (!game.card || !game.selected || game.animating) return;
       if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') game.selected.y = clampBoard(game.selected.y + 1);
@@ -4171,11 +4316,22 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
 
     window.addEventListener('resize', resize);
     window.addEventListener('keydown', onKeyDown);
-    canvas.addEventListener('pointerdown', onPointerDown);
-    window.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('pointerup', onPointerUp);
-    canvas.addEventListener('pointercancel', onPointerUp);
+    canvas.addEventListener('mousedown', onPointerDown);
+    canvas.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+    canvas.addEventListener('mouseleave', onPointerUp);
     canvas.addEventListener('wheel', onWheel, { passive: false });
+
+    const makeIslandPath = (context) => {
+      context.beginPath();
+      const first = gridToPixel(islandPoly[0][0], islandPoly[0][1]);
+      context.moveTo(first.px, first.py);
+      for (let i = 1; i < islandPoly.length; i++) {
+        const point = gridToPixel(islandPoly[i][0], islandPoly[i][1]);
+        context.lineTo(point.px, point.py);
+      }
+      context.closePath();
+    };
 
     const drawRoundRect = (context, x, y, w, h, r) => {
       context.beginPath();
@@ -4205,6 +4361,977 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       return true;
     };
 
+    const drawSmoothPath = (points) => {
+      const pixels = points.map((point) => gridToPixel(point.x, point.y));
+      drawSmoothPixelPath(pixels);
+      return pixels;
+    };
+
+    const drawSmoothPixelPath = (pixels) => {
+      ctx.beginPath();
+      ctx.moveTo(pixels[0].px, pixels[0].py);
+      for (let index = 0; index < pixels.length - 1; index++) {
+        const p0 = pixels[Math.max(0, index - 1)];
+        const p1 = pixels[index];
+        const p2 = pixels[index + 1];
+        const p3 = pixels[Math.min(pixels.length - 1, index + 2)];
+        const cp1x = p1.px + (p2.px - p0.px) / 6;
+        const cp1y = p1.py + (p2.py - p0.py) / 6;
+        const cp2x = p2.px - (p3.px - p1.px) / 6;
+        const cp2y = p2.py - (p3.py - p1.py) / 6;
+        ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.px, p2.py);
+      }
+    };
+
+    const getOffsetRoadPixels = (points, offset) => points.map((point, index) => {
+      const current = gridToPixel(point.x, point.y);
+      const prev = gridToPixel(points[Math.max(0, index - 1)].x, points[Math.max(0, index - 1)].y);
+      const next = gridToPixel(points[Math.min(points.length - 1, index + 1)].x, points[Math.min(points.length - 1, index + 1)].y);
+      const angle = Math.atan2(next.py - prev.py, next.px - prev.px);
+      return {
+        px: current.px + Math.cos(angle + Math.PI / 2) * offset,
+        py: current.py + Math.sin(angle + Math.PI / 2) * offset,
+      };
+    });
+
+    const drawOffsetRoadPath = (points, offset) => {
+      drawSmoothPixelPath(getOffsetRoadPixels(points, offset));
+    };
+
+    const sampleRoadPixels = (points, spacing = 0.24) => {
+      const samples = [];
+      for (let index = 0; index < points.length - 1; index++) {
+        const from = points[index];
+        const to = points[index + 1];
+        const distance = Math.hypot(to.x - from.x, to.y - from.y);
+        const steps = Math.max(2, Math.ceil(distance / spacing));
+        const fromPixel = gridToPixel(from.x, from.y);
+        const toPixel = gridToPixel(to.x, to.y);
+        const angle = Math.atan2(toPixel.py - fromPixel.py, toPixel.px - fromPixel.px);
+        for (let step = 0; step < steps; step++) {
+          const t = step / steps;
+          const point = gridToPixel(from.x + (to.x - from.x) * t, from.y + (to.y - from.y) * t);
+          samples.push({
+            px: point.px,
+            py: point.py,
+            angle,
+            seed: (index + 1) * 47 + step * 13,
+          });
+        }
+      }
+      const last = gridToPixel(points.at(-1).x, points.at(-1).y);
+      const beforeLast = gridToPixel(points.at(-2).x, points.at(-2).y);
+      samples.push({
+        px: last.px,
+        py: last.py,
+        angle: Math.atan2(last.py - beforeLast.py, last.px - beforeLast.px),
+        seed: points.length * 71,
+      });
+      return samples;
+    };
+
+    const drawRoadPath = (points, width = 20) => {
+      if (points.length < 2) return;
+      ctx.save();
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      makeIslandPath(ctx);
+      ctx.clip();
+
+      const roadPattern = ctx.createPattern(roadTexture, 'repeat');
+
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.filter = 'blur(4px)';
+      ctx.strokeStyle = 'rgba(75, 46, 24, 0.18)';
+      ctx.lineWidth = width + 48;
+      drawSmoothPath(points);
+      ctx.stroke();
+      ctx.filter = 'blur(2px)';
+      ctx.strokeStyle = 'rgba(155, 104, 54, 0.2)';
+      ctx.lineWidth = width + 34;
+      drawSmoothPath(points);
+      ctx.stroke();
+      ctx.filter = 'none';
+
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = 0.32;
+      ctx.strokeStyle = 'rgba(246, 216, 160, 0.72)';
+      ctx.lineWidth = width + 24;
+      drawSmoothPath(points);
+      ctx.stroke();
+
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.globalAlpha = 0.78;
+      ctx.strokeStyle = roadPattern || 'rgba(183, 122, 64, 0.72)';
+      ctx.lineWidth = width + 8;
+      drawSmoothPath(points);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+
+      ctx.strokeStyle = 'rgba(104, 63, 32, 0.32)';
+      ctx.lineWidth = width * 0.72;
+      drawSmoothPath(points);
+      ctx.stroke();
+      ctx.globalCompositeOperation = 'source-over';
+
+      [-width * 0.23, width * 0.23].forEach((offset, trackIndex) => {
+        ctx.strokeStyle = trackIndex === 0 ? 'rgba(62, 39, 21, 0.27)' : 'rgba(78, 48, 25, 0.24)';
+        ctx.lineWidth = 4.4;
+        drawOffsetRoadPath(points, offset);
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(255, 236, 190, 0.12)';
+        ctx.lineWidth = 1.5;
+        drawOffsetRoadPath(points, offset + (offset < 0 ? 2 : -2));
+        ctx.stroke();
+      });
+
+      ctx.strokeStyle = 'rgba(255, 231, 181, 0.12)';
+      ctx.lineWidth = Math.max(4, width * 0.26);
+      drawSmoothPath(points);
+      ctx.stroke();
+
+      const samples = sampleRoadPixels(points);
+      samples.forEach((sample, index) => {
+        const wobble = Math.sin(sample.seed * 12.9898) * 0.5 + Math.cos(sample.seed * 7.233) * 0.5;
+        const normal = sample.angle + Math.PI / 2;
+        const side = index % 2 === 0 ? -1 : 1;
+        const edgeOffset = side * (width * 0.54 + wobble * 4.8);
+        const x = sample.px + Math.cos(normal) * edgeOffset;
+        const y = sample.py + Math.sin(normal) * edgeOffset;
+        const radius = 1.8 + Math.abs(wobble) * 1.5;
+        ctx.globalAlpha = 0.1 + Math.abs(wobble) * 0.1;
+        ctx.fillStyle = side < 0 ? '#604025' : '#f4d79a';
+        ctx.beginPath();
+        ctx.ellipse(x, y, radius * 2.2, radius, sample.angle, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (index % 3 === 0) {
+          const centerOffset = Math.sin(sample.seed * 1.71) * width * 0.25;
+          ctx.globalAlpha = 0.08;
+          ctx.fillStyle = '#4f321b';
+          ctx.beginPath();
+          ctx.ellipse(
+            sample.px + Math.cos(normal) * centerOffset,
+            sample.py + Math.sin(normal) * centerOffset,
+            2.2 + Math.abs(wobble) * 1.4,
+            0.9 + Math.abs(wobble),
+            sample.angle,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+        }
+
+        if (index % 6 === 0) {
+          [-width * 0.23, width * 0.23].forEach((trackOffset, trackSide) => {
+            const treadPhase = Math.sin(sample.seed * 0.83 + trackSide) * 1.8;
+            const tx = sample.px + Math.cos(normal) * (trackOffset + treadPhase);
+            const ty = sample.py + Math.sin(normal) * (trackOffset + treadPhase);
+            const treadAngle = sample.angle + (trackSide === 0 ? 0.72 : -0.72);
+            ctx.globalAlpha = 0.13;
+            ctx.strokeStyle = '#3f2716';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ctx.moveTo(tx - Math.cos(treadAngle) * 3.8, ty - Math.sin(treadAngle) * 3.8);
+            ctx.lineTo(tx + Math.cos(treadAngle) * 3.8, ty + Math.sin(treadAngle) * 3.8);
+            ctx.stroke();
+          });
+        }
+
+        if (index % 13 === 0) {
+          const dustPhase = (game.time * 0.18 + Math.abs(Math.sin(sample.seed)) * 0.7) % 1;
+          const dustSide = Math.sin(sample.seed * 2.37) > 0 ? 1 : -1;
+          const dustOffset = dustSide * (width * 0.68 + dustPhase * 14);
+          ctx.globalAlpha = (1 - dustPhase) * 0.12;
+          ctx.fillStyle = '#ead3a5';
+          ctx.beginPath();
+          ctx.ellipse(
+            sample.px + Math.cos(normal) * dustOffset + Math.cos(sample.angle) * dustPhase * 12,
+            sample.py + Math.sin(normal) * dustOffset + Math.sin(sample.angle) * dustPhase * 12,
+            4 + dustPhase * 9,
+            1.6 + dustPhase * 4,
+            sample.angle + Math.sin(sample.seed) * 0.35,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+        }
+      });
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    };
+
+    const drawRealisticRiverPath = (points, width = 34) => {
+      if (points.length < 2) return;
+      ctx.save();
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      makeIslandPath(ctx);
+      ctx.clip(); 
+
+      // 1. River Bank (Darker deep edge for depth)
+      ctx.strokeStyle = '#0369a1';
+      ctx.lineWidth = width + 4;
+      drawSmoothPath(points);
+      ctx.stroke();
+
+      // 2. Base Stylized Water (Vibrant Cyan-Blue)
+      const baseGrad = ctx.createLinearGradient(0, -20, 20, 20);
+      baseGrad.addColorStop(0, '#38bdf8');   
+      baseGrad.addColorStop(1, '#0284c7');   
+      ctx.strokeStyle = baseGrad;
+      ctx.lineWidth = width;
+      drawSmoothPath(points);
+      ctx.stroke();
+
+      // 3. Stylized Foam Edges (White rim that hugs the shore)
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = width * 0.85; 
+      drawSmoothPath(points);
+      ctx.stroke();
+
+      // Inner water body to hide the center of the foam, leaving only the edges
+      ctx.strokeStyle = baseGrad;
+      ctx.lineWidth = width * 0.7; 
+      drawSmoothPath(points);
+      ctx.stroke();
+
+      // 4. Ultra-Smooth Game Engine Flow (Scrolling UV Texture)
+      // By translating a repeating pattern matrix, we get continuous fluid motion!
+      ctx.save();
+      if (textures.water) {
+        ctx.globalCompositeOperation = 'overlay'; // Blend with the cyan base
+        const pattern = ctx.createPattern(textures.water, 'repeat');
+        const matrix = new DOMMatrix();
+        // The river flows diagonally from top-left to bottom-right (in grid), which is left-down in pixels!
+        matrix.translateSelf(-game.time * 28, game.time * 35);
+        matrix.scaleSelf(0.35, 0.35); // Scale down the texture for finer caustics
+        pattern.setTransform(matrix);
+        
+        ctx.strokeStyle = pattern;
+        ctx.lineWidth = width - 4; // Inside the foam edges
+        ctx.globalAlpha = 0.85;
+        drawSmoothPath(points);
+        ctx.stroke();
+
+        // Add a second, slower layer of water texture in the opposite direction for parallax depth!
+        ctx.globalCompositeOperation = 'screen';
+        const pattern2 = ctx.createPattern(textures.water, 'repeat');
+        const matrix2 = new DOMMatrix();
+        matrix2.translateSelf(-game.time * 12, game.time * 15);
+        matrix2.scaleSelf(0.5, 0.5); 
+        pattern2.setTransform(matrix2);
+        
+        ctx.strokeStyle = pattern2;
+        ctx.lineWidth = width - 8;
+        ctx.globalAlpha = 0.4;
+        drawSmoothPath(points);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // 5. Ambient Gloss/Shine (Figma-style soft overlay for the surface)
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+      ctx.shadowBlur = 15;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.lineWidth = 4;
+      ctx.setLineDash([5, 120]);
+      ctx.lineDashOffset = -game.time * 15;
+      drawSmoothPath(points);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.restore(); 
+    };
+
+    const drawWaterfallUltraOverlay = () => {
+      const waterfall = landmarks.find((landmark) => landmark.type === 'waterfall');
+      if (!waterfall) return;
+      const pos = gridToPixel(waterfall.x, waterfall.y);
+      ctx.save();
+      ctx.translate(pos.px, pos.py);
+
+      // 1. Splash pool glow & mist base
+      ctx.globalCompositeOperation = 'screen';
+      const pool = ctx.createRadialGradient(0, 20, 5, 0, 20, 58);
+      pool.addColorStop(0, 'rgba(224,242,254,0.62)');
+      pool.addColorStop(0.38, 'rgba(14,165,233,0.32)');
+      pool.addColorStop(1, 'rgba(14,165,233,0)');
+      ctx.fillStyle = pool;
+      ctx.beginPath();
+      ctx.ellipse(0, 22, 62, 25, -0.08, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 2. Base Splash concentric expanding ripples
+      for (let i = 0; i < 3; i++) {
+        const ripplePhase = ((game.time * 0.8 + i * 0.33) % 1 + 1) % 1;
+        const rx = Math.max(0, ripplePhase * 68);
+        const ry = Math.max(0, ripplePhase * 27);
+        ctx.strokeStyle = `rgba(224, 242, 254, ${(1 - ripplePhase) * 0.45})`;
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.ellipse(0, 22, rx, ry, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // 3. Background curtain flow representation (semi-transparent solid vertical gradient block)
+      ctx.globalCompositeOperation = 'source-over';
+      const curtainGrad = ctx.createLinearGradient(0, -48, 0, 22);
+      curtainGrad.addColorStop(0, 'rgba(56, 189, 248, 0.12)');
+      curtainGrad.addColorStop(0.25, 'rgba(56, 189, 248, 0.58)');
+      curtainGrad.addColorStop(0.85, 'rgba(14, 165, 233, 0.65)');
+      curtainGrad.addColorStop(1, 'rgba(224, 242, 254, 0.88)');
+      ctx.fillStyle = curtainGrad;
+      ctx.beginPath();
+      ctx.moveTo(-16, -46);
+      ctx.lineTo(16, -46);
+      ctx.lineTo(24, 22);
+      ctx.lineTo(-24, 22);
+      ctx.closePath();
+      ctx.fill();
+
+      // 4. Detailed flowing streams (cascading water threads)
+      const numStreams = 15;
+      for (let i = 0; i < numStreams; i++) {
+        const speed = 2.8 + (i % 3) * 0.6;
+        const phase = (game.time * speed + i * 0.17) % 1;
+        
+        const xTop = -14 + i * 2.0;
+        const xBottom = -21 + i * 3.0;
+        const x = xTop + (xBottom - xTop) * phase;
+        const y = -46 + phase * 68;
+        
+        const len = 16 + (i % 4) * 6;
+        const streamGrad = ctx.createLinearGradient(0, y - len/2, 0, y + len/2);
+        streamGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+        streamGrad.addColorStop(0.48, 'rgba(255, 255, 255, 0.85)');
+        streamGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        
+        ctx.strokeStyle = streamGrad;
+        ctx.lineWidth = 1.4 + (i % 3) * 0.5;
+        ctx.beginPath();
+        ctx.moveTo(x, y - len/2);
+        const wave = Math.sin(game.time * 8 + i) * 1.5;
+        ctx.quadraticCurveTo(x + wave, y, x, y + len/2);
+        ctx.stroke();
+      }
+
+      // 5. Bubbling Foam at the waterfall base impact zone
+      const numFoams = 20;
+      for (let i = 0; i < numFoams; i++) {
+        const speed = 1.1 + (i % 2) * 0.4;
+        const phase = (game.time * speed + i * 0.13) % 1;
+        const angle = i * 2.399; // golden angle distribution
+        
+        const dist = phase * (18 + (i % 3) * 5);
+        const x = Math.cos(angle) * dist + Math.sin(game.time * 2 + i) * 1.6;
+        const y = 22 + Math.sin(angle) * dist * 0.35 - phase * 5;
+        
+        const size = (3.5 + (i % 3) * 1.8) * (1 - phase * 0.35);
+        ctx.fillStyle = `rgba(255, 255, 255, ${(1 - phase) * 0.76})`;
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.fill();
+        
+        if (size > 3.2) {
+          ctx.fillStyle = `rgba(224, 242, 254, ${(1 - phase) * 0.45})`;
+          ctx.beginPath();
+          ctx.arc(x - size*0.18, y - size*0.18, size * 0.36, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // 6. High-velocity splash droplets shooting up and falling back down
+      const numDroplets = 12;
+      for (let i = 0; i < numDroplets; i++) {
+        const speed = 1.9 + (i % 3) * 0.7;
+        const phase = (game.time * speed + i * 0.23) % 1;
+        
+        const angle = -Math.PI/2 + (i - numDroplets/2) * 0.12; 
+        const v0 = 24 + (i % 3) * 7; 
+        const t = phase * 0.88;
+        
+        const x = Math.cos(angle) * v0 * t;
+        const y = 18 + Math.sin(angle) * v0 * t + 0.5 * 88 * t * t;
+        
+        const size = Math.max(0.7, (1.8 - phase * 1.4));
+        ctx.fillStyle = `rgba(255, 255, 255, ${(1 - phase) * 0.88})`;
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 7. Soft rising mist clouds
+      const numMists = 10;
+      for (let i = 0; i < numMists; i++) {
+        const speed = 0.42 + (i % 2) * 0.18;
+        const phase = (game.time * speed + i * 0.19) % 1;
+        
+        const x = -16 + i * 3.2 + Math.sin(game.time * 1.3 + i) * 5;
+        const y = 20 - phase * 52;
+        
+        const size = 14 + phase * 26;
+        const opacity = (1 - phase) * 0.15;
+        
+        const mistGrad = ctx.createRadialGradient(x, y, 0, x, y, size);
+        mistGrad.addColorStop(0, `rgba(224, 242, 254, ${opacity})`);
+        mistGrad.addColorStop(0.45, `rgba(240, 249, 255, ${opacity * 0.48})`);
+        mistGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        
+        ctx.fillStyle = mistGrad;
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.restore();
+    };
+
+    const drawPalm = (tree, time) => {
+      const pos = gridToPixel(tree.x, tree.y);
+      const s = 0.82 + tree.size;
+      
+      const gust = Math.sin(time * 0.7 + tree.phase) * Math.sin(time * 1.3 + tree.phase * 0.8);
+      const sway = tree.lean + gust * 0.18;
+      
+      const stretch = 1 + Math.sin(time * 2.1 + tree.phase) * 0.03;
+      
+      ctx.save();
+      ctx.translate(pos.px, pos.py);
+      
+      ctx.fillStyle = 'rgba(55, 38, 18, 0.2)';
+      ctx.beginPath();
+      ctx.ellipse(0, 14 * s, 16 * s * (2 - stretch), 5 * s, sway * 0.4, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.rotate(sway * 0.55);
+      ctx.scale(1, stretch);
+      
+      ctx.lineCap = 'round';
+      const trunk = ctx.createLinearGradient(-4 * s, 11 * s, 5 * s, -19 * s);
+      trunk.addColorStop(0, '#78350f');
+      trunk.addColorStop(0.5, '#92400e');
+      trunk.addColorStop(1, '#b45309');
+      ctx.strokeStyle = trunk;
+      ctx.lineWidth = 5 * s;
+      
+      ctx.beginPath();
+      ctx.moveTo(0, 11 * s);
+      ctx.quadraticCurveTo(-4 * s + sway * 15, -4 * s, 3 * s + sway * 25, -18 * s);
+      ctx.stroke();
+      
+      ctx.translate(3 * s + sway * 25, -18 * s);
+      
+      ctx.shadowColor = 'rgba(20, 83, 45, 0.4)';
+      ctx.shadowBlur = 6 * s;
+      ctx.shadowOffsetY = 3 * s;
+      
+      for (let i = 0; i < 6; i++) {
+        const flutter = Math.pow(Math.sin(time * 3.5 + tree.phase + i * 1.2), 2) * 0.15;
+        const angle = -Math.PI / 2 + i * (Math.PI * 2 / 6) + sway * 0.8 + flutter;
+        
+        const leafGrad = ctx.createLinearGradient(0, 0, Math.cos(angle) * 25 * s, Math.sin(angle) * 15 * s);
+        leafGrad.addColorStop(0, '#bef264'); 
+        leafGrad.addColorStop(0.5, '#65a30d'); 
+        leafGrad.addColorStop(1, '#166534'); 
+        ctx.fillStyle = leafGrad;
+        
+        ctx.beginPath();
+        ctx.moveTo(0, 0); 
+        
+        const tipX = Math.cos(angle) * 24 * s * (1 - flutter*0.3);
+        const tipY = Math.sin(angle) * 18 * s * (1 - flutter*0.3);
+        const cpDist = 12 * s;
+        
+        ctx.quadraticCurveTo(Math.cos(angle - 0.4) * cpDist, Math.sin(angle - 0.4) * cpDist, tipX, tipY);
+        ctx.quadraticCurveTo(Math.cos(angle + 0.4) * cpDist, Math.sin(angle + 0.4) * cpDist, 0, 0);
+        ctx.fill();
+      }
+      
+      ctx.shadowColor = 'transparent';
+      ctx.fillStyle = '#451a03';
+      [-3, 4].forEach((x, index) => {
+        ctx.beginPath();
+        ctx.arc((x - 2) * s, (index * 2) * s, 3 * s, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+    };
+
+    const drawCanopyTree = (tree, time) => {
+      const pos = gridToPixel(tree.x, tree.y);
+      const s = 0.8 + tree.size;
+      
+      const gust = Math.sin(time * 0.8 + tree.phase) * Math.cos(time * 0.4 + tree.phase * 0.5);
+      const sway = tree.lean + gust * 0.15;
+      
+      const breathe = Math.sin(time * 2.2 + tree.phase) * Math.sin(time * 1.1 + tree.phase);
+      const scaleX = 1 - breathe * 0.025;
+      const scaleY = 1 + breathe * 0.035;
+      
+      ctx.save();
+      ctx.translate(pos.px, pos.py);
+      
+      ctx.fillStyle = 'rgba(55, 38, 18, 0.22)';
+      ctx.beginPath();
+      ctx.ellipse(0, 13 * s, 14 * s * scaleX, 5 * s, sway * 0.25, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.scale(scaleX, scaleY);
+      ctx.rotate(sway * 0.1);
+      
+      const trunk = ctx.createLinearGradient(-4 * s, 0, 4 * s, 17 * s);
+      trunk.addColorStop(0, '#78350f'); 
+      trunk.addColorStop(1, '#451a03');
+      ctx.fillStyle = trunk;
+      
+      ctx.beginPath();
+      ctx.moveTo(-2 * s, 0);
+      ctx.lineTo(2 * s, 0);
+      ctx.lineTo(4 * s, 16 * s);
+      ctx.lineTo(-4 * s, 16 * s);
+      ctx.fill();
+      
+      ctx.beginPath();
+      const clusters = [[-9, -8, 12], [4, -12, 14], [12, -4, 11], [-1, 0, 15], [-14, 1, 9]];
+      clusters.forEach(([x, y, r]) => {
+        const clusterBob = Math.sin(time * 3 + tree.phase + x * 0.5) * 0.6;
+        ctx.moveTo((x + sway * 15 + r) * s, (y + clusterBob) * s);
+        ctx.arc((x + sway * 15) * s, (y + clusterBob) * s, r * s, 0, Math.PI * 2);
+      });
+      
+      ctx.shadowColor = 'rgba(20, 83, 45, 0.4)';
+      ctx.shadowBlur = 8 * s;
+      ctx.shadowOffsetY = 4 * s;
+      
+      const canopy = ctx.createLinearGradient(-15 * s, -25 * s, 15 * s, 10 * s);
+      canopy.addColorStop(0, '#4ade80');
+      canopy.addColorStop(0.5, '#22c55e');
+      canopy.addColorStop(1, '#14532d');
+      ctx.fillStyle = canopy;
+      ctx.fill();
+      
+      ctx.shadowColor = 'transparent';
+      
+      ctx.save();
+      ctx.clip(); 
+      
+      ctx.globalCompositeOperation = 'screen';
+      ctx.globalAlpha = 0.3 + gust * 0.1;
+      
+      const highlightGrad = ctx.createLinearGradient(-10 * s, -25 * s, 10 * s, -5 * s);
+      highlightGrad.addColorStop(0, '#ffffff');
+      highlightGrad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = highlightGrad;
+      
+      ctx.beginPath();
+      ctx.ellipse(-3 * s + sway * 8 * s, -12 * s, 18 * s, 10 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.restore(); 
+      ctx.restore();
+    };
+
+    const drawBoatShape = (boat) => {
+      const driftX = Math.cos(game.time * 0.22 + boat.phase) * 0.22;
+      const driftY = Math.sin(game.time * 0.18 + boat.phase * 0.8) * 0.16;
+      const pos = gridToPixel(boat.x + driftX, boat.y + driftY);
+      const bob = Math.sin(game.time * 1.9 + boat.phase) * 2.4;
+      const roll = Math.sin(game.time * 1.05 + boat.phase) * 0.055;
+      
+      ctx.save();
+      ctx.translate(pos.px, pos.py + bob);
+      ctx.rotate(boat.heading + roll);
+      ctx.scale(boat.scale, boat.scale);
+
+      // --- Beautiful Figma-style Flowing Wake (Water trails) ---
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      ctx.globalAlpha = 0.35 + Math.sin(game.time * 2.2 + boat.phase) * 0.15;
+      ctx.lineCap = 'round';
+      
+      [-1, 1].forEach((side) => {
+        // Main thick foam trail
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(-12, side * 6);
+        ctx.quadraticCurveTo(-30, side * (10 + Math.sin(game.time * 3 + boat.phase) * 3), -55, side * 16);
+        ctx.stroke();
+
+        // Secondary thin water ripple (glassy)
+        ctx.strokeStyle = 'rgba(186, 230, 253, 0.5)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(-5, side * 9);
+        ctx.quadraticCurveTo(-25, side * (16 + Math.cos(game.time * 2 + boat.phase) * 4), -45, side * 22);
+        ctx.stroke();
+      });
+      ctx.restore();
+
+      // --- Drop Shadow for floating 3D effect ---
+      ctx.shadowColor = 'rgba(2, 44, 34, 0.4)';
+      ctx.shadowBlur = 12;
+      ctx.shadowOffsetY = 6;
+      ctx.shadowOffsetX = -2;
+
+      // Ensure boats face right (positive X) natively so the wake appears behind them properly
+      // Adjust orientation based on the generated AI assets (the AI assets point left, so we flip them to point right)
+      ctx.scale(-1, 1);
+
+      if (boat.type === 'speedboat' && textures.stylizedSpeedboatTransparent) {
+        ctx.drawImage(textures.stylizedSpeedboatTransparent, -45, -45, 90, 90);
+      } else if (boat.type !== 'speedboat' && textures.stylizedSailboatTransparent) {
+        ctx.drawImage(textures.stylizedSailboatTransparent, -50, -50, 100, 100);
+      } else {
+        // Fallback simple shapes if textures fail to load
+        ctx.fillStyle = '#f8fafc';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 20, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    };
+
+    const drawLandmarkAmbientEffects = (landmark, motion, metrics = {}) => {
+      const phase01 = motion.phase / (Math.PI * 2);
+      const t = game.time + motion.phase;
+      ctx.save();
+      ctx.translate(motion.x, motion.floatY - 5);
+
+      if (landmark.type === 'crystal') {
+        ctx.globalCompositeOperation = 'screen';
+        const glow = ctx.createRadialGradient(0, -38, 6, 0, -38, 70);
+        glow.addColorStop(0, `rgba(248,113,113,${0.3 + Math.sin(t * 1.7) * 0.1})`);
+        glow.addColorStop(0.38, 'rgba(244,114,182,0.16)');
+        glow.addColorStop(1, 'rgba(244,114,182,0)');
+        ctx.fillStyle = glow;
+        ctx.fillRect(-76, -108, 152, 128);
+        for (let i = 0; i < 4; i++) {
+          const glint = (game.time * 0.22 + i * 0.23 + phase01) % 1;
+          const x = -30 + glint * 60;
+          const y = -64 + Math.sin(t + i) * 16;
+          ctx.globalAlpha = (1 - Math.abs(glint - 0.5) * 2) * 0.42;
+          ctx.strokeStyle = '#fff7ed';
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.moveTo(x - 6, y);
+          ctx.lineTo(x + 6, y);
+          ctx.moveTo(x, y - 6);
+          ctx.lineTo(x, y + 6);
+          ctx.stroke();
+        }
+      } else if (landmark.type === 'factory') {
+        ctx.globalCompositeOperation = 'screen';
+        for (let i = 0; i < 6; i++) {
+          const puff = (game.time * 0.18 + i * 0.17 + phase01) % 1;
+          const x = 18 + Math.sin(t * 1.3 + i) * 7 + puff * 12;
+          const y = -54 - puff * 58;
+          ctx.globalAlpha = (1 - puff) * 0.24;
+          ctx.fillStyle = '#e2e8f0';
+          ctx.beginPath();
+          ctx.ellipse(x, y, 7 + puff * 16, 5 + puff * 11, Math.sin(t + i) * 0.45, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else if (landmark.type === 'waterfall') {
+        ctx.globalCompositeOperation = 'screen';
+        for (let i = 0; i < 6; i++) {
+          const fall = (game.time * 3.2 + i * 0.18 + phase01) % 1;
+          const x = -18 + i * 7 + Math.sin(t * 2.3 + i) * 2.4;
+          const y = -48 + fall * 66;
+          const grad = ctx.createLinearGradient(x, y - 20, x, y + 24);
+          grad.addColorStop(0, 'rgba(224,242,254,0)');
+          grad.addColorStop(0.5, 'rgba(224,242,254,0.62)');
+          grad.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.globalAlpha = 0.72;
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 1.6 + (i % 3);
+          ctx.beginPath();
+          ctx.moveTo(x, y - 20);
+          ctx.quadraticCurveTo(x + Math.sin(t + i) * 4, y, x + 1.5, y + 25);
+          ctx.stroke();
+        }
+      } else if (landmark.type === 'lighthouse') {
+        ctx.globalCompositeOperation = 'screen';
+        const sweep = Math.sin(game.time * 1.25 + motion.phase);
+        ctx.save();
+        ctx.translate(2, -70);
+        ctx.rotate(-0.06 + sweep * 0.46);
+        const beam = ctx.createLinearGradient(0, 0, 110, 0);
+        beam.addColorStop(0, 'rgba(254,240,138,0.42)');
+        beam.addColorStop(0.55, 'rgba(254,240,138,0.16)');
+        beam.addColorStop(1, 'rgba(254,240,138,0)');
+        ctx.fillStyle = beam;
+        ctx.globalAlpha = 0.7;
+        ctx.beginPath();
+        ctx.moveTo(0, -6);
+        ctx.lineTo(112, -28);
+        ctx.lineTo(112, 22);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+        ctx.globalAlpha = 0.48 + Math.sin(t * 3.2) * 0.16;
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath();
+        ctx.arc(2, -70, 9, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (landmark.type === 'harbor') {
+        ctx.globalCompositeOperation = 'screen';
+        for (let i = 0; i < 4; i++) {
+          const ripple = (game.time * 0.34 + i * 0.23 + phase01) % 1;
+          ctx.globalAlpha = (1 - ripple) * 0.22;
+          ctx.strokeStyle = '#dffbff';
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.ellipse(0, 21, 26 + ripple * 42, 8 + ripple * 12, Math.sin(t) * 0.12, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      } else if (landmark.type === 'bridge') {
+        const glint = (game.time * 0.2 + phase01) % 1;
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = 0.32;
+        ctx.strokeStyle = '#fff7ed';
+        ctx.lineWidth = 2.2;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(-34 + glint * 58, -5 + Math.sin(glint * Math.PI) * -8);
+        ctx.lineTo(-22 + glint * 58, -9 + Math.sin(glint * Math.PI) * -10);
+        ctx.stroke();
+      } else if (landmark.type === 'market') {
+        ctx.globalCompositeOperation = 'source-over';
+        ['#ef4444', '#f8fafc', '#facc15'].forEach((color, index) => {
+          const x = -18 + index * 18;
+          const flutter = Math.sin(t * 2.4 + index) * 2.4;
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.moveTo(x - 5, -34);
+          ctx.lineTo(x + 5, -34);
+          ctx.lineTo(x + flutter, -25);
+          ctx.closePath();
+          ctx.fill();
+        });
+      } else if (landmark.type === 'clinic') {
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = 0.18 + Math.max(0, Math.sin(t * 2.1)) * 0.18;
+        const glow = ctx.createRadialGradient(0, -18, 4, 0, -18, 34);
+        glow.addColorStop(0, 'rgba(248,113,113,0.55)');
+        glow.addColorStop(1, 'rgba(248,113,113,0)');
+        ctx.fillStyle = glow;
+        ctx.fillRect(-42, -54, 84, 62);
+      } else if (landmark.type === 'farm' || landmark.type === 'ranch' || landmark.type === 'village') {
+        ctx.globalCompositeOperation = 'screen';
+        for (let i = 0; i < 3; i++) {
+          const dust = (game.time * 0.12 + i * 0.31 + phase01) % 1;
+          ctx.globalAlpha = (1 - dust) * 0.12;
+          ctx.fillStyle = '#fef3c7';
+          ctx.beginPath();
+          ctx.ellipse(
+            -24 + i * 24 + Math.sin(t + i) * 7,
+            16 - dust * 18,
+            5 + dust * 8,
+            2 + dust * 4,
+            Math.sin(t + i) * 0.35,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+        }
+      }
+
+      if (metrics.drawHeight > 0 && landmark.type !== 'waterfall') {
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = 0.08 + Math.sin(t * 1.1) * 0.025;
+        const light = ctx.createLinearGradient(-metrics.sizePx * 0.45, -metrics.drawHeight + 28, metrics.sizePx * 0.22, 20);
+        light.addColorStop(0, '#ffffff');
+        light.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = light;
+        ctx.fillRect(-metrics.sizePx / 2, -metrics.drawHeight + 24, metrics.sizePx, metrics.drawHeight);
+      }
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.restore();
+    };
+
+    const drawBuildingSprite = (landmark, motion = getLandmarkMotion(landmark)) => {
+      const sprite = buildingSpriteMap[landmark.type];
+      const image = textures.buildings;
+      if (!sprite || !isTextureReady(image)) return false;
+      ctx.save();
+      ctx.translate(motion.x, motion.floatY - 6);
+      ctx.rotate(motion.sway);
+      ctx.scale(motion.scaleX, motion.scaleY);
+      ctx.shadowColor = 'rgba(15,23,42,0.28)';
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetY = 9;
+      ctx.drawImage(image, sprite.sx, sprite.sy, sprite.sw, sprite.sh, -sprite.dw / 2, -sprite.dh + 18, sprite.dw, sprite.dh);
+      ctx.restore();
+
+      drawLandmarkAmbientEffects(landmark, motion, { sizePx: sprite.dw, drawHeight: sprite.dh });
+      return true;
+    };
+
+    const drawGeneratedLandmarkAsset = (landmark, motion) => {
+      const processedImage = getProcessedLandmarkImage(landmark.type);
+      if (!processedImage) return null;
+      const meta = landmarkAssetMeta[landmark.type] || {};
+      const sizePx = LANDMARK_DRAW_BASE * (meta.drawScale || 1);
+      const drawHeight = sizePx * (processedImage.height / processedImage.width);
+      ctx.save();
+      ctx.translate(motion.x, motion.floatY - 5);
+      ctx.rotate(motion.sway);
+      ctx.scale(motion.scaleX, motion.scaleY);
+      ctx.shadowColor = 'rgba(15,23,42,0.24)';
+      ctx.shadowBlur = 16;
+      ctx.shadowOffsetY = 10;
+      ctx.drawImage(processedImage.canvas, -sizePx / 2, -drawHeight + 24, sizePx, drawHeight);
+      ctx.restore();
+      drawLandmarkAmbientEffects(landmark, motion, { sizePx, drawHeight });
+      return {
+        sizePx: Math.max(sizePx, drawHeight),
+        labelOffset: Math.max(30, drawHeight * landmark.size * (meta.labelFactor || 0.34)),
+      };
+    };
+
+    const drawLandmark = (landmark) => {
+      const lmLabel = (langRef.current === 'en' ? landmark.label_en : landmark.label_ms) || landmark.label;
+      const pos = gridToPixel(landmark.x, landmark.y);
+      const s = landmark.size;
+      const assetMeta = landmarkAssetMeta[landmark.type] || {};
+      const motion = getLandmarkMotion(landmark);
+      ctx.save();
+      ctx.translate(pos.px, pos.py);
+      ctx.scale(s, s);
+      ctx.fillStyle = 'rgba(0,0,0,0.18)';
+      ctx.beginPath();
+      ctx.ellipse(
+        motion.x * 0.24,
+        20 + Math.max(0, motion.floatY * 0.28),
+        27 * (assetMeta.shadowScale || 1) * (1 + motion.shadowPulse),
+        7 * Math.max(1, (assetMeta.shadowScale || 1) * 0.9) * (1 - motion.shadowPulse * 0.35),
+        0,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+
+      const generatedMetrics = drawGeneratedLandmarkAsset(landmark, motion);
+      if (generatedMetrics) {
+        ctx.restore();
+        ctx.save();
+        ctx.font = 'bold 10px Inter';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const labelY = pos.py + generatedMetrics.labelOffset;
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = 'rgba(15,23,42,0.34)';
+        ctx.fillStyle = 'rgba(248,250,252,0.98)';
+        ctx.shadowColor = 'rgba(15,23,42,0.28)';
+        ctx.shadowBlur = 6;
+        ctx.shadowOffsetY = 2;
+        ctx.strokeText(lmLabel, pos.px, labelY);
+        ctx.fillText(lmLabel, pos.px, labelY);
+        ctx.restore();
+        return;
+      }
+
+      if (drawBuildingSprite(landmark, motion)) {
+        ctx.restore();
+        ctx.save();
+        ctx.fillStyle = 'rgba(255,255,255,0.86)';
+        ctx.strokeStyle = 'rgba(15,23,42,0.16)';
+        ctx.lineWidth = 3;
+        ctx.font = 'bold 10px Inter';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const labelY = pos.py + 34 * landmark.size;
+        const textWidth = ctx.measureText(lmLabel).width + 12;
+        drawRoundRect(ctx, pos.px - textWidth / 2, labelY - 8, textWidth, 16, 5);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#334155';
+        ctx.fillText(lmLabel, pos.px, labelY);
+        ctx.restore();
+        return;
+      }
+
+      if (landmark.type === 'crystal') {
+        ctx.fillStyle = '#51465e';
+        ctx.beginPath(); ctx.moveTo(-34, 18); ctx.lineTo(-10, -24); ctx.lineTo(11, 18); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#6b5b7a';
+        ctx.beginPath(); ctx.moveTo(-7, 18); ctx.lineTo(20, -33); ctx.lineTo(40, 18); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#f43f5e';
+        ctx.beginPath(); ctx.moveTo(-9, 11); ctx.lineTo(0, -33); ctx.lineTo(12, 11); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = 'rgba(248,113,113,0.7)'; ctx.lineWidth = 2; ctx.stroke();
+      } else if (landmark.type === 'farm' || landmark.type === 'ranch') {
+        ctx.fillStyle = '#9a3412';
+        drawRoundRect(ctx, -22, -4, 44, 25, 4); ctx.fill();
+        ctx.fillStyle = '#dc2626';
+        ctx.beginPath(); ctx.moveTo(-27, -4); ctx.lineTo(0, -27); ctx.lineTo(27, -4); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#fff7ed'; ctx.fillRect(-8, 4, 16, 17);
+        ctx.strokeStyle = '#166534'; ctx.lineWidth = 3;
+        [-34, -26, 28, 36].forEach((x) => { ctx.beginPath(); ctx.moveTo(x, 16); ctx.lineTo(x + 9, 7); ctx.stroke(); });
+      } else if (landmark.type === 'factory') {
+        ctx.fillStyle = '#64748b'; drawRoundRect(ctx, -28, -3, 56, 27, 4); ctx.fill();
+        ctx.fillStyle = '#475569'; ctx.fillRect(12, -28, 10, 25);
+        ctx.fillStyle = 'rgba(203,213,225,0.55)';
+        ctx.beginPath(); ctx.arc(19, -34, 8 + Math.sin(game.time * 2) * 2, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#bae6fd'; ctx.fillRect(-20, 5, 10, 8); ctx.fillRect(-4, 5, 10, 8); ctx.fillRect(12, 5, 10, 8);
+      } else if (landmark.type === 'waterfall') {
+        ctx.fillStyle = '#475569';
+        ctx.beginPath(); ctx.moveTo(-25, 20); ctx.lineTo(-11, -18); ctx.lineTo(17, -20); ctx.lineTo(28, 20); ctx.closePath(); ctx.fill();
+        const grad = ctx.createLinearGradient(0, -19, 0, 24);
+        grad.addColorStop(0, '#e0f2fe'); grad.addColorStop(0.5, '#38bdf8'); grad.addColorStop(1, '#0ea5e9');
+        ctx.fillStyle = grad; drawRoundRect(ctx, -7, -18, 16, 42, 8); ctx.fill();
+      } else if (landmark.type === 'clinic') {
+        ctx.fillStyle = '#f8fafc'; drawRoundRect(ctx, -24, -15, 48, 35, 5); ctx.fill();
+        ctx.fillStyle = '#ef4444'; ctx.fillRect(-4, -8, 8, 22); ctx.fillRect(-13, 1, 26, 8);
+        ctx.fillStyle = '#0f172a'; ctx.fillRect(-16, 7, 8, 13); ctx.fillRect(8, 7, 8, 13);
+      } else if (landmark.type === 'village') {
+        [-18, 0, 18].forEach((x, index) => {
+          ctx.fillStyle = index === 1 ? '#d97706' : '#a16207'; drawRoundRect(ctx, x - 11, -1, 22, 21, 4); ctx.fill();
+          ctx.fillStyle = '#854d0e'; ctx.beginPath(); ctx.moveTo(x - 14, -1); ctx.lineTo(x, -17); ctx.lineTo(x + 14, -1); ctx.closePath(); ctx.fill();
+        });
+      } else if (landmark.type === 'harbor') {
+        ctx.strokeStyle = '#7c2d12'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(-30, 8); ctx.lineTo(23, 8); ctx.moveTo(-18, -8); ctx.lineTo(-18, 18); ctx.moveTo(6, -8); ctx.lineTo(6, 18); ctx.stroke();
+        ctx.fillStyle = '#f8fafc'; ctx.beginPath(); ctx.moveTo(12, -19); ctx.lineTo(12, 4); ctx.lineTo(30, 3); ctx.closePath(); ctx.fill();
+      } else if (landmark.type === 'lighthouse') {
+        ctx.fillStyle = '#f8fafc'; ctx.beginPath(); ctx.moveTo(-12, 20); ctx.lineTo(-7, -24); ctx.lineTo(7, -24); ctx.lineTo(12, 20); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#ef4444'; ctx.fillRect(-10, -8, 20, 7); ctx.fillRect(-8, 7, 16, 7);
+        ctx.fillStyle = '#fde047'; ctx.beginPath(); ctx.arc(0, -30, 8, 0, Math.PI * 2); ctx.fill();
+      } else if (landmark.type === 'bridge') {
+        ctx.strokeStyle = '#7c2d12'; ctx.lineWidth = 7; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(-31, 5); ctx.quadraticCurveTo(0, -18, 31, 5); ctx.stroke();
+        ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-30, -2); ctx.quadraticCurveTo(0, -25, 30, -2); ctx.stroke();
+      } else if (landmark.type === 'market') {
+        ctx.fillStyle = '#fef3c7'; drawRoundRect(ctx, -24, -5, 48, 27, 4); ctx.fill();
+        ctx.fillStyle = '#ef4444'; ctx.fillRect(-27, -18, 54, 9);
+        ctx.fillStyle = '#ffffff'; [-18, 0, 18].forEach((x) => ctx.fillRect(x - 5, -18, 10, 9));
+      }
+      ctx.restore();
+
+      ctx.save();
+      ctx.fillStyle = 'rgba(255,255,255,0.86)';
+      ctx.strokeStyle = 'rgba(15,23,42,0.16)';
+      ctx.lineWidth = 3;
+      ctx.font = 'bold 10px Inter';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const labelY = pos.py + 34 * landmark.size;
+      const textWidth = ctx.measureText(lmLabel).width + 12;
+      drawRoundRect(ctx, pos.px - textWidth / 2, labelY - 8, textWidth, 16, 5);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#334155';
+      ctx.fillText(lmLabel, pos.px, labelY);
+      ctx.restore();
+    };
+
     const makeTokenPath = (context, shape, size) => {
       context.beginPath();
       shape.points.forEach(([x, y], pointIndex) => {
@@ -4217,350 +5344,50 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     };
 
     const drawPlayerToken = (player, index, x, y, mode = 'object', options = {}) => {
-      const isImage = mode === 'image';
-      const size = options.size ?? 22;
+      const shape = RRG_PLAYER_SHAPES[index % RRG_PLAYER_SHAPES.length];
+      const size = options.size ?? 20;
       const bounce = options.bounce ?? 0;
       const alpha = options.alpha ?? 1;
+      const isImage = mode === 'image';
       const scaleX = options.scaleX ?? 1;
       const scaleY = options.scaleY ?? 1;
       const shadowScale = options.shadowScale ?? 1;
-      const rotation = options.rotation ?? 0;
-      const isCurrent = options.isCurrent ?? (index === game.currentPlayer);
-      const t = options.time ?? game.time;
-      const playerColor = isImage ? '#3b82f6' : (player.finished ? '#22c55e' : (player.color || RRG_COLORS[index % RRG_COLORS.length].bg));
-
       ctx.save();
+      ctx.translate(x, y + bounce - size * 0.64);
       ctx.globalAlpha = alpha;
-
-      // 1. Ground Cast Shadow (Expands and softens with jump height)
-      const shadowLift = Math.max(0, -bounce);
-      const groundShadowScale = Math.max(0.4, (shadowScale || 1) * (1 - shadowLift / 45));
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.32)';
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
       ctx.beginPath();
-      ctx.ellipse(x, y + 14, 18 * groundShadowScale, 7 * groundShadowScale, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, size * 0.64, size * 0.72 * shadowScale, size * 0.22 * Math.max(0.78, shadowScale * 0.92), 0, 0, Math.PI * 2);
       ctx.fill();
-
-      // 2. Active Turn Rotating Floor Ring & Spotlight (For Current Player)
-      if (isCurrent && !isImage) {
-        ctx.save();
-        ctx.translate(x, y + 14);
-
-        // Soft pulsating floor glow
-        const glowPulse = 1 + Math.sin(t * 3.5) * 0.12;
-        const groundGlow = ctx.createRadialGradient(0, 0, 6, 0, 0, 32 * glowPulse);
-        groundGlow.addColorStop(0, `${playerColor}55`);
-        groundGlow.addColorStop(0.6, `${playerColor}22`);
-        groundGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-        ctx.fillStyle = groundGlow;
-        ctx.beginPath();
-        ctx.ellipse(0, 0, 32 * glowPulse, 14 * glowPulse, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Rotating dashed indicator ring
-        ctx.strokeStyle = playerColor;
-        ctx.lineWidth = 2.4;
-        ctx.setLineDash([7, 5]);
-        ctx.lineDashOffset = -t * 28;
-        ctx.beginPath();
-        ctx.ellipse(0, 0, 26, 11, 0, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.setLineDash([]);
-
-        ctx.restore();
-      }
-
-      // 3. Move to Pawn Center with Bounce & Scale
-      ctx.save();
-      ctx.translate(x, y + bounce);
-      ctx.rotate(rotation);
+      ctx.rotate(options.rotation ?? 0);
       ctx.scale(scaleX, scaleY);
-
-      if (isImage) {
-        // Holographic Ghost Token for Target / Image Selection
-        ctx.save();
-        ctx.fillStyle = 'rgba(59, 130, 246, 0.25)';
-        ctx.strokeStyle = '#2563eb';
-        ctx.lineWidth = 2.5;
-        ctx.setLineDash([5, 4]);
-        ctx.lineDashOffset = -t * 16;
-        ctx.beginPath();
-        ctx.arc(0, -18, size * 0.85, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.fillStyle = '#1d4ed8';
-        ctx.font = 'bold 13px Inter';
+      makeTokenPath(ctx, shape, size);
+      ctx.fillStyle = isImage ? 'rgba(96, 165, 250, 0.88)' : 'rgba(255, 255, 255, 0.94)';
+      ctx.fill();
+      ctx.lineWidth = isImage ? 3 : 2.6;
+      ctx.strokeStyle = isImage ? '#1d4ed8' : (player.finished ? '#22c55e' : player.color);
+      ctx.stroke();
+      ctx.save();
+      makeTokenPath(ctx, shape, size);
+      ctx.clip();
+      const shine = ctx.createLinearGradient(-size, -size, size, size);
+      shine.addColorStop(0, 'rgba(255,255,255,0.38)');
+      shine.addColorStop(0.45, 'rgba(255,255,255,0.08)');
+      shine.addColorStop(1, 'rgba(15,23,42,0.12)');
+      ctx.fillStyle = shine;
+      ctx.fillRect(-size, -size, size * 2, size * 2);
+      ctx.restore();
+      if (options.label !== false) {
+        ctx.fillStyle = isImage ? '#eff6ff' : player.color;
+        ctx.strokeStyle = isImage ? '#1e3a8a' : '#ffffff';
+        ctx.lineWidth = 3;
+        ctx.font = 'bold 11px Inter';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(`P${player.id}'`, 0, -18);
-        ctx.restore();
-      } else {
-        // Authentic 3D Ranger Pawn / Figurine
-
-        // --- A. 3D Pedestal Base ---
-        // Lower bevel rim (shadowed)
-        ctx.fillStyle = '#1e293b';
-        ctx.beginPath();
-        ctx.ellipse(0, 10, 16, 6.5, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Base cylinder wall
-        ctx.fillStyle = '#334155';
-        ctx.beginPath();
-        ctx.moveTo(-16, 6);
-        ctx.lineTo(-16, 10);
-        ctx.ellipse(0, 10, 16, 6.5, 0, 0, Math.PI);
-        ctx.lineTo(16, 6);
-        ctx.ellipse(0, 6, 16, 6.5, 0, Math.PI, 0, true);
-        ctx.fill();
-
-        // Base upper disc with player colored gloss
-        const baseGrad = ctx.createRadialGradient(-3, 3, 2, 0, 6, 16);
-        baseGrad.addColorStop(0, '#ffffff');
-        baseGrad.addColorStop(0.3, playerColor);
-        baseGrad.addColorStop(1, '#0f172a');
-        ctx.fillStyle = baseGrad;
-        ctx.beginPath();
-        ctx.ellipse(0, 6, 15, 6, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1.2;
-        ctx.stroke();
-
-        // --- B. 3D Explorer Backpack (Behind Body) ---
-        ctx.fillStyle = '#78350f';
-        ctx.beginPath();
-        ctx.ellipse(-10, -6, 5, 8, -0.2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#a16207'; // bedroll on top
-        ctx.beginPath();
-        ctx.ellipse(-10, -13, 4, 3, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // --- C. 3D Ranger Torso / Uniform ---
-        // Body vest
-        const vestGrad = ctx.createLinearGradient(-10, -16, 10, 6);
-        vestGrad.addColorStop(0, playerColor);
-        vestGrad.addColorStop(0.7, playerColor);
-        vestGrad.addColorStop(1, '#0f172a');
-        ctx.fillStyle = vestGrad;
-        ctx.beginPath();
-        ctx.moveTo(-8, 6);
-        ctx.lineTo(-6, -14);
-        ctx.quadraticCurveTo(0, -16, 6, -14);
-        ctx.lineTo(8, 6);
-        ctx.closePath();
-        ctx.fill();
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-        ctx.lineWidth = 1.2;
-        ctx.stroke();
-
-        // White inner shirt & explorer neckerchief
-        ctx.fillStyle = '#f8fafc';
-        ctx.beginPath();
-        ctx.moveTo(-3, -14);
-        ctx.lineTo(0, -8);
-        ctx.lineTo(3, -14);
-        ctx.closePath();
-        ctx.fill();
-        // Red scout neckerchief
-        ctx.fillStyle = '#ef4444';
-        ctx.beginPath();
-        ctx.moveTo(0, -8);
-        ctx.lineTo(-2, -4);
-        ctx.lineTo(0, -2);
-        ctx.lineTo(2, -4);
-        ctx.closePath();
-        ctx.fill();
-
-        // Leather utility belt with golden buckle
-        ctx.fillStyle = '#451a03';
-        ctx.fillRect(-7.5, 1, 15, 3.5);
-        ctx.fillStyle = '#facc15';
-        ctx.fillRect(-2.5, 0.5, 5, 4.5);
-
-        // --- D. 3D Head & Face ---
-        ctx.fillStyle = '#fed7aa'; // warm skin tone
-        ctx.beginPath();
-        ctx.arc(0, -20, 8.5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#fbcfe8';
-        ctx.lineWidth = 0.8;
-        ctx.stroke();
-
-        // Animated Eyes: Blinking every few seconds
-        const blink = Math.sin(t * 1.8 + index) > 0.94;
-        if (blink) {
-          // Blinking eyes: cute curved lines
-          ctx.strokeStyle = '#1e293b';
-          ctx.lineWidth = 1.6;
-          ctx.beginPath();
-          ctx.arc(-3, -20, 2.2, Math.PI * 0.2, Math.PI * 0.8);
-          ctx.moveTo(1, -20);
-          ctx.arc(3, -20, 2.2, Math.PI * 0.2, Math.PI * 0.8);
-          ctx.stroke();
-        } else {
-          // Open big shiny cartoon eyes
-          ctx.fillStyle = '#0f172a';
-          ctx.beginPath();
-          ctx.ellipse(-3, -20, 1.8, 2.4, 0, 0, Math.PI * 2);
-          ctx.ellipse(3, -20, 1.8, 2.4, 0, 0, Math.PI * 2);
-          ctx.fill();
-          // Specular eye shine
-          ctx.fillStyle = '#ffffff';
-          ctx.beginPath();
-          ctx.arc(-3.6, -21.2, 0.8, 0, Math.PI * 2);
-          ctx.arc(2.4, -21.2, 0.8, 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        // Cute smiling mouth
-        ctx.strokeStyle = '#9a3412';
-        ctx.lineWidth = 1.2;
-        ctx.beginPath();
-        ctx.arc(0, -17.5, 2.8, 0.15 * Math.PI, 0.85 * Math.PI);
-        ctx.stroke();
-
-        // --- E. 3D Ranger Safari Hat ---
-        // Curved wide brim
-        const hatGrad = ctx.createLinearGradient(-16, -24, 16, -24);
-        hatGrad.addColorStop(0, '#b45309');
-        hatGrad.addColorStop(0.5, '#d97706');
-        hatGrad.addColorStop(1, '#92400e');
-        ctx.fillStyle = hatGrad;
-        ctx.beginPath();
-        ctx.ellipse(0, -25, 17, 5.5, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#78350f';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-        // Hat band in player's color
-        ctx.fillStyle = playerColor;
-        ctx.beginPath();
-        ctx.ellipse(0, -27, 9.5, 3.2, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Hat crown (tall indented top)
-        ctx.fillStyle = '#b45309';
-        ctx.beginPath();
-        ctx.moveTo(-9, -27);
-        ctx.quadraticCurveTo(-7, -37, -2, -37);
-        ctx.quadraticCurveTo(0, -35, 2, -37);
-        ctx.quadraticCurveTo(7, -37, 9, -27);
-        ctx.closePath();
-        ctx.fill();
-        ctx.strokeStyle = '#78350f';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-        // Golden Ranger Star Badge pinned to front of hat
-        ctx.fillStyle = '#facc15';
-        ctx.beginPath();
-        ctx.arc(0, -28.5, 2.2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#ca8a04';
-        ctx.lineWidth = 0.8;
-        ctx.stroke();
-
-        // --- F. Leader Crown or Finished Trophy ---
-        if (player.finished) {
-          // Champion Gold Trophy
-          const tropPulse = 1 + Math.sin(t * 3) * 0.08;
-          ctx.save();
-          ctx.translate(0, -44 + Math.sin(t * 4) * 3);
-          ctx.scale(tropPulse, tropPulse);
-          ctx.fillStyle = '#facc15';
-          ctx.beginPath();
-          ctx.moveTo(-6, -8);
-          ctx.lineTo(6, -8);
-          ctx.lineTo(4, 0);
-          ctx.lineTo(-4, 0);
-          ctx.closePath();
-          ctx.fill();
-          ctx.fillRect(-2, 0, 4, 4);
-          ctx.fillRect(-4, 4, 8, 2);
-          ctx.restore();
-        } else if (isCurrent) {
-          // Floating Golden Ranger Crown for active player
-          const crownBob = Math.sin(t * 4) * 3;
-          ctx.save();
-          ctx.translate(0, -42 + crownBob);
-          ctx.fillStyle = '#facc15';
-          ctx.strokeStyle = '#b45309';
-          ctx.lineWidth = 1.2;
-          ctx.beginPath();
-          ctx.moveTo(-7, 2);
-          ctx.lineTo(-9, -5);
-          ctx.lineTo(-4, -1);
-          ctx.lineTo(0, -7);
-          ctx.lineTo(4, -1);
-          ctx.lineTo(9, -5);
-          ctx.lineTo(7, 2);
-          ctx.closePath();
-          ctx.fill();
-          ctx.stroke();
-          // Jewels on crown
-          ctx.fillStyle = '#ef4444';
-          ctx.beginPath();
-          ctx.arc(0, -3, 1.3, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-        }
+        ctx.strokeText(player.id, 0, 1);
+        ctx.fillText(player.id, 0, 1);
       }
-
-      ctx.restore(); // restore from scale/rotation/bounce
-
-      // 4. Floating Overhead Name Badge & Status Pill
-      if (options.label !== false && !isImage) {
-        ctx.save();
-        const displayName = getPlayerDisplayName(player, langRef.current);
-        const badgeText = `${displayName}  💎${player.score}`;
-        ctx.font = 'bold 11px Inter, sans-serif';
-        const textWidth = ctx.measureText(badgeText).width;
-        const badgeW = textWidth + 20;
-        const badgeH = 20;
-        const badgeY = y + bounce - 52;
-
-        // Dark glass rounded badge
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
-        drawRoundRect(ctx, x - badgeW / 2, badgeY - badgeH / 2, badgeW, badgeH, 6);
-        ctx.fill();
-        ctx.strokeStyle = isCurrent ? '#facc15' : playerColor;
-        ctx.lineWidth = isCurrent ? 2 : 1.4;
-        ctx.stroke();
-
-        // Player ID color circle indicator
-        ctx.fillStyle = playerColor;
-        ctx.beginPath();
-        ctx.arc(x - badgeW / 2 + 10, badgeY, 4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-        // Text
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(badgeText, x - badgeW / 2 + 18, badgeY + 0.5);
-
-        // Turn indicator arrow ▼ pointing down at player hat
-        if (isCurrent) {
-          const arrowBob = Math.sin(t * 5) * 2;
-          ctx.fillStyle = '#facc15';
-          ctx.beginPath();
-          ctx.moveTo(x, badgeY + badgeH / 2 + 4 + arrowBob);
-          ctx.lineTo(x - 4, badgeY + badgeH / 2 + 1 + arrowBob);
-          ctx.lineTo(x + 4, badgeY + badgeH / 2 + 1 + arrowBob);
-          ctx.closePath();
-          ctx.fill();
-        }
-
-        ctx.restore();
-      }
-
-      ctx.restore(); // restore globalAlpha
+      ctx.restore();
     };
 
     const drawSelectedImageToken = () => {
@@ -4578,7 +5405,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       ctx.fill();
       ctx.stroke();
       ctx.setLineDash([]);
-      drawPlayerToken(player, game.currentPlayer, pos.px, pos.py, 'image', { size: 22 * pulse, alpha: 0.92, label: false });
+      drawPlayerToken(player, game.currentPlayer, pos.px, pos.py, 'image', { size: 22 * pulse, alpha: 0.92, label: true });
       ctx.fillStyle = '#1e3a8a';
       ctx.font = 'bold 11px Inter';
       ctx.textAlign = 'center';
@@ -4586,1202 +5413,42 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       ctx.restore();
     };
 
-    const drawLivingBukitKristal = (context, g) => {
-      const pos = gridToPixel(0, 0);
-      const t = g.time;
-      context.save();
-      context.translate(pos.px, pos.py);
+    const drawItem = (item, time) => {
+      const pos = gridToPixel(item.x, item.y);
+      const bob = Math.sin(time * 3 + item.x) * 4;
+      const icon = item.kind === 'money' ? '💰' : item.kind === 'diamond' ? '💎' : item.kind === 'chest' ? '🎁' : item.kind === 'reward' ? '💡' : '💣';
+      const color = item.kind === 'penalty' ? '#ef4444' : item.kind === 'reward' ? '#fde047' : item.kind === 'diamond' ? '#c084fc' : '#facc15';
+      const zoneRadius = getRrgItemRadius(item);
+      // Removed visual zone radius drawing to keep the map clean
+      // Draw Beautiful Custom Vectors instead of Emojis
+      ctx.globalAlpha = 1;
+      ctx.save();
+      ctx.translate(pos.px, pos.py + bob);
 
-      const pulse = 1 + Math.sin(t * 2.5) * 0.12;
-
-      // 1. Ground Energy Aura
-      const aura = context.createRadialGradient(0, 0, 10, 0, 0, 110 * pulse);
-      aura.addColorStop(0, 'rgba(239, 68, 68, 0.45)');
-      aura.addColorStop(0.35, 'rgba(244, 63, 94, 0.25)');
-      aura.addColorStop(0.7, 'rgba(217, 70, 239, 0.1)');
-      aura.addColorStop(1, 'rgba(0, 0, 0, 0)');
-      context.fillStyle = aura;
-      context.beginPath();
-      context.arc(0, 0, 110 * pulse, 0, Math.PI * 2);
-      context.fill();
-
-      // 2. Ascending Ring Waves
-      for (let r = 0; r < 3; r++) {
-        const rPhase = (t * 0.5 + r * 0.33) % 1;
-        const ringRad = 20 + rPhase * 75;
-        const ringAlpha = (1 - rPhase) * 0.5;
-        context.strokeStyle = `rgba(254, 205, 211, ${ringAlpha})`;
-        context.lineWidth = 2.5 * (1 - rPhase);
-        context.beginPath();
-        context.ellipse(0, 12, ringRad, ringRad * 0.45, 0, 0, Math.PI * 2);
-        context.stroke();
-      }
-
-      // Shard renderer helper
-      const renderShard = (sx, sy, sScale, timeSeed) => {
-        context.save();
-        context.translate(sx, sy);
-        context.scale(sScale, sScale);
-        context.rotate(Math.sin(timeSeed * 2) * 0.2);
-
-        // Ground shadow
-        context.fillStyle = 'rgba(15, 23, 42, 0.22)';
-        context.beginPath();
-        context.ellipse(0, 18, 5, 2, 0, 0, Math.PI * 2);
-        context.fill();
-
-        // Left facet
-        context.fillStyle = '#e11d48';
-        context.beginPath();
-        context.moveTo(0, -11);
-        context.lineTo(-5, 1);
-        context.lineTo(0, 11);
-        context.closePath();
-        context.fill();
-
-        // Right facet
-        context.fillStyle = '#fda4af';
-        context.beginPath();
-        context.moveTo(0, -11);
-        context.lineTo(5, 1);
-        context.lineTo(0, 11);
-        context.closePath();
-        context.fill();
-
-        context.strokeStyle = 'rgba(255, 255, 255, 0.85)';
-        context.lineWidth = 0.9;
-        context.stroke();
-        context.restore();
-      };
-
-      // 3. Orbiting Shards (Behind Spire)
-      const numShards = 4;
-      for (let i = 0; i < numShards; i++) {
-        const angle = t * 1.2 + (i * Math.PI * 2) / numShards;
-        const orbitY = Math.sin(angle) * 16 - 22;
-        const orbitX = Math.cos(angle) * 44;
-        if (Math.sin(angle) < 0) {
-          const sScale = 0.75 + (Math.sin(angle) + 1) * 0.25;
-          renderShard(orbitX, orbitY, sScale, t + i);
+      if (item.kind === 'penalty' || icon === '💣') {
+        // --- PRO BOMB ---
+        if (textures.proBombTransparent) {
+           ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+           ctx.shadowBlur = 10;
+           ctx.drawImage(textures.proBombTransparent, -28, -32, 56, 56);
+        } else {
+           ctx.font = '32px serif';
+           ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+           ctx.fillText('💣', 0, 0);
+        }
+      } else {
+        // --- PRO CHEST (For all rewards) ---
+        if (textures.proChestTransparent) {
+           ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+           ctx.shadowBlur = 10;
+           ctx.drawImage(textures.proChestTransparent, -32, -32, 64, 64);
+        } else {
+           ctx.font = '32px serif';
+           ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+           ctx.fillText('🎁', 0, 0);
         }
       }
-
-      // 4. Central 3D Crystal Spire
-      context.fillStyle = 'rgba(15, 23, 42, 0.42)';
-      context.beginPath();
-      context.ellipse(0, 14, 26, 11, 0, 0, Math.PI * 2);
-      context.fill();
-
-      const spireHeight = 62;
-      const spireWidth = 20;
-      const apexY = -spireHeight - Math.sin(t * 2) * 3;
-
-      // Dark rear facet
-      context.fillStyle = '#991b1b';
-      context.beginPath();
-      context.moveTo(0, apexY);
-      context.lineTo(-spireWidth, -10);
-      context.lineTo(-spireWidth * 0.6, 6);
-      context.lineTo(0, 12);
-      context.closePath();
-      context.fill();
-
-      // Center-left facet
-      const gradLeft = context.createLinearGradient(-spireWidth, 0, 0, 0);
-      gradLeft.addColorStop(0, '#dc2626');
-      gradLeft.addColorStop(1, '#f87171');
-      context.fillStyle = gradLeft;
-      context.beginPath();
-      context.moveTo(0, apexY);
-      context.lineTo(-spireWidth * 0.6, 6);
-      context.lineTo(0, 14);
-      context.closePath();
-      context.fill();
-
-      // Center-right illuminated facet
-      const gradRight = context.createLinearGradient(0, 0, spireWidth, 0);
-      gradRight.addColorStop(0, '#fecdd3');
-      gradRight.addColorStop(1, '#f43f5e');
-      context.fillStyle = gradRight;
-      context.beginPath();
-      context.moveTo(0, apexY);
-      context.lineTo(0, 14);
-      context.lineTo(spireWidth * 0.6, 6);
-      context.closePath();
-      context.fill();
-
-      // Right facet
-      context.fillStyle = '#be123c';
-      context.beginPath();
-      context.moveTo(0, apexY);
-      context.lineTo(spireWidth * 0.6, 6);
-      context.lineTo(spireWidth, -10);
-      context.closePath();
-      context.fill();
-
-      // Shimmering crystal ridges
-      context.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-      context.lineWidth = 1.6;
-      context.beginPath();
-      context.moveTo(0, apexY);
-      context.lineTo(0, 14);
-      context.moveTo(0, apexY);
-      context.lineTo(-spireWidth * 0.6, 6);
-      context.moveTo(0, apexY);
-      context.lineTo(spireWidth * 0.6, 6);
-      context.stroke();
-
-      // Specular glint star on crystal apex
-      const glintPulse = (Math.sin(t * 4) + 1) * 0.5;
-      context.fillStyle = `rgba(255, 255, 255, ${0.8 + glintPulse * 0.2})`;
-      context.beginPath();
-      context.arc(0, apexY, 3.5 + glintPulse * 1.5, 0, Math.PI * 2);
-      context.fill();
-      context.strokeStyle = `rgba(255, 255, 255, ${0.6 + glintPulse * 0.4})`;
-      context.lineWidth = 1.8;
-      context.beginPath();
-      context.moveTo(-8 - glintPulse * 6, apexY);
-      context.lineTo(8 + glintPulse * 6, apexY);
-      context.moveTo(0, apexY - 8 - glintPulse * 6);
-      context.lineTo(0, apexY + 8 + glintPulse * 6);
-      context.stroke();
-
-      // 5. Orbiting Shards (In Front of Spire)
-      for (let i = 0; i < numShards; i++) {
-        const angle = t * 1.2 + (i * Math.PI * 2) / numShards;
-        const orbitY = Math.sin(angle) * 16 - 22;
-        const orbitX = Math.cos(angle) * 44;
-        if (Math.sin(angle) >= 0) {
-          const sScale = 0.75 + (Math.sin(angle) + 1) * 0.25;
-          renderShard(orbitX, orbitY, sScale, t + i);
-        }
-      }
-
-      // 6. Upward Drifting Sparkles
-      for (let i = 0; i < 7; i++) {
-        const pPhase = (t * 0.4 + i * 0.14) % 1;
-        const sx = Math.sin(i * 37.5 + t * 0.5) * (30 * pPhase);
-        const sy = 10 - pPhase * 85;
-        const sAlpha = (1 - pPhase) * Math.sin(pPhase * Math.PI);
-        context.fillStyle = `rgba(255, 241, 242, ${sAlpha})`;
-        context.beginPath();
-        context.arc(sx, sy, 1.8 * (1 - pPhase * 0.3), 0, Math.PI * 2);
-        context.fill();
-      }
-
-      context.restore();
-    };
-
-    const drawLivingLighthouse = (context, g) => {
-      const pos = gridToPixel(14, 7);
-      const t = g.time;
-      context.save();
-      context.translate(pos.px, pos.py);
-
-      // 1. Ground shadow of lighthouse tower
-      context.fillStyle = 'rgba(15, 23, 42, 0.35)';
-      context.beginPath();
-      context.ellipse(12, 10, 26, 11, 0.2, 0, Math.PI * 2);
-      context.fill();
-
-      // 2. Revolving 360-degree Volumetric Light Beam
-      const beamAngle = t * 0.65;
-      context.save();
-      context.rotate(beamAngle);
-      const beam = context.createRadialGradient(0, 0, 6, 130, 0, 260);
-      beam.addColorStop(0, 'rgba(254, 240, 138, 0.75)');
-      beam.addColorStop(0.35, 'rgba(253, 224, 71, 0.32)');
-      beam.addColorStop(0.7, 'rgba(250, 204, 21, 0.1)');
-      beam.addColorStop(1, 'rgba(250, 204, 21, 0)');
-      context.fillStyle = beam;
-      context.beginPath();
-      context.moveTo(0, 0);
-      context.arc(0, 0, 270, -0.25, 0.25);
-      context.closePath();
-      context.fill();
-      context.restore();
-
-      // 3. 3D Cylindrical Tower Body with Red & White Striped Bands
-      const towerBaseW = 14;
-      const towerTopW = 10;
-      const towerH = 46;
-
-      // Base pedestal
-      context.fillStyle = '#475569';
-      context.beginPath();
-      context.ellipse(0, 6, towerBaseW + 3, 5, 0, 0, Math.PI * 2);
-      context.fill();
-
-      // Tower striped bands (White, Red, White, Red)
-      const bands = [
-        { y1: 6, y2: -7, color: '#f8fafc', colorShade: '#cbd5e1' },
-        { y1: -7, y2: -20, color: '#ef4444', colorShade: '#b91c1c' },
-        { y1: -20, y2: -32, color: '#f8fafc', colorShade: '#cbd5e1' },
-        { y1: -32, y2: -42, color: '#ef4444', colorShade: '#b91c1c' },
-      ];
-
-      bands.forEach((b) => {
-        const t1 = (6 - b.y1) / 48;
-        const t2 = (6 - b.y2) / 48;
-        const w1 = towerBaseW * (1 - t1) + towerTopW * t1;
-        const w2 = towerBaseW * (1 - t2) + towerTopW * t2;
-
-        const bGrad = context.createLinearGradient(-w1, 0, w1, 0);
-        bGrad.addColorStop(0, b.color);
-        bGrad.addColorStop(0.65, b.color);
-        bGrad.addColorStop(1, b.colorShade);
-
-        context.fillStyle = bGrad;
-        context.beginPath();
-        context.moveTo(-w1, b.y1);
-        context.lineTo(-w2, b.y2);
-        context.lineTo(w2, b.y2);
-        context.lineTo(w1, b.y1);
-        context.closePath();
-        context.fill();
-      });
-
-      // 4. Balcony Gallery & Glass Lantern Room
-      context.fillStyle = '#1e293b';
-      context.fillRect(-12, -44, 24, 3); // balcony floor
-      // Glass room
-      context.fillStyle = 'rgba(254, 240, 138, 0.9)';
-      context.fillRect(-8, -54, 16, 10);
-      context.strokeStyle = '#0f172a';
-      context.lineWidth = 1.2;
-      context.strokeRect(-8, -54, 16, 10);
-
-      // Rotating Fresnel Lens lamp center
-      const lensPos = Math.sin(beamAngle) * 5;
-      context.fillStyle = '#ffffff';
-      context.beginPath();
-      context.arc(lensPos, -49, 3.5, 0, Math.PI * 2);
-      context.fill();
-
-      // Copper dome cupola on top
-      context.fillStyle = '#1e293b';
-      context.beginPath();
-      context.arc(0, -54, 8, Math.PI, 0);
-      context.fill();
-
-      // Blinking red beacon on the spire apex
-      const beaconOn = Math.sin(t * 6) > 0;
-      context.fillStyle = beaconOn ? '#ef4444' : '#7f1d1d';
-      context.beginPath();
-      context.arc(0, -64, 2.5, 0, Math.PI * 2);
-      context.fill();
-      if (beaconOn) {
-        context.strokeStyle = 'rgba(239, 68, 68, 0.5)';
-        context.lineWidth = 2;
-        context.stroke();
-      }
-
-      context.restore();
-    };
-
-    const drawLivingWaterfallAndRiver = (context, g) => {
-      const t = g.time;
-      const riverPts = [
-        { x: -4.8, y: -4.5 },
-        { x: -5.4, y: -6.0 },
-        { x: -6.8, y: -8.0 },
-        { x: -8.8, y: -10.2 },
-        { x: -11.5, y: -12.6 },
-        { x: -13.5, y: -14.2 }
-      ].map(pt => gridToPixel(pt.x, pt.y));
-
-      context.save();
-      context.lineCap = 'round';
-      context.lineJoin = 'round';
-
-      // River bed stream
-      context.strokeStyle = 'rgba(56, 189, 248, 0.52)';
-      context.lineWidth = 14;
-      context.beginPath();
-      context.moveTo(riverPts[0].px, riverPts[0].py);
-      for (let i = 1; i < riverPts.length; i++) {
-        context.lineTo(riverPts[i].px, riverPts[i].py);
-      }
-      context.stroke();
-
-      // Fast-flowing foam crest lines racing downstream
-      context.strokeStyle = 'rgba(255, 255, 255, 0.72)';
-      context.lineWidth = 4;
-      context.setLineDash([8, 16]);
-      context.lineDashOffset = -t * 65;
-      context.beginPath();
-      context.moveTo(riverPts[0].px, riverPts[0].py);
-      for (let i = 1; i < riverPts.length; i++) {
-        context.lineTo(riverPts[i].px, riverPts[i].py);
-      }
-      context.stroke();
-      context.setLineDash([]);
-
-      // Cascading Waterfall Head & Plunge Pool at (-5, -6)
-      const wfPos = gridToPixel(-5, -6);
-      context.save();
-      context.translate(wfPos.px, wfPos.py);
-
-      // Expanding splash shockwave ripples in basin
-      for (let i = 0; i < 3; i++) {
-        const rPhase = (t * 0.9 + i * 0.33) % 1;
-        context.strokeStyle = `rgba(224, 242, 254, ${(1 - rPhase) * 0.6})`;
-        context.lineWidth = 2;
-        context.beginPath();
-        context.ellipse(0, 10, rPhase * 36, rPhase * 16, 0, 0, Math.PI * 2);
-        context.stroke();
-      }
-
-      // Bouncing waterfall spray droplets
-      for (let i = 0; i < 8; i++) {
-        const dPhase = (t * 2.2 + i * 0.25) % 1;
-        const dx = Math.sin(i * 18.5) * (18 * dPhase);
-        const dy = 10 - Math.sin(dPhase * Math.PI) * 22;
-        context.fillStyle = `rgba(255, 255, 255, ${1 - dPhase})`;
-        context.beginPath();
-        context.arc(dx, dy, 1.8 * (1 - dPhase * 0.5), 0, Math.PI * 2);
-        context.fill();
-      }
-
-      // Rising spray mist clouds
-      for (let i = 0; i < 5; i++) {
-        const mPhase = (t * 0.35 + i * 0.2) % 1;
-        const mx = Math.sin(i * 24.3) * 14 + Math.sin(t + i) * 6;
-        const my = 8 - mPhase * 44;
-        const mist = context.createRadialGradient(mx, my, 0, mx, my, 18 + mPhase * 16);
-        mist.addColorStop(0, `rgba(240, 249, 255, ${(1 - mPhase) * 0.32})`);
-        mist.addColorStop(1, 'rgba(255, 255, 255, 0)');
-        context.fillStyle = mist;
-        context.beginPath();
-        context.arc(mx, my, 18 + mPhase * 16, 0, Math.PI * 2);
-        context.fill();
-      }
-      context.restore();
-
-      context.restore();
-    };
-
-    const drawLivingFactory = (context, g) => {
-      const pos = gridToPixel(6, 3);
-      const t = g.time;
-      context.save();
-      context.translate(pos.px, pos.py);
-
-      // 1. Factory Building Shadow
-      context.fillStyle = 'rgba(15, 23, 42, 0.35)';
-      context.beginPath();
-      context.ellipse(4, 14, 34, 14, 0, 0, Math.PI * 2);
-      context.fill();
-
-      // 2. Factory Main Warehouse Body (Red brick texture)
-      const wallGrad = context.createLinearGradient(-26, 0, 26, 0);
-      wallGrad.addColorStop(0, '#991b1b');
-      wallGrad.addColorStop(0.7, '#b91c1c');
-      wallGrad.addColorStop(1, '#7f1d1d');
-      context.fillStyle = wallGrad;
-      context.fillRect(-26, -16, 52, 28);
-      context.strokeStyle = '#450a0a';
-      context.lineWidth = 1.4;
-      context.strokeRect(-26, -16, 52, 28);
-
-      // Saw-tooth industrial roof
-      context.fillStyle = '#475569';
-      context.beginPath();
-      context.moveTo(-26, -16);
-      context.lineTo(-14, -28);
-      context.lineTo(-14, -16);
-      context.lineTo(-2, -28);
-      context.lineTo(-2, -16);
-      context.lineTo(10, -28);
-      context.lineTo(10, -16);
-      context.lineTo(26, -16);
-      context.closePath();
-      context.fill();
-      context.stroke();
-
-      // 3. Dual Chimney Smokestacks
-      const drawChimney = (cx, cy, cw, ch) => {
-        const cGrad = context.createLinearGradient(cx - cw / 2, 0, cx + cw / 2, 0);
-        cGrad.addColorStop(0, '#b91c1c');
-        cGrad.addColorStop(0.7, '#ef4444');
-        cGrad.addColorStop(1, '#7f1d1d');
-        context.fillStyle = cGrad;
-        context.fillRect(cx - cw / 2, cy - ch, cw, ch);
-        context.fillStyle = '#1e293b';
-        context.fillRect(cx - cw / 2 - 1, cy - ch, cw + 2, 3);
-      };
-      drawChimney(16, -16, 7, 24);
-      drawChimney(22, -16, 6, 30);
-
-      // 4. Continuously Billowing Volumetric Smoke Puffs
-      for (let i = 0; i < 6; i++) {
-        const sPhase = (t * 0.26 + i * 0.17) % 1;
-        const sx = 20 + Math.sin(t * 1.2 + i) * 6 + sPhase * 24;
-        const sy = -48 - sPhase * 60;
-        const sSize = 8 + sPhase * 22;
-        const sAlpha = (1 - sPhase) * 0.38;
-        context.fillStyle = `rgba(226, 232, 240, ${sAlpha})`;
-        context.beginPath();
-        context.arc(sx, sy, sSize, 0, Math.PI * 2);
-        context.fill();
-      }
-
-      // 5. Two Intermeshing Rotating Brass Gears on the Facade
-      const drawGear = (gx, gy, rad, teeth, speed, isClockwise) => {
-        context.save();
-        context.translate(gx, gy);
-        context.rotate((isClockwise ? 1 : -1) * t * speed);
-
-        const gearGrad = context.createRadialGradient(0, 0, 2, 0, 0, rad);
-        gearGrad.addColorStop(0, '#fef08a');
-        gearGrad.addColorStop(0.6, '#ca8a04');
-        gearGrad.addColorStop(1, '#854d0e');
-        context.fillStyle = gearGrad;
-        context.beginPath();
-        for (let i = 0; i < teeth; i++) {
-          const a1 = (i * Math.PI * 2) / teeth;
-          const a2 = a1 + (Math.PI / teeth) * 0.45;
-          const a3 = a1 + (Math.PI / teeth) * 0.55;
-          const a4 = ((i + 1) * Math.PI * 2) / teeth;
-          const rOuter = rad + 2.5;
-          const rInner = rad - 1;
-          if (i === 0) context.moveTo(Math.cos(a1) * rInner, Math.sin(a1) * rInner);
-          context.lineTo(Math.cos(a1) * rOuter, Math.sin(a1) * rOuter);
-          context.lineTo(Math.cos(a2) * rOuter, Math.sin(a2) * rOuter);
-          context.lineTo(Math.cos(a3) * rInner, Math.sin(a3) * rInner);
-          context.lineTo(Math.cos(a4) * rInner, Math.sin(a4) * rInner);
-        }
-        context.closePath();
-        context.fill();
-        context.strokeStyle = '#713f12';
-        context.lineWidth = 0.8;
-        context.stroke();
-
-        // Inner axle hole
-        context.fillStyle = '#1e293b';
-        context.beginPath();
-        context.arc(0, 0, rad * 0.35, 0, Math.PI * 2);
-        context.fill();
-        context.fillStyle = '#94a3b8';
-        context.beginPath();
-        context.arc(0, 0, rad * 0.18, 0, Math.PI * 2);
-        context.fill();
-
-        context.restore();
-      };
-
-      // Big gear and meshing small gear
-      drawGear(-12, 1, 10, 8, 1.8, true);
-      drawGear(-2, -6, 7, 6, 2.57, false);
-
-      // 6. Glowing Flickering Furnace Windows
-      const fireAlpha = 0.75 + Math.sin(t * 9) * 0.18 + Math.cos(t * 14) * 0.07;
-      context.fillStyle = `rgba(249, 115, 22, ${fireAlpha})`;
-      context.fillRect(8, -8, 8, 8);
-      context.fillRect(8, 2, 8, 8);
-      context.strokeStyle = '#450a0a';
-      context.lineWidth = 1;
-      context.strokeRect(8, -8, 8, 8);
-      context.strokeRect(8, 2, 8, 8);
-
-      context.restore();
-    };
-
-    const drawLivingClinic = (context, g) => {
-      const pos = gridToPixel(8, -4);
-      const t = g.time;
-      context.save();
-      context.translate(pos.px, pos.py);
-
-      // 1. Ground shadow
-      context.fillStyle = 'rgba(15, 23, 42, 0.32)';
-      context.beginPath();
-      context.ellipse(2, 12, 28, 12, 0, 0, Math.PI * 2);
-      context.fill();
-
-      // 2. White Emergency Clinic Building with Blue Solar Glass
-      const buildingGrad = context.createLinearGradient(-22, 0, 22, 0);
-      buildingGrad.addColorStop(0, '#f8fafc');
-      buildingGrad.addColorStop(0.7, '#ffffff');
-      buildingGrad.addColorStop(1, '#e2e8f0');
-      context.fillStyle = buildingGrad;
-      context.fillRect(-22, -14, 44, 24);
-      context.strokeStyle = '#94a3b8';
-      context.lineWidth = 1.4;
-      context.strokeRect(-22, -14, 44, 24);
-
-      // Blue solar roof panel
-      context.fillStyle = '#0284c7';
-      context.beginPath();
-      context.moveTo(-22, -14);
-      context.lineTo(-14, -22);
-      context.lineTo(22, -22);
-      context.lineTo(14, -14);
-      context.closePath();
-      context.fill();
-      context.strokeStyle = '#0369a1';
-      context.stroke();
-
-      // Clinic windows & doors
-      context.fillStyle = '#38bdf8';
-      context.fillRect(-16, -6, 8, 7);
-      context.fillRect(8, -6, 8, 7);
-      context.fillStyle = '#0284c7';
-      context.fillRect(-4, -4, 8, 14); // entrance door
-
-      // 3. Floating 3D Red Cross (+) Emblem (Rotating Horizontally in Perspective)
-      const crossRotX = Math.cos(t * 2.2);
-      const crossPulse = 1 + Math.sin(t * 3.2) * 0.08;
-      context.save();
-      context.translate(0, -32 + Math.sin(t * 3) * 2);
-      context.scale(crossRotX * crossPulse, crossPulse);
-
-      // Medical pulse glow halo
-      const medGlow = context.createRadialGradient(0, 0, 2, 0, 0, 22);
-      medGlow.addColorStop(0, 'rgba(239, 68, 68, 0.6)');
-      medGlow.addColorStop(0.7, 'rgba(34, 197, 94, 0.2)');
-      medGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-      context.fillStyle = medGlow;
-      context.beginPath();
-      context.arc(0, 0, 22, 0, Math.PI * 2);
-      context.fill();
-
-      // 3D Red Cross (+)
-      const renderCross = (col, sw) => {
-        context.fillStyle = col;
-        context.beginPath();
-        // Cross horizontal bar
-        context.fillRect(-12, -4, 24, 8);
-        // Cross vertical bar
-        context.fillRect(-4, -12, 8, 24);
-      };
-      renderCross('#dc2626');
-      context.strokeStyle = '#ffffff';
-      context.lineWidth = 1.5;
-      context.strokeRect(-12, -4, 24, 8);
-      context.strokeRect(-4, -12, 8, 24);
-
-      context.restore();
-
-      // 4. Flashing Emergency Strobe Beacon
-      const strobe = Math.sin(t * 8) > 0.4;
-      context.fillStyle = strobe ? '#ef4444' : '#991b1b';
-      context.beginPath();
-      context.arc(14, -22, 3, 0, Math.PI * 2);
-      context.fill();
-      if (strobe) {
-        context.strokeStyle = 'rgba(239, 68, 68, 0.6)';
-        context.lineWidth = 2;
-        context.stroke();
-      }
-
-      context.restore();
-    };
-
-    const drawLivingWindmillAndFarm = (context, g) => {
-      const pos = gridToPixel(-9, 8);
-      const t = g.time;
-      context.save();
-      context.translate(pos.px, pos.py);
-
-      // 1. Windmill ground shadow
-      context.fillStyle = 'rgba(15, 23, 42, 0.32)';
-      context.beginPath();
-      context.ellipse(6, 12, 24, 10, 0.1, 0, Math.PI * 2);
-      context.fill();
-
-      // 2. Octagonal Windmill Stone Tower
-      const towerGrad = context.createLinearGradient(-14, 0, 14, 0);
-      towerGrad.addColorStop(0, '#d6d3d1');
-      towerGrad.addColorStop(0.7, '#e7e5e4');
-      towerGrad.addColorStop(1, '#a8a29e');
-      context.fillStyle = towerGrad;
-      context.beginPath();
-      context.moveTo(-14, 10);
-      context.lineTo(-8, -26);
-      context.lineTo(8, -26);
-      context.lineTo(14, 10);
-      context.closePath();
-      context.fill();
-      context.strokeStyle = '#78716c';
-      context.lineWidth = 1.2;
-      context.stroke();
-
-      // Thatched conical roof
-      context.fillStyle = '#b45309';
-      context.beginPath();
-      context.moveTo(-11, -26);
-      context.lineTo(0, -40);
-      context.lineTo(11, -26);
-      context.closePath();
-      context.fill();
-      context.strokeStyle = '#78350f';
-      context.stroke();
-
-      // 3. Continuously Spinning 4-Blade Windmill Rotor
-      context.save();
-      context.translate(0, -30);
-      context.rotate(t * 1.8);
-
-      // Cast blade shadow onto ground
-      for (let b = 0; b < 4; b++) {
-        const bAngle = (b * Math.PI) / 2;
-        context.save();
-        context.rotate(bAngle);
-
-        // Blade wooden spar
-        context.strokeStyle = '#451a03';
-        context.lineWidth = 2;
-        context.beginPath();
-        context.moveTo(0, 0);
-        context.lineTo(0, -28);
-        context.stroke();
-
-        // Canvas sail cloth
-        context.fillStyle = 'rgba(254, 243, 199, 0.9)';
-        context.fillRect(2, -26, 7, 20);
-        context.strokeStyle = '#78350f';
-        context.lineWidth = 0.8;
-        context.strokeRect(2, -26, 7, 20);
-
-        context.restore();
-      }
-
-      // Rotor hub axle
-      context.fillStyle = '#facc15';
-      context.beginPath();
-      context.arc(0, 0, 3.5, 0, Math.PI * 2);
-      context.fill();
-      context.restore();
-
-      // 4. Pasture Grazing Sheep (Bobbing gently)
-      const sheepBob = Math.sin(t * 2) * 1.5;
-      context.fillStyle = '#ffffff';
-      context.beginPath();
-      context.ellipse(22, 4 + sheepBob, 6, 4.5, 0, 0, Math.PI * 2);
-      context.fill();
-      context.fillStyle = '#1e293b'; // head
-      context.beginPath();
-      context.arc(27, 2 + sheepBob, 2.5, 0, Math.PI * 2);
-      context.fill();
-
-      context.restore();
-    };
-
-    const drawLivingHarbor = (context, g) => {
-      const pos = gridToPixel(8, 10);
-      const t = g.time;
-      context.save();
-      context.translate(pos.px, pos.py);
-
-      // 1. Wooden Pier / Jetty planks extending into water
-      context.fillStyle = '#78350f';
-      context.fillRect(-16, -6, 32, 12);
-      context.strokeStyle = '#451a03';
-      context.lineWidth = 1.2;
-      for (let p = -14; p < 16; p += 6) {
-        context.beginPath();
-        context.moveTo(p, -6);
-        context.lineTo(p, 6);
-        context.stroke();
-      }
-
-      // 2. Cargo Crane with Swaying Hoist Cable
-      const cableSway = Math.sin(t * 1.5) * 0.18;
-      context.save();
-      context.translate(10, -6);
-      context.strokeStyle = '#f59e0b'; // crane arm
-      context.lineWidth = 3;
-      context.beginPath();
-      context.moveTo(-4, 0);
-      context.lineTo(0, -22);
-      context.lineTo(14, -20);
-      context.stroke();
-
-      // Cable and container hook
-      context.translate(14, -20);
-      context.rotate(cableSway);
-      context.strokeStyle = '#334155';
-      context.lineWidth = 1;
-      context.beginPath();
-      context.moveTo(0, 0);
-      context.lineTo(0, 14);
-      context.stroke();
-
-      context.fillStyle = '#dc2626'; // shipping container
-      context.fillRect(-4, 14, 8, 6);
-      context.restore();
-
-      // 3. Moored Fishing Trawler Rocking on Waves
-      const boatRock = Math.sin(t * 2.2) * 0.08;
-      context.save();
-      context.translate(-14, 10);
-      context.rotate(boatRock);
-      context.fillStyle = '#0284c7';
-      context.beginPath();
-      context.moveTo(-10, 0);
-      context.lineTo(10, 0);
-      context.lineTo(7, 6);
-      context.lineTo(-7, 6);
-      context.closePath();
-      context.fill();
-      context.fillStyle = '#ffffff';
-      context.fillRect(-4, -5, 8, 5); // cabin
-      context.restore();
-
-      context.restore();
-    };
-
-    const drawLivingVillage = (context, g) => {
-      const pos = gridToPixel(5, -7);
-      const t = g.time;
-      context.save();
-      context.translate(pos.px, pos.py);
-
-      // Village Stilt Wooden Hut
-      context.fillStyle = 'rgba(15, 23, 42, 0.3)';
-      context.beginPath();
-      context.ellipse(0, 10, 20, 8, 0, 0, Math.PI * 2);
-      context.fill();
-
-      // Stilt posts
-      context.strokeStyle = '#78350f';
-      context.lineWidth = 2;
-      context.beginPath();
-      context.moveTo(-12, 0); context.lineTo(-12, 10);
-      context.moveTo(12, 0); context.lineTo(12, 10);
-      context.moveTo(0, 0); context.lineTo(0, 10);
-      context.stroke();
-
-      // Hut timber walls
-      context.fillStyle = '#a16207';
-      context.fillRect(-14, -8, 28, 12);
-
-      // Thatched palm leaf roof
-      context.fillStyle = '#ca8a04';
-      context.beginPath();
-      context.moveTo(-18, -8);
-      context.lineTo(0, -22);
-      context.lineTo(18, -8);
-      context.closePath();
-      context.fill();
-
-      // Hearth chimney smoke
-      for (let i = 0; i < 3; i++) {
-        const sPhase = (t * 0.3 + i * 0.33) % 1;
-        const sx = 4 + Math.sin(t + i) * 3 + sPhase * 8;
-        const sy = -22 - sPhase * 24;
-        context.fillStyle = `rgba(241, 245, 249, ${(1 - sPhase) * 0.4})`;
-        context.beginPath();
-        context.arc(sx, sy, 3 + sPhase * 6, 0, Math.PI * 2);
-        context.fill();
-      }
-
-      context.restore();
-    };
-
-    const drawLivingRescueBoats = (context, g) => {
-      const boatCoords = [
-        { x: -11, y: 14.2, angle: 0 },
-        { x: -4, y: 14.2, angle: 0 },
-        { x: 4, y: 14.2, angle: 0 },
-        { x: 11, y: 14.2, angle: 0 },
-        { x: -11, y: -14.2, angle: Math.PI },
-        { x: -4, y: -14.2, angle: Math.PI },
-        { x: 4, y: -14.2, angle: Math.PI },
-        { x: 11, y: -14.2, angle: Math.PI },
-        { x: -14.2, y: 8, angle: -Math.PI / 2 },
-        { x: -14.2, y: 0, angle: -Math.PI / 2 },
-        { x: -14.2, y: -8, angle: -Math.PI / 2 },
-        { x: 14.2, y: 2, angle: Math.PI / 2 },
-        { x: 14.2, y: -4, angle: Math.PI / 2 },
-        { x: 14.2, y: -10, angle: Math.PI / 2 },
-      ];
-
-      boatCoords.forEach((b, idx) => {
-        const pos = gridToPixel(b.x, b.y);
-        const bob = Math.sin(g.time * 2.2 + idx * 0.8) * 3;
-        const roll = Math.cos(g.time * 1.5 + idx * 0.8) * 0.08;
-
-        context.save();
-        context.translate(pos.px, pos.py + bob);
-        context.rotate(b.angle + roll);
-
-        // Churning dynamic foamy wake trails streaming behind
-        context.strokeStyle = `rgba(255, 255, 255, ${0.45 + Math.sin(g.time * 3 + idx) * 0.25})`;
-        context.lineWidth = 3;
-        context.beginPath();
-        context.moveTo(-16, -6);
-        context.quadraticCurveTo(-28, -12, -40, -16);
-        context.moveTo(-16, 6);
-        context.quadraticCurveTo(-28, 12, -40, 18);
-        context.stroke();
-
-        // Water ripple under boat
-        context.fillStyle = 'rgba(3, 30, 45, 0.35)';
-        context.beginPath();
-        context.ellipse(0, 8, 22, 9, 0, 0, Math.PI * 2);
-        context.fill();
-
-        // Orange & White Patrol Boat Hull
-        context.fillStyle = '#ffffff';
-        context.beginPath();
-        context.moveTo(18, 0);
-        context.quadraticCurveTo(8, -9, -16, -8);
-        context.lineTo(-18, 8);
-        context.quadraticCurveTo(8, 9, 18, 0);
-        context.fill();
-        context.strokeStyle = '#0284c7';
-        context.lineWidth = 1.8;
-        context.stroke();
-
-        // High-vis rescue orange cabin
-        context.fillStyle = '#f97316';
-        context.fillRect(-6, -4, 12, 8);
-
-        // Marine radar scanner spinning on cabin roof
-        const radarAngle = g.time * 4 + idx;
-        context.save();
-        context.translate(0, 0);
-        context.rotate(radarAngle);
-        context.strokeStyle = '#ffffff';
-        context.lineWidth = 1.6;
-        context.beginPath();
-        context.moveTo(-4, 0);
-        context.lineTo(4, 0);
-        context.stroke();
-        context.restore();
-
-        // Cabin windshield
-        context.fillStyle = '#38bdf8';
-        context.beginPath();
-        context.moveTo(6, -3);
-        context.lineTo(10, 0);
-        context.lineTo(6, 3);
-        context.closePath();
-        context.fill();
-
-        context.restore();
-      });
-    };
-
-    const drawLivingPalmTrees = (context, g) => {
-      const treeCoords = [
-        { x: -12.5, y: 12 },
-        { x: 12.5, y: 12 },
-        { x: -13.5, y: -6 },
-        { x: 13.5, y: -6 },
-        { x: -8, y: 13 },
-        { x: 8, y: 13 },
-        { x: -13, y: 5 },
-        { x: 13, y: 5 },
-      ];
-
-      treeCoords.forEach((tree, idx) => {
-        const pos = gridToPixel(tree.x, tree.y);
-        const sway = Math.sin(g.time * 1.6 + idx) * 0.12;
-        context.save();
-        context.translate(pos.px, pos.py);
-
-        // Ground shadow
-        context.fillStyle = 'rgba(15, 23, 42, 0.22)';
-        context.beginPath();
-        context.ellipse(sway * 18, 6, 16, 7, 0, 0, Math.PI * 2);
-        context.fill();
-
-        // Curved trunk swaying with wind
-        context.rotate(sway * 0.5);
-        context.strokeStyle = '#78350f';
-        context.lineWidth = 4.5;
-        context.lineCap = 'round';
-        context.beginPath();
-        context.moveTo(0, 0);
-        context.quadraticCurveTo(sway * 15, -12, sway * 25, -24);
-        context.stroke();
-
-        context.translate(sway * 25, -24);
-        for (let f = 0; f < 5; f++) {
-          const a = -Math.PI / 2 + (f - 2) * 0.55 + sway * 0.4;
-          context.fillStyle = '#16a34a';
-          context.beginPath();
-          context.moveTo(0, 0);
-          context.quadraticCurveTo(Math.cos(a - 0.2) * 14, Math.sin(a - 0.2) * 14, Math.cos(a) * 20, Math.sin(a) * 20);
-          context.quadraticCurveTo(Math.cos(a + 0.2) * 14, Math.sin(a + 0.2) * 14, 0, 0);
-          context.fill();
-        }
-        context.restore();
-      });
-    };
-
-    const drawLivingSeagullsAndAtmosphere = (context, g) => {
-      const t = g.time;
-
-      // 1. Drifting Soft Cloud Shadows Sliding Across Island
-      const cloudOffset = (t * 22) % (MAP_W + 600);
-      const clouds = [
-        { x: cloudOffset - 300, y: 600, w: 280, h: 140 },
-        { x: (cloudOffset * 0.8) % (MAP_W + 700) - 200, y: 1400, w: 340, h: 160 },
-        { x: (cloudOffset * 1.1) % (MAP_W + 800) - 400, y: 2100, w: 310, h: 150 },
-      ];
-      context.save();
-      context.fillStyle = 'rgba(15, 23, 42, 0.055)';
-      clouds.forEach((c) => {
-        context.beginPath();
-        context.ellipse(c.x, c.y, c.w / 2, c.h / 2, 0.2, 0, Math.PI * 2);
-        context.fill();
-      });
-      context.restore();
-
-      // 2. Gliding 3D Animated Seagulls
-      const numBirds = 4;
-      for (let b = 0; b < numBirds; b++) {
-        const bAngle = t * 0.35 + (b * Math.PI * 2) / numBirds;
-        const bRadX = 550 + Math.sin(b * 3) * 120;
-        const bRadY = 400 + Math.cos(b * 2) * 100;
-        const bx = BOARD_CX + Math.cos(bAngle) * bRadX;
-        const by = BOARD_CY + Math.sin(bAngle) * bRadY;
-
-        const heading = bAngle + Math.PI / 2;
-        const wingFlap = Math.sin(t * 6 + b * 2) * 6;
-
-        context.save();
-        context.translate(bx, by);
-        context.rotate(heading);
-
-        // Seagull shadow on terrain
-        context.fillStyle = 'rgba(15, 23, 42, 0.16)';
-        context.beginPath();
-        context.ellipse(14, 20, 6, 2, heading, 0, Math.PI * 2);
-        context.fill();
-
-        // White bird body and flapping wings
-        context.strokeStyle = '#ffffff';
-        context.lineWidth = 2.4;
-        context.lineCap = 'round';
-        context.beginPath();
-        context.moveTo(-10, wingFlap);
-        context.quadraticCurveTo(-4, 0, 0, -2);
-        context.quadraticCurveTo(4, 0, 10, wingFlap);
-        context.stroke();
-
-        // Yellow beak
-        context.fillStyle = '#f59e0b';
-        context.beginPath();
-        context.arc(0, -4, 1.2, 0, Math.PI * 2);
-        context.fill();
-
-        context.restore();
-      }
-    };
-
-    const drawLivingItems = (context, g) => {
-      RRG_ITEMS.forEach((item) => {
-        const pos = gridToPixel(item.x, item.y);
-        const t = g.time;
-        const seed = item.x * 17 + item.y * 31;
-        const bob = Math.sin(t * 3 + seed) * 3;
-
-        context.save();
-        context.translate(pos.px, pos.py + bob);
-
-        if (item.kind === 'diamond') {
-          const dScale = 1 + Math.sin(t * 3.5 + seed) * 0.08;
-          const spin = Math.sin(t * 2.2 + seed) * 0.25;
-          context.scale(dScale * (1 - Math.abs(spin) * 0.15), dScale);
-
-          const dGlow = context.createRadialGradient(0, 0, 4, 0, 0, 24);
-          dGlow.addColorStop(0, 'rgba(168, 85, 247, 0.75)');
-          dGlow.addColorStop(0.6, 'rgba(56, 189, 248, 0.3)');
-          dGlow.addColorStop(1, 'rgba(0,0,0,0)');
-          context.fillStyle = dGlow;
-          context.beginPath();
-          context.arc(0, 0, 24, 0, Math.PI * 2);
-          context.fill();
-
-          context.fillStyle = '#38bdf8';
-          context.beginPath();
-          context.moveTo(0, -13);
-          context.lineTo(10, -4);
-          context.lineTo(0, 13);
-          context.lineTo(-10, -4);
-          context.closePath();
-          context.fill();
-
-          context.fillStyle = '#93c5fd';
-          context.beginPath();
-          context.moveTo(0, -13);
-          context.lineTo(10, -4);
-          context.lineTo(0, 13);
-          context.closePath();
-          context.fill();
-
-          context.strokeStyle = '#ffffff';
-          context.lineWidth = 1.4;
-          context.stroke();
-
-          const glintPhase = (t * 0.6 + seed * 0.1) % 1;
-          if (glintPhase < 0.35) {
-            const gAlpha = Math.sin((glintPhase / 0.35) * Math.PI);
-            context.fillStyle = `rgba(255, 255, 255, ${gAlpha})`;
-            context.beginPath();
-            context.arc(-3, -6, 2.5, 0, Math.PI * 2);
-            context.fill();
-            context.strokeStyle = `rgba(255, 255, 255, ${gAlpha})`;
-            context.beginPath();
-            context.moveTo(-8, -6); context.lineTo(2, -6);
-            context.moveTo(-3, -11); context.lineTo(-3, -1);
-            context.stroke();
-          }
-        } else if (item.kind === 'chest') {
-          const cPulse = 1 + Math.sin(t * 3.2 + seed) * 0.08;
-          context.scale(cPulse, cPulse);
-
-          const cGlow = context.createRadialGradient(0, 0, 6, 0, 0, 25);
-          cGlow.addColorStop(0, 'rgba(250, 204, 21, 0.8)');
-          cGlow.addColorStop(0.6, 'rgba(249, 115, 22, 0.35)');
-          cGlow.addColorStop(1, 'rgba(0,0,0,0)');
-          context.fillStyle = cGlow;
-          context.beginPath();
-          context.arc(0, 0, 25, 0, Math.PI * 2);
-          context.fill();
-
-          context.fillStyle = '#b45309';
-          context.fillRect(-10, -5, 20, 14);
-          context.fillStyle = '#fbbf24';
-          context.fillRect(-11, -9, 22, 6);
-          context.fillStyle = '#fef08a';
-          context.fillRect(-2, -3, 4, 5);
-          context.strokeStyle = '#78350f';
-          context.lineWidth = 1.5;
-          context.strokeRect(-10, -5, 20, 14);
-          context.strokeRect(-11, -9, 22, 6);
-
-          for (let s = 0; s < 2; s++) {
-            const sP = (t * 0.7 + seed + s * 0.5) % 1;
-            const starX = Math.sin(s * 15 + seed) * 12;
-            const starY = -12 - sP * 16;
-            context.fillStyle = `rgba(254, 240, 138, ${(1 - sP) * 0.85})`;
-            context.beginPath();
-            context.arc(starX, starY, 1.8, 0, Math.PI * 2);
-            context.fill();
-          }
-        } else if (item.kind === 'money') {
-          const mPulse = 1 + Math.sin(t * 3.8 + seed) * 0.07;
-          context.scale(mPulse, mPulse);
-
-          context.fillStyle = 'rgba(234, 179, 8, 0.22)';
-          context.beginPath();
-          context.arc(0, 0, 18, 0, Math.PI * 2);
-          context.fill();
-
-          context.fillStyle = '#dc2626';
-          context.beginPath();
-          context.arc(0, 3, 9, 0, Math.PI * 2);
-          context.fill();
-          context.fillStyle = '#f59e0b';
-          context.fillRect(-4, -6, 8, 4);
-
-          const cP = (t * 0.8 + seed) % 1;
-          const cY = -8 - cP * 16;
-          context.fillStyle = `rgba(250, 204, 21, ${(1 - cP) * 0.9})`;
-          context.font = 'bold 9px Inter';
-          context.textAlign = 'center';
-          context.fillText('+RM', 0, cY);
-        } else if (item.kind === 'reward') {
-          const rP = (t * 1.5 + seed) % 1;
-          context.strokeStyle = `rgba(34, 197, 94, ${(1 - rP) * 0.85})`;
-          context.lineWidth = 2.4;
-          context.beginPath();
-          context.arc(0, 0, 8 + rP * 18, 0, Math.PI * 2);
-          context.stroke();
-
-          context.fillStyle = '#22c55e';
-          context.beginPath();
-          context.arc(0, 0, 7, 0, Math.PI * 2);
-          context.fill();
-          context.strokeStyle = '#ffffff';
-          context.lineWidth = 1.6;
-          context.stroke();
-        } else if (item.kind === 'penalty') {
-          const hPulse = 1 + Math.sin(t * 4.5 + seed) * 0.15;
-          context.strokeStyle = 'rgba(239, 68, 68, 0.85)';
-          context.lineWidth = 2.2;
-          context.setLineDash([4, 4]);
-          context.lineDashOffset = t * 14;
-          context.beginPath();
-          context.arc(0, 0, 18 * hPulse, 0, Math.PI * 2);
-          context.stroke();
-          context.setLineDash([]);
-          context.fillStyle = 'rgba(239, 68, 68, 0.25)';
-          context.fill();
-        }
-
-        context.restore();
-      });
-    };
-
-    const drawInteractiveCursorAndRipples = (context, g) => {
-      g.effects = g.effects.filter((eff) => {
-        if (eff.type !== 'ripple') return true;
-        const age = performance.now() - eff.startedAt;
-        if (age > (eff.duration || 750)) return false;
-        const p = age / (eff.duration || 750);
-        const pos = gridToPixel(eff.x, eff.y);
-        context.save();
-        context.strokeStyle = `rgba(56, 189, 248, ${(1 - p) * 0.95})`;
-        context.lineWidth = 3.5 * (1 - p * 0.6);
-        context.beginPath();
-        context.arc(pos.px, pos.py, p * 55, 0, Math.PI * 2);
-        context.stroke();
-        context.restore();
-        return true;
-      });
-
-      if (g.hoverCoord && !g.isDragging) {
-        const pos = gridToPixel(g.hoverCoord.x, g.hoverCoord.y);
-        const item = RRG_ITEMS.find((it) => it.x === g.hoverCoord.x && it.y === g.hoverCoord.y);
-        const landmark = RRG_LANDMARKS.find((lm) => Math.hypot(lm.x - g.hoverCoord.x, lm.y - g.hoverCoord.y) < 1.4);
-
-        context.save();
-        context.strokeStyle = 'rgba(56, 189, 248, 0.85)';
-        context.fillStyle = 'rgba(56, 189, 248, 0.16)';
-        context.lineWidth = 1.8;
-        context.strokeRect(pos.px - CELL / 2, pos.py - CELL / 2, CELL, CELL);
-        context.fillRect(pos.px - CELL / 2, pos.py - CELL / 2, CELL, CELL);
-
-        const bLen = 9;
-        context.strokeStyle = '#38bdf8';
-        context.lineWidth = 2.4;
-        [
-          [pos.px - CELL / 2, pos.py - CELL / 2, 1, 1],
-          [pos.px + CELL / 2, pos.py - CELL / 2, -1, 1],
-          [pos.px - CELL / 2, pos.py + CELL / 2, 1, -1],
-          [pos.px + CELL / 2, pos.py + CELL / 2, -1, -1]
-        ].forEach(([cx, cy, sx, sy]) => {
-          context.beginPath();
-          context.moveTo(cx, cy + sy * bLen);
-          context.lineTo(cx, cy);
-          context.lineTo(cx + sx * bLen, cy);
-          context.stroke();
-        });
-
-        const tag = item
-          ? `${item.label} (${g.hoverCoord.x}, ${g.hoverCoord.y})`
-          : landmark
-          ? `${landmark.label} (${g.hoverCoord.x}, ${g.hoverCoord.y})`
-          : isRrgSafeZone(g.hoverCoord)
-          ? `🚤 Zon Selamat (${g.hoverCoord.x}, ${g.hoverCoord.y})`
-          : `(${g.hoverCoord.x}, ${g.hoverCoord.y})`;
-
-        drawGuideLabel(tag, { px: pos.px, py: pos.py - 30 }, {
-          background: 'rgba(15, 23, 42, 0.92)',
-          border: 'rgba(56, 189, 248, 0.7)',
-          color: '#38bdf8',
-          font: 'bold 11px Inter'
-        });
-
-        context.restore();
-      }
+      ctx.restore();
     };
 
     const drawGuideLabel = (text, point, options = {}) => {
@@ -6069,39 +5736,49 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
 
     const drawMinimap = () => {
       const mW = miniMap.width;
-      const mH = miniMap.height;
-      mmCtx.clearRect(0, 0, mW, mH);
+      mmCtx.clearRect(0, 0, mW, miniMap.height);
+      const miniOcean = mmCtx.createLinearGradient(0, 0, mW, miniMap.height);
+      miniOcean.addColorStop(0, '#075985');
+      miniOcean.addColorStop(0.55, '#0891b2');
+      miniOcean.addColorStop(1, '#0e7490');
+      mmCtx.fillStyle = miniOcean;
+      mmCtx.fillRect(0, 0, mW, miniMap.height);
       const scale = mW / MAP_W;
-      
-      if (textures.officialBoard && textures.officialBoard.complete && textures.officialBoard.naturalWidth > 0) {
-        mmCtx.drawImage(textures.officialBoard, 0, 0, mW, mH);
-      } else {
-        const miniOcean = mmCtx.createLinearGradient(0, 0, mW, mH);
-        miniOcean.addColorStop(0, '#075985');
-        miniOcean.addColorStop(0.55, '#0891b2');
-        miniOcean.addColorStop(1, '#0e7490');
-        mmCtx.fillStyle = miniOcean;
-        mmCtx.fillRect(0, 0, mW, mH);
+      mmCtx.fillStyle = '#d8b26f';
+      mmCtx.beginPath();
+      const first = gridToPixel(islandPoly[0][0], islandPoly[0][1]);
+      mmCtx.moveTo(first.px * scale, first.py * scale);
+      for (let i = 1; i < islandPoly.length; i++) {
+        const point = gridToPixel(islandPoly[i][0], islandPoly[i][1]);
+        mmCtx.lineTo(point.px * scale, point.py * scale);
       }
-
+      mmCtx.closePath();
+      mmCtx.fill();
+      const hazard = gridToPixel(0, -1);
+      mmCtx.fillStyle = 'rgba(244,67,54,0.5)';
+      mmCtx.beginPath();
+      mmCtx.arc(hazard.px * scale, hazard.py * scale, HAZARD_RADIUS * CELL * scale, 0, Math.PI * 2);
+      mmCtx.fill();
+      RRG_ITEMS.filter(item => getRrgItemRadius(item) > 0).forEach((item) => {
+        const itemPos = gridToPixel(item.x, item.y);
+        mmCtx.fillStyle = item.kind === 'reward' ? 'rgba(250, 204, 21, 0.42)' : 'rgba(239, 68, 68, 0.38)';
+        mmCtx.beginPath();
+        mmCtx.arc(itemPos.px * scale, itemPos.py * scale, getRrgItemRadius(item) * CELL * scale, 0, Math.PI * 2);
+        mmCtx.fill();
+      });
       game.players.forEach((player) => {
         const pos = gridToPixel(player.x, player.y);
         mmCtx.fillStyle = player.finished ? '#22c55e' : player.color;
         mmCtx.beginPath();
-        mmCtx.arc(pos.px * scale, pos.py * scale, 4.5, 0, Math.PI * 2);
+        mmCtx.arc(pos.px * scale, pos.py * scale, 3, 0, Math.PI * 2);
         mmCtx.fill();
-        mmCtx.strokeStyle = '#ffffff';
-        mmCtx.lineWidth = 1.2;
-        mmCtx.stroke();
       });
-
-      const dpr = window.devicePixelRatio || 1;
-      const viewportW = (canvas.width / (dpr * game.zoom)) * scale;
-      const viewportH = (canvas.height / (dpr * game.zoom)) * scale;
-      const viewportX = (game.camX - (canvas.width / (dpr * game.zoom)) / 2) * scale;
-      const viewportY = (game.camY - (canvas.height / (dpr * game.zoom)) / 2) * scale;
-      mmCtx.strokeStyle = '#facc15';
-      mmCtx.lineWidth = 1.8;
+      const viewportW = canvas.width / ((window.devicePixelRatio || 1) * game.zoom) * scale;
+      const viewportH = canvas.height / ((window.devicePixelRatio || 1) * game.zoom) * scale;
+      const viewportX = (game.camX - (canvas.width / ((window.devicePixelRatio || 1) * game.zoom)) / 2) * scale;
+      const viewportY = (game.camY - (canvas.height / ((window.devicePixelRatio || 1) * game.zoom)) / 2) * scale;
+      mmCtx.strokeStyle = 'rgba(255,255,255,0.72)';
+      mmCtx.lineWidth = 1;
       mmCtx.strokeRect(viewportX, viewportY, viewportW, viewportH);
     };
 
@@ -6139,62 +5816,313 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       const drawW = worldVW + 400;
       const drawH = worldVH + 400;
 
-      // Deep ocean background outside board
+      // Simple Parallax Water Animation
       const oceanGrad = ctx.createLinearGradient(drawX, drawY, drawX + drawW, drawY + drawH);
-      oceanGrad.addColorStop(0, '#0369a1');
-      oceanGrad.addColorStop(0.5, '#0891b2');
+      oceanGrad.addColorStop(0, '#075985');
+      oceanGrad.addColorStop(0.45, '#0891b2');
       oceanGrad.addColorStop(1, '#0f766e');
       ctx.fillStyle = oceanGrad;
       ctx.fillRect(drawX, drawY, drawW, drawH);
 
-      // Layer 1: Gentle moving ocean caustics
-      if (textures.water) {
-        drawTiledImage(
-          textures.water,
-          drawX, drawY, drawW, drawH,
-          420, 280,
-          game.time * 16,
-          Math.sin(game.time * 0.7) * 18,
-          0.38
-        );
+      // Layer 1: Base moving water
+      drawTiledImage(
+        textures.water,
+        drawX, drawY, drawW, drawH,
+        420, 280,
+        game.time * 22,
+        Math.sin(game.time * 0.7) * 24,
+        0.8
+      );
+
+      ctx.save();
+      // Layer 2: Intersecting moving water to create moving ripples (caustics effect)
+      ctx.globalCompositeOperation = 'screen';
+      drawTiledImage(
+        textures.water,
+        drawX, drawY, drawW, drawH,
+        420, 280,
+        -game.time * 15, 
+        game.time * 10 + Math.cos(game.time * 0.5) * 20, 
+        0.35 
+      );
+      ctx.restore();
+
+      ctx.save();
+      ctx.globalAlpha = 0.25;
+      const oceanTint = ctx.createLinearGradient(drawX, drawY, drawX + drawW, drawY + drawH);
+      oceanTint.addColorStop(0, '#075985');
+      oceanTint.addColorStop(0.55, '#0891b2');
+      oceanTint.addColorStop(1, '#0f766e');
+      ctx.fillStyle = oceanTint;
+      ctx.fillRect(drawX, drawY, drawW, drawH);
+      ctx.restore();
+      // Specular Sunlight Sparkles on Ocean
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      for (let i = 0; i < 28; i++) {
+        const sx = ((i * 193 + game.time * 6) % (MAP_W + 480)) - 240;
+        const sy = ((i * 127 + game.time * 4) % (MAP_H + 480)) - 240;
+        if (!isOnIsland(sx / CELL, sy / CELL)) {
+          const pulse = 0.32 + Math.sin(game.time * 2.4 + i) * 0.32;
+          const size = 1.0 + (i % 2) * 0.8;
+          ctx.fillStyle = `rgba(224, 242, 254, ${pulse * 0.72})`;
+          ctx.beginPath();
+          ctx.arc(sx, sy, size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.restore();
+
+      for (let i = 0; i < 46; i++) {
+        const wx = ((i * 137 + game.time * 42) % (MAP_W + 480)) - 240;
+        const wy = ((i * 211 + game.time * 34) % (MAP_H + 480)) - 240;
+        
+        // Smoothly fade waves out near the boundaries of the water grid to prevent clipping pop
+        const distFromEdgeX = Math.min(wx - (-240), (MAP_W + 240) - wx);
+        const distFromEdgeY = Math.min(wy - (-240), (MAP_H + 240) - wy);
+        const fade = Math.min(1, Math.max(0, distFromEdgeX / 80)) * Math.min(1, Math.max(0, distFromEdgeY / 80));
+        
+        ctx.strokeStyle = `rgba(255,255,255,${(0.06 + (i % 4) * 0.014) * fade})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.ellipse(wx, wy, 30 + Math.sin(game.time + i) * 10, 7, Math.sin(i) * 0.2, 0, Math.PI * 1.45);
+        ctx.stroke();
       }
 
-      // Draw Official Physical Board Game Artwork
-      if (textures.officialBoard && textures.officialBoard.complete && textures.officialBoard.naturalWidth > 0) {
-        ctx.save();
-        ctx.shadowColor = 'rgba(3, 7, 18, 0.45)';
-        ctx.shadowBlur = 36;
-        ctx.shadowOffsetY = 16;
-        ctx.drawImage(textures.officialBoard, 0, 0, MAP_W, MAP_H);
-        ctx.restore();
-      } else {
-        // Fallback ground while loading
-        ctx.fillStyle = '#efd79a';
-        ctx.fillRect(0, 0, MAP_W, MAP_H);
+      ctx.save();
+      ctx.shadowColor = 'rgba(3, 7, 18, 0.3)';
+      ctx.shadowBlur = 24;
+      ctx.shadowOffsetY = 18;
+      makeIslandPath(ctx);
+      ctx.fillStyle = '#b68c54';
+      ctx.fill();
+      ctx.restore();
+
+      makeIslandPath(ctx);
+      const sandGrad = ctx.createLinearGradient(0, 0, MAP_W, MAP_H);
+      sandGrad.addColorStop(0, '#efd79a');
+      sandGrad.addColorStop(0.45, '#d8b26f');
+      sandGrad.addColorStop(1, '#c89555');
+      ctx.fillStyle = sandGrad;
+      ctx.fill();
+
+      ctx.save();
+      makeIslandPath(ctx);
+      ctx.clip();
+      drawTiledImage(textures.sand, -80, -80, MAP_W + 160, MAP_H + 160, 360, 200, Math.sin(game.time * 0.18) * 4, 0, 0.86);
+      ctx.globalAlpha = 0.28;
+      ctx.fillStyle = sandGrad;
+      ctx.fillRect(-80, -80, MAP_W + 160, MAP_H + 160);
+      ctx.globalAlpha = 1;
+      sandSpecks.forEach((speck) => {
+        const pos = gridToPixel(speck.x, speck.y);
+        ctx.globalAlpha = speck.alpha * 0.68;
+        ctx.fillStyle = speck.dark ? '#7c4f2d' : '#fff7d6';
+        ctx.beginPath();
+        ctx.arc(pos.px, pos.py, speck.r * CELL, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+
+      paths.forEach((pathPoints) => drawRoadPath(pathPoints, 24));
+      drawRealisticRiverPath(riverPath, 34);
+
+      stones.forEach((stone) => {
+        const pos = gridToPixel(stone.x, stone.y);
+        ctx.globalAlpha = stone.alpha;
+        ctx.fillStyle = '#475569';
+        ctx.beginPath();
+        ctx.ellipse(pos.px, pos.py, stone.rx, stone.ry, stone.rot, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+      ctx.restore();
+
+      // --- ULTRA-REALISTIC DYNAMIC CLOUD SHADOWS (Land & Water) ---
+      ctx.save();
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.globalAlpha = 0.45; // Increase alpha slightly because mask might be soft
+      const numClouds = 6;
+      for (let i = 0; i < numClouds; i++) {
+        const speedX = 9 + (i % 2) * 4;
+        const speedY = 5 + (i % 3) * 2;
+        const cx = ((game.time * speedX + i * 260) % (MAP_W + 1200)) - 600;
+        const cy = ((game.time * speedY + i * 190) % (MAP_H + 1200)) - 600;
+        
+        const cWidth = 140 + (i % 3) * 50;
+        const cHeight = 140 + (i % 3) * 50;
+
+        if (textures.cloudShadow) {
+          // Draw the perfect shadow mask slightly offset
+          ctx.drawImage(textures.cloudShadow, cx + 25, cy + 30, cWidth, cHeight);
+        } else {
+          // Fallback while loading
+          ctx.globalAlpha = 0.14;
+          ctx.fillStyle = '#0f172a';
+          ctx.beginPath();
+          ctx.ellipse(cx + cWidth/2 + 25, cy + cHeight/2 + 30, cWidth/2.5, cHeight/3.5, 0.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 0.45;
+        }
+      }
+      ctx.restore();
+
+      makeIslandPath(ctx);
+      ctx.strokeStyle = '#f9e6b4';
+      ctx.lineWidth = 18;
+      ctx.stroke();
+      makeIslandPath(ctx);
+      ctx.strokeStyle = '#d6a86b';
+      ctx.lineWidth = 7;
+      ctx.globalAlpha = 0.65;
+      ctx.stroke();
+      
+      // Outer Shore Foam Wave (Double Wave effect)
+      makeIslandPath(ctx);
+      ctx.strokeStyle = `rgba(224,242,254,${0.22 + Math.sin(game.time * 1.8) * 0.08})`;
+      ctx.lineWidth = 8;
+      ctx.setLineDash([12, 24]);
+      ctx.lineDashOffset = -game.time * 18;
+      ctx.stroke();
+      ctx.setLineDash([]);
+      
+      // Inner Shore Foam Wave
+      makeIslandPath(ctx);
+      ctx.strokeStyle = `rgba(236,254,255,${0.42 + Math.sin(game.time * 2.2) * 0.12})`;
+      ctx.lineWidth = 5;
+      ctx.setLineDash([18, 16]);
+      ctx.lineDashOffset = -game.time * 32;
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 1;
+
+      const hazard = gridToPixel(0, -1);
+      const hzGrad = ctx.createRadialGradient(hazard.px, hazard.py, 0, hazard.px, hazard.py, HAZARD_RADIUS * CELL);
+      hzGrad.addColorStop(0, 'rgba(244,67,54,0.72)');
+      hzGrad.addColorStop(0.62, 'rgba(244,67,54,0.28)');
+      hzGrad.addColorStop(1, 'rgba(244,67,54,0)');
+      ctx.fillStyle = hzGrad;
+      ctx.beginPath();
+      ctx.arc(hazard.px, hazard.py, HAZARD_RADIUS * CELL, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = `rgba(244,67,54,${0.5 + Math.sin(game.time * 3) * 0.3})`;
+      ctx.lineWidth = 3;
+      ctx.setLineDash([10, 10]);
+      ctx.lineDashOffset = game.time * 30;
+      ctx.beginPath();
+      ctx.arc(hazard.px, hazard.py, HAZARD_RADIUS * CELL, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      
+      // --- DYNAMIC ACTIVE VOLCANO ERUPTION EFFECTS ---
+      ctx.save();
+      // 1. Lava glowing core (bubbling red/orange) at the peak of Bukit Kristal (0, -1)
+      ctx.globalCompositeOperation = 'screen';
+      const lavaGrad = ctx.createRadialGradient(hazard.px, hazard.py - 12, 0, hazard.px, hazard.py - 12, 14 + Math.sin(game.time * 4) * 3);
+      lavaGrad.addColorStop(0, '#fef08a'); 
+      lavaGrad.addColorStop(0.35, '#f97316'); 
+      lavaGrad.addColorStop(0.85, '#dc2626'); 
+      lavaGrad.addColorStop(1, 'rgba(220,38,38,0)');
+      ctx.fillStyle = lavaGrad;
+      ctx.beginPath();
+      ctx.arc(hazard.px, hazard.py - 12, 18, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // 2. Rising Volcano Smoke Puffs (drifting North-East)
+      ctx.globalCompositeOperation = 'source-over';
+      const numSmoke = 10;
+      for (let i = 0; i < numSmoke; i++) {
+        const speed = 0.46 + (i % 2) * 0.18;
+        const phase = (game.time * speed + i * 0.19) % 1;
+        const sx = hazard.px + phase * 38 + Math.sin(game.time * 1.6 + i) * 4;
+        const sy = (hazard.py - 12) - phase * 68;
+        
+        const size = 5 + phase * 20;
+        const opacity = (1 - phase) * 0.36;
+        
+        const smokeGrad = ctx.createRadialGradient(sx, sy, 0, sx, sy, size);
+        smokeGrad.addColorStop(0, `rgba(51, 65, 85, ${opacity})`);
+        smokeGrad.addColorStop(0.65, `rgba(30, 41, 59, ${opacity * 0.58})`);
+        smokeGrad.addColorStop(1, 'rgba(15, 23, 42, 0)');
+        
+        ctx.fillStyle = smokeGrad;
+        ctx.beginPath();
+        ctx.arc(sx, sy, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      
+      // 3. Glowing lava embers/sparks shooting up
+      ctx.globalCompositeOperation = 'screen';
+      const numEmbers = 12;
+      for (let i = 0; i < numEmbers; i++) {
+        const speed = 1.3 + (i % 3) * 0.5;
+        const phase = (game.time * speed + i * 0.23) % 1;
+        
+        const angle = -Math.PI/2 + (i - numEmbers/2) * 0.16; 
+        const v0 = 16 + (i % 3) * 6;
+        const t = phase * 0.92;
+        
+        const sx = hazard.px + Math.cos(angle) * v0 * t + phase * 18; 
+        const sy = (hazard.py - 12) + Math.sin(angle) * v0 * t - phase * 22; 
+        
+        const size = Math.max(0.6, 2.0 - phase * 1.8);
+        ctx.fillStyle = i % 2 === 0 ? `rgba(251, 146, 60, ${1 - phase})` : `rgba(239, 68, 68, ${1 - phase})`;
+        ctx.beginPath();
+        ctx.arc(sx, sy, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+      ctx.lineWidth = 1;
+      for (let i = GRID_MIN; i <= GRID_MAX; i++) {
+        const v1 = gridToPixel(i, GRID_MAX);
+        const v2 = gridToPixel(i, GRID_MIN);
+        ctx.beginPath(); ctx.moveTo(v1.px, v1.py - CELL / 2); ctx.lineTo(v2.px, v2.py + CELL / 2); ctx.stroke();
+        const h1 = gridToPixel(GRID_MIN, i);
+        const h2 = gridToPixel(GRID_MAX, i);
+        ctx.beginPath(); ctx.moveTo(h1.px - CELL / 2, h1.py); ctx.lineTo(h2.px + CELL / 2, h2.py); ctx.stroke();
+      }
+      ctx.strokeStyle = 'rgba(0,0,0,0.32)';
+      ctx.lineWidth = 2;
+      const ax1 = gridToPixel(0, GRID_MAX);
+      const ax2 = gridToPixel(0, GRID_MIN);
+      ctx.beginPath(); ctx.moveTo(ax1.px, ax1.py - CELL / 2); ctx.lineTo(ax2.px, ax2.py + CELL / 2); ctx.stroke();
+      const ay1 = gridToPixel(GRID_MIN, 0);
+      const ay2 = gridToPixel(GRID_MAX, 0);
+      ctx.beginPath(); ctx.moveTo(ay1.px - CELL / 2, ay1.py); ctx.lineTo(ay2.px + CELL / 2, ay2.py); ctx.stroke();
+
+      ctx.fillStyle = 'rgba(0,0,0,0.38)';
+      ctx.font = '10px Inter';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for (let i = GRID_MIN; i <= GRID_MAX; i++) {
+        if (i === 0) continue;
+        const px = gridToPixel(i, 0);
+        ctx.fillText(i, px.px, px.py + 14);
+        const py = gridToPixel(0, i);
+        ctx.fillText(i, py.px - 14, py.py);
       }
 
-      // 1. Living Environmental World Layers over Official Physical Board
-      drawLivingWaterfallAndRiver(ctx, game);
-      drawLivingBukitKristal(ctx, game);
-      drawLivingLighthouse(ctx, game);
-      drawLivingFactory(ctx, game);
-      drawLivingClinic(ctx, game);
-      drawLivingWindmillAndFarm(ctx, game);
-      drawLivingHarbor(ctx, game);
-      drawLivingVillage(ctx, game);
-      drawLivingRescueBoats(ctx, game);
-      drawLivingPalmTrees(ctx, game);
-      drawLivingSeagullsAndAtmosphere(ctx, game);
-
-      // 2. Living Interactive Collectibles (Diamonds, Chests, Money Bags, Checkpoints)
-      drawLivingItems(ctx, game);
-
-      // 3. Interactive Transform Guides
+      [
+        ...boats.map((boat) => ({ kind: 'boat', sortY: gridToPixel(boat.x, boat.y).py + 6, value: boat })),
+        ...trees.map((tree) => ({ kind: 'tree', sortY: gridToPixel(tree.x, tree.y).py + 15 * (0.8 + tree.size), value: tree })),
+        ...landmarks.map((landmark) => ({ kind: 'landmark', sortY: gridToPixel(landmark.x, landmark.y).py + 24 * landmark.size, value: landmark })),
+      ]
+        .sort((a, b) => a.sortY - b.sortY)
+        .forEach((entry) => {
+          if (entry.kind === 'boat') drawBoatShape(entry.value);
+          else if (entry.kind === 'tree') {
+            if (entry.value.type === 'palm') drawPalm(entry.value, game.time);
+            else drawCanopyTree(entry.value, game.time);
+          } else {
+            drawLandmark(entry.value);
+          }
+        });
+      drawWaterfallUltraOverlay();
+      RRG_ITEMS.forEach((item) => drawItem(item, game.time));
       drawActiveTransformGuide();
       drawMotionTransformGuides();
-
-      // 4. Interactive Click Ripples & Real-time Hover Coordinate Reticle
-      drawInteractiveCursorAndRipples(ctx, game);
 
       if (game.selected) {
         drawSelectedImageToken();
@@ -6421,7 +6349,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
             ctx.fillStyle = '#ffffff';
             ctx.fillText(v.label, vPos.px, vPos.py + 0.5);
 
-            // Pada bucu utama A (vIdx === 0), paparkan lencana nama pemain dengan drawRoundRect
+            // Pada bucu utama A (vIdx === 0), paparkan lencana nama pemain
             if (vIdx === 0) {
               ctx.save();
               ctx.font = 'bold 11px Inter';
@@ -6441,18 +6369,6 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
           });
           ctx.restore();
         }
-
-        // 3D Living Player Pawn Miniature Figurine
-        drawPlayerToken(player, index, pos.px, pos.py, 'object', {
-          bounce,
-          scaleX,
-          scaleY,
-          shadowScale,
-          rotation,
-          landingPulse,
-          isCurrent: index === game.currentPlayer,
-          time: game.time,
-        });
       });
 
       // Lukis Imej Hasil Transformasi (A', B', C'...) bila ada kad aktif
@@ -6491,16 +6407,6 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
           ctx.fillStyle = '#ffffff';
           ctx.fillText(v.label, vPos.px, vPos.py + 0.5);
         });
-
-        // 3D Destination Ghost Pawn at target vertex A'
-        if (targetPoly.vertices[0]) {
-          const targetA = gridToPixel(targetPoly.vertices[0].x, targetPoly.vertices[0].y);
-          drawPlayerToken(activePlayerObj, game.currentPlayer, targetA.px, targetA.py, 'image', {
-            size: 22,
-            alpha: 0.88,
-            label: false,
-          });
-        }
         ctx.restore();
       }
 
@@ -6614,10 +6520,10 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       if (game.raf) window.cancelAnimationFrame(game.raf);
       window.removeEventListener('resize', resize);
       window.removeEventListener('keydown', onKeyDown);
-      canvas.removeEventListener('pointerdown', onPointerDown);
-      window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('pointerup', onPointerUp);
-      canvas.removeEventListener('pointercancel', onPointerUp);
+      canvas.removeEventListener('mousedown', onPointerDown);
+      canvas.removeEventListener('mousemove', onPointerMove);
+      window.removeEventListener('mouseup', onPointerUp);
+      canvas.removeEventListener('mouseleave', onPointerUp);
       canvas.removeEventListener('wheel', onWheel);
     };
   }, [resetTrigger, getAxisSegmentDuration, getSegmentDuration, makePlayers, showPopup, submitAnswer, syncHud]);
@@ -6634,57 +6540,6 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     }
   };
 
-  const handleZoomIn = () => {
-    if (!gameRef.current) return;
-    const g = gameRef.current;
-    g.zoom = Math.min(3.0, g.zoom * 1.25);
-  };
-
-  const handleZoomOut = () => {
-    if (!gameRef.current) return;
-    const g = gameRef.current;
-    const rect = g.canvas?.getBoundingClientRect();
-    const w = rect?.width || window.innerWidth || 1200;
-    const h = rect?.height || (window.innerHeight - 120) || 600;
-    const fitZ = Math.min(w / 2758, h / 2758) * 0.94;
-    const minZ = Math.min(0.08, fitZ * 0.6);
-    g.zoom = Math.max(minZ, g.zoom / 1.25);
-  };
-
-  const handleFitFullMap = () => {
-    if (!gameRef.current) return;
-    const g = gameRef.current;
-    const rect = g.canvas?.getBoundingClientRect();
-    const w = rect?.width || window.innerWidth || 1200;
-    const h = rect?.height || (window.innerHeight - 120) || 600;
-    const fitZ = Math.min(w / 2758, h / 2758) * 0.94;
-    g.zoom = fitZ;
-    g.camTargetX = 1376.0;
-    g.camTargetY = 1376.0;
-  };
-
-  const handleFocusPlayer = () => {
-    if (!gameRef.current) return;
-    const g = gameRef.current;
-    const p = g.players[g.currentPlayer];
-    if (p) {
-      centerOnPlayer(g, p);
-      const rect = g.canvas?.getBoundingClientRect();
-      const h = rect?.height || 600;
-      const fitZ = Math.min((rect?.width || 1200) / 2758, h / 2758) * 0.94;
-      g.zoom = Math.max(fitZ * 1.8, 0.45);
-    }
-  };
-
-  const handleMinimapClick = (event) => {
-    if (!gameRef.current || !miniMapRef.current) return;
-    const rect = miniMapRef.current.getBoundingClientRect();
-    const clickX = (event.clientX - rect.left) / rect.width;
-    const clickY = (event.clientY - rect.top) / rect.height;
-    gameRef.current.camTargetX = clickX * 2758;
-    gameRef.current.camTargetY = clickY * 2758;
-  };
-
   const activePlayer = hud.players[hud.currentPlayer];
   const activePlayerDisplayName = getPlayerDisplayName(activePlayer, lang);
   const diceLabel = hud.diceRolling
@@ -6699,31 +6554,9 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       <div className="rrg-game-hud">
         <div className="rrg-hud-left">
           <div className="rrg-title-bar">🏝️ RRG — {lang === 'en' ? 'DREAM ISLAND' : 'PULAU IDAMAN'}</div>
-          <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-            <button
-              type="button"
-              onClick={handleFitFullMap}
-              className="text-xs bg-indigo-600/90 hover:bg-indigo-600 text-white px-2.5 py-1.5 rounded shadow-sm font-bold transition flex items-center gap-1"
-              title={lang === 'en' ? 'Fit and view whole board' : 'Muat dan lihat keseluruhan papan'}
-            >
-              <Maximize className="w-3.5 h-3.5" /> {lang === 'en' ? 'Full Board' : 'Peta Penuh'}
-            </button>
-            <button
-              type="button"
-              onClick={handleFocusPlayer}
-              className="text-xs bg-slate-700/90 hover:bg-slate-700 text-white px-2.5 py-1.5 rounded shadow-sm font-bold transition flex items-center gap-1"
-              title={lang === 'en' ? 'Focus current player' : 'Fokus pemain semasa'}
-            >
-              📍 {lang === 'en' ? 'Focus Player' : 'Fokus Pemain'}
-            </button>
-            <button
-              type="button"
-              onClick={handleRestartGame}
-              className="text-xs bg-red-500/80 hover:bg-red-600 text-white px-2.5 py-1.5 rounded shadow-sm font-bold transition flex items-center gap-1"
-            >
-              <RefreshCw className="w-3 h-3" /> {lang === 'en' ? 'Restart' : 'Mula Semula'}
-            </button>
-          </div>
+          <button onClick={handleRestartGame} className="mt-2 text-xs bg-red-500/80 hover:bg-red-600 text-white px-3 py-1.5 rounded shadow-sm font-bold transition flex items-center gap-1">
+            <RefreshCw className="w-3 h-3" /> {lang === 'en' ? 'Restart' : 'Mula Semula'}
+          </button>
         </div>
         <div className="rrg-hud-right">
           <div className="rrg-hud-panel"><span>{lang === 'en' ? 'Current Turn' : 'Giliran Semasa'}</span><b>{activePlayerDisplayName || (lang === 'en' ? 'Player 1' : 'Pemain 1')}</b></div>
@@ -6833,24 +6666,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
         <button type="button" onClick={submitAnswer} disabled={!hud.card || !hud.selected || hud.gameOver || hud.animating}>✅ {lang === 'en' ? 'Check' : 'Semak'}</button>
         <button type="button" onClick={() => resetGame()} disabled={hud.animating}>↻ Reset</button>
       </div>
-      <div className="rrg-view-controls">
-        <button type="button" onClick={handleZoomIn} title={lang === 'en' ? 'Zoom In' : 'Zum Masuk'}>
-          <ZoomIn className="w-4 h-4" />
-        </button>
-        <button type="button" onClick={handleZoomOut} title={lang === 'en' ? 'Zoom Out' : 'Zum Keluar'}>
-          <ZoomOut className="w-4 h-4" />
-        </button>
-        <button type="button" onClick={handleFitFullMap} title={lang === 'en' ? 'Fit Whole Map' : 'Lihat Keseluruhan Peta'}>
-          <Maximize className="w-4 h-4" />
-        </button>
-      </div>
-      <div
-        className="rrg-minimap"
-        onClick={handleMinimapClick}
-        title={lang === 'en' ? 'Click minimap to jump camera' : 'Klik minimap untuk navigasi kamera'}
-      >
-        <canvas ref={miniMapRef} width="140" height="140" />
-      </div>
+      <div className="rrg-minimap"><canvas ref={miniMapRef} width="140" height="140" /></div>
       <div className="rrg-controls-hint">
         <span><kbd>Click</kbd> {lang === 'en' ? 'Select coord' : 'Pilih koordinat'}</span>
         <span><kbd>WASD</kbd> {lang === 'en' ? 'Adjust selection' : 'Laras pilihan'}</span>

@@ -6799,7 +6799,7 @@ const LoginPage = ({ onLogin }) => {
     const profile = profileSnap.exists() ? profileSnap.data() : {};
     const name = profile.name || credential.user.displayName || getDisplayName(email);
     
-    const isAdminEmail = email.toLowerCase() === 'zaimshahbudin@gmail.com' || profile.role === 'admin';
+    const isAdminEmail = email.toLowerCase() === 'zaimshahbudin@gmail.com' || email.toLowerCase() === 'ahmadzaim2021@gmail.com' || profile.role === 'admin';
 
     if (!credential.user.emailVerified && !isAdminEmail) {
       setError('Emel belum disahkan. Sila buka inbox emel anda dan klik link verification daripada Firebase.');
@@ -6907,7 +6907,7 @@ const LoginPage = ({ onLogin }) => {
     await updateProfile(credential.user, { displayName: name });
     try { await sendEmailVerification(credential.user); } catch (e) { console.warn("Email verification failed to send", e); }
     
-    const isAdminEmail = email.toLowerCase() === 'zaimshahbudin@gmail.com';
+    const isAdminEmail = email.toLowerCase() === 'zaimshahbudin@gmail.com' || email.toLowerCase() === 'ahmadzaim2021@gmail.com';
     await setDoc(doc(db, 'users', credential.user.uid), {
       name,
       email,

@@ -6834,13 +6834,8 @@ const LoginPage = ({ onLogin }) => {
       return;
     }
     const role = isAdminEmail ? 'admin' : (profile.role || 'Pelajar');
-    const isApproved = isAdminEmail ? true : (profile.isApproved === true);
-
-    if (role !== 'admin' && isApproved !== true) {
-      await auth.signOut();
-      setError('Akaun anda sedang diproses. Sila tunggu kelulusan cikgu untuk mula bermain.');
-      return;
-    }
+    // Pengesahan admin dinyahaktifkan buat masa ini (semua pengguna dibenarkan masuk terus)
+    const isApproved = true;
 
     await setDoc(profileRef, {
       name,
@@ -6940,7 +6935,7 @@ const LoginPage = ({ onLogin }) => {
       name,
       email,
       role: isAdminEmail ? 'admin' : 'Pelajar',
-      isApproved: isAdminEmail ? true : false,
+      isApproved: true,
       emailVerified: false,
       createdAt: serverTimestamp(),
       lastLoginAt: null,
@@ -6948,7 +6943,7 @@ const LoginPage = ({ onLogin }) => {
 
     setRegisterData({ name: '', email: '', password: '', confirmPassword: '' });
     setLoginData({ email, password: '' });
-    setSuccess(isAdminEmail ? 'Akaun Admin berjaya didaftarkan! Sila log masuk.' : 'Akaun berjaya didaftarkan. Sila tunggu kelulusan cikgu sebelum anda boleh log masuk.');
+    setSuccess('Akaun berjaya didaftarkan! Sila log masuk.');
     setError('');
     setIsRegister(false);
   };
@@ -7155,8 +7150,8 @@ export default function App() {
         try {
           const userRef = doc(db, 'users', user.uid);
           const userDoc = await getDoc(userRef);
-          if (userDoc.exists() && userDoc.data().isApproved) {
-            setSessionUser({ ...userDoc.data(), uid: user.uid });
+          if (userDoc.exists()) {
+            setSessionUser({ ...userDoc.data(), uid: user.uid, isApproved: true });
           } else {
             setSessionUser(null);
           }

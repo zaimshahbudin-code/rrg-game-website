@@ -52,7 +52,7 @@ export const registerWithEmail = async (name, email, password) => {
       name: name,
       email: user.email,
       role: 'Pelajar',
-      isApproved: false,
+      isApproved: true,
       createdAt: new Date().toISOString(),
     });
     

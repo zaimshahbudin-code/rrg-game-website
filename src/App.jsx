@@ -805,7 +805,7 @@ Rules:
 - Output ONLY valid JSON array with no markdown blocks or backticks.
 Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
 
-      const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"];
+      const modelsToTry = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-1.5-pro"];
       let responseText = "";
       let usedModel = "";
 
@@ -813,7 +813,10 @@ Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
         try {
           const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              "x-goog-api-key": apiKey
+            },
             body: JSON.stringify({
               contents: [{ parts: [{ text: prompt }] }]
             })
@@ -825,6 +828,9 @@ Example: [{"x":0,"y":5}, {"x":5,"y":-5}, {"x":-5,"y":-5}]`;
               usedModel = model;
               break;
             }
+          } else {
+            const errBody = await res.text().catch(() => "");
+            console.warn(`Model ${model} failed with HTTP ${res.status}:`, errBody);
           }
         } catch (err) {
           console.warn(`Model ${model} failed, trying next...`, err);

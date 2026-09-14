@@ -2287,6 +2287,20 @@ const RRG_ITEMS = [
   { x: 2, y: -2, kind: 'penalty', label: 'Zon Bahaya', label_en: 'Hazard Zone' },
 ];
 
+const RRG_LANDMARKS = [
+  { x: 0, y: 0, type: 'crystal', label: 'Bukit Kristal', label_en: 'Crystal Hill' },
+  { x: -5, y: -6, type: 'waterfall', label: 'Air Terjun', label_en: 'Waterfall' },
+  { x: 14, y: 7, type: 'lighthouse', label: 'Rumah Api', label_en: 'Lighthouse' },
+  { x: 6, y: 3, type: 'factory', label: 'Kilang', label_en: 'Factory' },
+  { x: 8, y: -4, type: 'clinic', label: 'Klinik', label_en: 'Clinic' },
+  { x: 5, y: -7, type: 'village', label: 'Kampung', label_en: 'Village' },
+  { x: 8, y: 10, type: 'harbor', label: 'Pelabuhan', label_en: 'Harbor' },
+  { x: 6, y: 8, type: 'bridge', label: 'Jambatan', label_en: 'Bridge' },
+  { x: -9, y: 8, type: 'ranch', label: 'Ladang Ternakan', label_en: 'Ranch' },
+  { x: -8, y: 5, type: 'farm', label: 'Kebun', label_en: 'Farm' },
+  { x: 10, y: 0, type: 'market', label: 'Pasar', label_en: 'Market' },
+];
+
 const RRG_COLORS = [
   { bg: '#ef4444', ring: '#fecaca', name: 'Merah' },
   { bg: '#2563eb', ring: '#bfdbfe', name: 'Biru' },
@@ -2624,6 +2638,17 @@ const playRrgSound = (kind) => {
     gain.gain.setValueAtTime(0.0001, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.28, ctx.currentTime + 0.03);
     gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.58);
+  } else if (kind === 'click') {
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(560, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(840, ctx.currentTime + 0.04);
+    osc.connect(gain);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.05);
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
   } else {
     const osc = ctx.createOscillator();
     osc.type = 'sine';
@@ -4014,6 +4039,9 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     let pinchStartZoom = 1;
 
     const onPointerDown = (event) => {
+      try {
+        canvas.setPointerCapture(event.pointerId);
+      } catch (e) {}
       activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
       if (activePointers.size === 1) {
         game.isDragging = true;
@@ -4033,6 +4061,10 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     };
 
     const onPointerMove = (event) => {
+      if (!game.isDragging) {
+        game.hoverCoord = screenToGrid(event.clientX, event.clientY, game);
+      }
+
       if (!activePointers.has(event.pointerId)) return;
       activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
 
@@ -4054,17 +4086,59 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     };
 
     const onPointerUp = (event) => {
+      try {
+        canvas.releasePointerCapture(event.pointerId);
+      } catch (e) {}
       const wasDragging = game.isDragging;
       const dragDist = game.dragDistance;
       activePointers.delete(event.pointerId);
 
       if (activePointers.size === 0) {
         game.isDragging = false;
-        if (wasDragging && dragDist < 8 && game.card && !game.gameOver && !game.animating) {
-          game.selected = screenToGrid(event.clientX, event.clientY, game);
-          game.message = lang === 'en'
-            ? `Selected coordinate: (${game.selected.x}, ${game.selected.y}). Press Check Answer.`
-            : `Pilihan koordinat: (${game.selected.x}, ${game.selected.y}). Tekan Semak Jawapan.`;
+        if (wasDragging && dragDist < 8 && !game.gameOver && !game.animating) {
+          const clickedGrid = screenToGrid(event.clientX, event.clientY, game);
+          game.selected = clickedGrid;
+
+          // Add interactive ripple shockwave
+          game.effects.push({
+            id: Math.random().toString(),
+            type: 'ripple',
+            x: clickedGrid.x,
+            y: clickedGrid.y,
+            startedAt: performance.now(),
+            duration: 750,
+          });
+
+          const item = RRG_ITEMS.find((it) => it.x === clickedGrid.x && it.y === clickedGrid.y);
+          const landmark = RRG_LANDMARKS.find((lm) => Math.hypot(lm.x - clickedGrid.x, lm.y - clickedGrid.y) < 1.4);
+
+          if (game.card) {
+            game.message = lang === 'en'
+              ? `Selected coordinate: (${clickedGrid.x}, ${clickedGrid.y}). Press Check Answer.`
+              : `Pilihan koordinat: (${clickedGrid.x}, ${clickedGrid.y}). Tekan Semak Jawapan.`;
+            playRrgSound('coin');
+          } else {
+            const activeP = game.players[game.currentPlayer];
+            const dist = Math.hypot(clickedGrid.x - activeP.x, clickedGrid.y - activeP.y).toFixed(1);
+            let detail = '';
+            if (item) {
+              detail = lang === 'en'
+                ? ` · ${item.label_en || item.label} (+RM${item.amount || 0})`
+                : ` · ${item.label} (+RM${item.amount || 0})`;
+              playRrgSound('coin');
+            } else if (landmark) {
+              detail = ` · ${lang === 'en' ? landmark.label_en : landmark.label}`;
+              playRrgSound('correct');
+            } else {
+              detail = isRrgSafeZone(clickedGrid)
+                ? (lang === 'en' ? ' · 🚤 Safe Zone (Rescue Boat)' : ' · 🚤 Zon Selamat (Bot Penyelamat)')
+                : '';
+              playRrgSound('click');
+            }
+            game.message = lang === 'en'
+              ? `Coordinate (${clickedGrid.x}, ${clickedGrid.y})${detail} · Distance from ${activeP.name}: ${dist} units`
+              : `Koordinat (${clickedGrid.x}, ${clickedGrid.y})${detail} · Jarak dari ${activeP.name}: ${dist} unit`;
+          }
           syncHud(game);
         }
       } else if (activePointers.size === 1) {
@@ -4212,21 +4286,506 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       ctx.restore();
     };
 
-    const drawItem = (item, time) => {
-      const pos = gridToPixel(item.x, item.y);
-      const pulse = 1 + Math.sin(time * 3.5 + item.x * 2) * 0.14;
-      const alpha = 0.45 + Math.sin(time * 3 + item.y) * 0.25;
-      const color = item.kind === 'penalty' ? 'rgba(239, 68, 68,' : item.kind === 'reward' ? 'rgba(234, 179, 8,' : item.kind === 'diamond' ? 'rgba(168, 85, 247,' : item.kind === 'chest' ? 'rgba(249, 115, 22,' : 'rgba(234, 179, 8,';
+    const drawLivingBukitKristal = (context, g) => {
+      const pos = gridToPixel(0, 0);
+      const t = g.time;
+      context.save();
+      context.translate(pos.px, pos.py);
 
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(pos.px, pos.py, 18 * pulse, 0, Math.PI * 2);
-      ctx.strokeStyle = `${color} ${alpha})`;
-      ctx.lineWidth = 2.5;
-      ctx.setLineDash([4, 4]);
-      ctx.lineDashOffset = time * 12;
-      ctx.stroke();
-      ctx.restore();
+      const pulse = 1 + Math.sin(t * 2.5) * 0.12;
+      const aura = context.createRadialGradient(0, 0, 8, 0, 0, 95 * pulse);
+      aura.addColorStop(0, 'rgba(239, 68, 68, 0.42)');
+      aura.addColorStop(0.35, 'rgba(244, 63, 94, 0.22)');
+      aura.addColorStop(0.7, 'rgba(217, 70, 239, 0.08)');
+      aura.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      context.fillStyle = aura;
+      context.beginPath();
+      context.arc(0, 0, 95 * pulse, 0, Math.PI * 2);
+      context.fill();
+
+      context.rotate(t * 0.22);
+      context.strokeStyle = 'rgba(254, 205, 211, 0.38)';
+      context.lineWidth = 1.6;
+      for (let i = 0; i < 6; i++) {
+        const a = (i * Math.PI) / 3;
+        context.beginPath();
+        context.moveTo(Math.cos(a) * 16, Math.sin(a) * 16);
+        context.lineTo(Math.cos(a) * 70 * pulse, Math.sin(a) * 70 * pulse);
+        context.stroke();
+      }
+
+      for (let i = 0; i < 7; i++) {
+        const pPhase = (t * 0.4 + i * 0.14) % 1;
+        const sx = Math.sin(i * 37.5) * (32 * pPhase);
+        const sy = -pPhase * 65 + Math.cos(i * 12.3) * 8;
+        const sAlpha = (1 - pPhase) * Math.sin(pPhase * Math.PI);
+        context.fillStyle = `rgba(255, 255, 255, ${sAlpha})`;
+        context.beginPath();
+        context.arc(sx, sy, 1.8 * (1 - pPhase * 0.4), 0, Math.PI * 2);
+        context.fill();
+      }
+      context.restore();
+    };
+
+    const drawLivingLighthouse = (context, g) => {
+      const pos = gridToPixel(14, 7);
+      const t = g.time;
+      context.save();
+      context.translate(pos.px, pos.py);
+
+      const beamAngle = t * 0.65;
+      context.save();
+      context.rotate(beamAngle);
+      const beam = context.createRadialGradient(0, 0, 5, 120, 0, 240);
+      beam.addColorStop(0, 'rgba(254, 240, 138, 0.7)');
+      beam.addColorStop(0.35, 'rgba(253, 224, 71, 0.3)');
+      beam.addColorStop(0.7, 'rgba(250, 204, 21, 0.1)');
+      beam.addColorStop(1, 'rgba(250, 204, 21, 0)');
+      context.fillStyle = beam;
+      context.beginPath();
+      context.moveTo(0, 0);
+      context.arc(0, 0, 250, -0.24, 0.24);
+      context.closePath();
+      context.fill();
+      context.restore();
+
+      const flare = context.createRadialGradient(0, -6, 2, 0, -6, 18);
+      flare.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+      flare.addColorStop(0.5, 'rgba(250, 204, 21, 0.55)');
+      flare.addColorStop(1, 'rgba(250, 204, 21, 0)');
+      context.fillStyle = flare;
+      context.beginPath();
+      context.arc(0, -6, 18, 0, Math.PI * 2);
+      context.fill();
+
+      context.restore();
+    };
+
+    const drawLivingWaterfallAndRiver = (context, g) => {
+      const t = g.time;
+      const riverPts = [
+        { x: -4.8, y: -4.5 },
+        { x: -5.4, y: -6.0 },
+        { x: -6.8, y: -8.0 },
+        { x: -8.8, y: -10.2 },
+        { x: -11.5, y: -12.6 },
+        { x: -13.5, y: -14.2 }
+      ].map(pt => gridToPixel(pt.x, pt.y));
+
+      context.save();
+      context.lineCap = 'round';
+      context.lineJoin = 'round';
+
+      context.strokeStyle = 'rgba(56, 189, 248, 0.52)';
+      context.lineWidth = 14;
+      context.beginPath();
+      context.moveTo(riverPts[0].px, riverPts[0].py);
+      for (let i = 1; i < riverPts.length; i++) {
+        context.lineTo(riverPts[i].px, riverPts[i].py);
+      }
+      context.stroke();
+
+      context.strokeStyle = 'rgba(255, 255, 255, 0.72)';
+      context.lineWidth = 4;
+      context.setLineDash([8, 16]);
+      context.lineDashOffset = -t * 65;
+      context.beginPath();
+      context.moveTo(riverPts[0].px, riverPts[0].py);
+      for (let i = 1; i < riverPts.length; i++) {
+        context.lineTo(riverPts[i].px, riverPts[i].py);
+      }
+      context.stroke();
+      context.setLineDash([]);
+
+      const wfPos = gridToPixel(-5, -6);
+      context.save();
+      context.translate(wfPos.px, wfPos.py);
+
+      for (let i = 0; i < 3; i++) {
+        const rPhase = (t * 0.9 + i * 0.33) % 1;
+        context.strokeStyle = `rgba(224, 242, 254, ${(1 - rPhase) * 0.6})`;
+        context.lineWidth = 2;
+        context.beginPath();
+        context.ellipse(0, 10, rPhase * 36, rPhase * 16, 0, 0, Math.PI * 2);
+        context.stroke();
+      }
+
+      for (let i = 0; i < 8; i++) {
+        const dPhase = (t * 2.2 + i * 0.25) % 1;
+        const dx = Math.sin(i * 18.5) * (18 * dPhase);
+        const dy = 10 - Math.sin(dPhase * Math.PI) * 22;
+        context.fillStyle = `rgba(255, 255, 255, ${1 - dPhase})`;
+        context.beginPath();
+        context.arc(dx, dy, 1.8 * (1 - dPhase * 0.5), 0, Math.PI * 2);
+        context.fill();
+      }
+
+      for (let i = 0; i < 5; i++) {
+        const mPhase = (t * 0.35 + i * 0.2) % 1;
+        const mx = Math.sin(i * 24.3) * 14 + Math.sin(t + i) * 6;
+        const my = 8 - mPhase * 44;
+        const mist = context.createRadialGradient(mx, my, 0, mx, my, 18 + mPhase * 16);
+        mist.addColorStop(0, `rgba(240, 249, 255, ${(1 - mPhase) * 0.32})`);
+        mist.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        context.fillStyle = mist;
+        context.beginPath();
+        context.arc(mx, my, 18 + mPhase * 16, 0, Math.PI * 2);
+        context.fill();
+      }
+      context.restore();
+
+      context.restore();
+    };
+
+    const drawLivingFactorySmoke = (context, g) => {
+      const pos = gridToPixel(6, 3);
+      const t = g.time;
+      context.save();
+      context.translate(pos.px, pos.py);
+      for (let i = 0; i < 5; i++) {
+        const sPhase = (t * 0.28 + i * 0.2) % 1;
+        const sx = 14 + Math.sin(t * 1.2 + i) * 8 + sPhase * 18;
+        const sy = -28 - sPhase * 55;
+        const sSize = 8 + sPhase * 20;
+        const sAlpha = (1 - sPhase) * 0.35;
+        context.fillStyle = `rgba(226, 232, 240, ${sAlpha})`;
+        context.beginPath();
+        context.arc(sx, sy, sSize, 0, Math.PI * 2);
+        context.fill();
+      }
+      context.restore();
+    };
+
+    const drawLivingClinic = (context, g) => {
+      const pos = gridToPixel(8, -4);
+      const t = g.time;
+      const pulse = 1 + Math.sin(t * 3) * 0.15;
+      context.save();
+      context.translate(pos.px, pos.py);
+      context.strokeStyle = 'rgba(239, 68, 68, 0.75)';
+      context.lineWidth = 2.2;
+      context.beginPath();
+      context.arc(0, 0, 18 * pulse, 0, Math.PI * 2);
+      context.stroke();
+      context.restore();
+    };
+
+    const drawLivingRescueBoats = (context, g) => {
+      const boatCoords = [
+        { x: -11, y: 14.2, angle: 0 },
+        { x: -4, y: 14.2, angle: 0 },
+        { x: 4, y: 14.2, angle: 0 },
+        { x: 11, y: 14.2, angle: 0 },
+        { x: -11, y: -14.2, angle: Math.PI },
+        { x: -4, y: -14.2, angle: Math.PI },
+        { x: 4, y: -14.2, angle: Math.PI },
+        { x: 11, y: -14.2, angle: Math.PI },
+        { x: -14.2, y: 8, angle: -Math.PI / 2 },
+        { x: -14.2, y: 0, angle: -Math.PI / 2 },
+        { x: -14.2, y: -8, angle: -Math.PI / 2 },
+        { x: 14.2, y: 2, angle: Math.PI / 2 },
+        { x: 14.2, y: -4, angle: Math.PI / 2 },
+        { x: 14.2, y: -10, angle: Math.PI / 2 },
+      ];
+
+      boatCoords.forEach((b, idx) => {
+        const pos = gridToPixel(b.x, b.y);
+        const bob = Math.sin(g.time * 2.2 + idx * 0.8) * 3;
+        const roll = Math.cos(g.time * 1.5 + idx * 0.8) * 0.08;
+
+        context.save();
+        context.translate(pos.px, pos.py + bob);
+        context.rotate(b.angle + roll);
+
+        context.strokeStyle = `rgba(255, 255, 255, ${0.45 + Math.sin(g.time * 3 + idx) * 0.25})`;
+        context.lineWidth = 3;
+        context.beginPath();
+        context.moveTo(-16, -6);
+        context.quadraticCurveTo(-28, -12, -40, -16);
+        context.moveTo(-16, 6);
+        context.quadraticCurveTo(-28, 12, -40, 18);
+        context.stroke();
+
+        context.fillStyle = 'rgba(3, 30, 45, 0.35)';
+        context.beginPath();
+        context.ellipse(0, 8, 22, 9, 0, 0, Math.PI * 2);
+        context.fill();
+
+        context.fillStyle = '#ffffff';
+        context.beginPath();
+        context.moveTo(18, 0);
+        context.quadraticCurveTo(8, -9, -16, -8);
+        context.lineTo(-18, 8);
+        context.quadraticCurveTo(8, 9, 18, 0);
+        context.fill();
+        context.strokeStyle = '#0284c7';
+        context.lineWidth = 1.8;
+        context.stroke();
+
+        context.fillStyle = '#f97316';
+        context.fillRect(-6, -4, 12, 8);
+
+        context.fillStyle = '#38bdf8';
+        context.beginPath();
+        context.moveTo(6, -3);
+        context.lineTo(10, 0);
+        context.lineTo(6, 3);
+        context.closePath();
+        context.fill();
+
+        context.restore();
+      });
+    };
+
+    const drawLivingPalmTrees = (context, g) => {
+      const treeCoords = [
+        { x: -12.5, y: 12 },
+        { x: 12.5, y: 12 },
+        { x: -13.5, y: -6 },
+        { x: 13.5, y: -6 },
+        { x: -8, y: 13 },
+        { x: 8, y: 13 },
+        { x: -13, y: 5 },
+        { x: 13, y: 5 },
+      ];
+
+      treeCoords.forEach((tree, idx) => {
+        const pos = gridToPixel(tree.x, tree.y);
+        const sway = Math.sin(g.time * 1.6 + idx) * 0.12;
+        context.save();
+        context.translate(pos.px, pos.py);
+
+        context.rotate(sway * 0.5);
+        context.strokeStyle = '#78350f';
+        context.lineWidth = 4.5;
+        context.lineCap = 'round';
+        context.beginPath();
+        context.moveTo(0, 0);
+        context.quadraticCurveTo(sway * 15, -12, sway * 25, -24);
+        context.stroke();
+
+        context.translate(sway * 25, -24);
+        for (let f = 0; f < 5; f++) {
+          const a = -Math.PI / 2 + (f - 2) * 0.55 + sway * 0.4;
+          context.fillStyle = '#16a34a';
+          context.beginPath();
+          context.moveTo(0, 0);
+          context.quadraticCurveTo(Math.cos(a - 0.2) * 14, Math.sin(a - 0.2) * 14, Math.cos(a) * 20, Math.sin(a) * 20);
+          context.quadraticCurveTo(Math.cos(a + 0.2) * 14, Math.sin(a + 0.2) * 14, 0, 0);
+          context.fill();
+        }
+        context.restore();
+      });
+    };
+
+    const drawLivingItems = (context, g) => {
+      RRG_ITEMS.forEach((item) => {
+        const pos = gridToPixel(item.x, item.y);
+        const t = g.time;
+        const seed = item.x * 17 + item.y * 31;
+        const bob = Math.sin(t * 3 + seed) * 3;
+
+        context.save();
+        context.translate(pos.px, pos.py + bob);
+
+        if (item.kind === 'diamond') {
+          const dScale = 1 + Math.sin(t * 3.5 + seed) * 0.08;
+          const spin = Math.sin(t * 2.2 + seed) * 0.25;
+          context.scale(dScale * (1 - Math.abs(spin) * 0.15), dScale);
+
+          const dGlow = context.createRadialGradient(0, 0, 4, 0, 0, 24);
+          dGlow.addColorStop(0, 'rgba(168, 85, 247, 0.75)');
+          dGlow.addColorStop(0.6, 'rgba(56, 189, 248, 0.3)');
+          dGlow.addColorStop(1, 'rgba(0,0,0,0)');
+          context.fillStyle = dGlow;
+          context.beginPath();
+          context.arc(0, 0, 24, 0, Math.PI * 2);
+          context.fill();
+
+          context.fillStyle = '#38bdf8';
+          context.beginPath();
+          context.moveTo(0, -13);
+          context.lineTo(10, -4);
+          context.lineTo(0, 13);
+          context.lineTo(-10, -4);
+          context.closePath();
+          context.fill();
+
+          context.fillStyle = '#93c5fd';
+          context.beginPath();
+          context.moveTo(0, -13);
+          context.lineTo(10, -4);
+          context.lineTo(0, 13);
+          context.closePath();
+          context.fill();
+
+          context.strokeStyle = '#ffffff';
+          context.lineWidth = 1.4;
+          context.stroke();
+
+          const glintPhase = (t * 0.6 + seed * 0.1) % 1;
+          if (glintPhase < 0.35) {
+            const gAlpha = Math.sin((glintPhase / 0.35) * Math.PI);
+            context.fillStyle = `rgba(255, 255, 255, ${gAlpha})`;
+            context.beginPath();
+            context.arc(-3, -6, 2.5, 0, Math.PI * 2);
+            context.fill();
+            context.strokeStyle = `rgba(255, 255, 255, ${gAlpha})`;
+            context.beginPath();
+            context.moveTo(-8, -6); context.lineTo(2, -6);
+            context.moveTo(-3, -11); context.lineTo(-3, -1);
+            context.stroke();
+          }
+        } else if (item.kind === 'chest') {
+          const cPulse = 1 + Math.sin(t * 3.2 + seed) * 0.08;
+          context.scale(cPulse, cPulse);
+
+          const cGlow = context.createRadialGradient(0, 0, 6, 0, 0, 25);
+          cGlow.addColorStop(0, 'rgba(250, 204, 21, 0.8)');
+          cGlow.addColorStop(0.6, 'rgba(249, 115, 22, 0.35)');
+          cGlow.addColorStop(1, 'rgba(0,0,0,0)');
+          context.fillStyle = cGlow;
+          context.beginPath();
+          context.arc(0, 0, 25, 0, Math.PI * 2);
+          context.fill();
+
+          context.fillStyle = '#b45309';
+          context.fillRect(-10, -5, 20, 14);
+          context.fillStyle = '#fbbf24';
+          context.fillRect(-11, -9, 22, 6);
+          context.fillStyle = '#fef08a';
+          context.fillRect(-2, -3, 4, 5);
+          context.strokeStyle = '#78350f';
+          context.lineWidth = 1.5;
+          context.strokeRect(-10, -5, 20, 14);
+          context.strokeRect(-11, -9, 22, 6);
+
+          for (let s = 0; s < 2; s++) {
+            const sP = (t * 0.7 + seed + s * 0.5) % 1;
+            const starX = Math.sin(s * 15 + seed) * 12;
+            const starY = -12 - sP * 16;
+            context.fillStyle = `rgba(254, 240, 138, ${(1 - sP) * 0.85})`;
+            context.beginPath();
+            context.arc(starX, starY, 1.8, 0, Math.PI * 2);
+            context.fill();
+          }
+        } else if (item.kind === 'money') {
+          const mPulse = 1 + Math.sin(t * 3.8 + seed) * 0.07;
+          context.scale(mPulse, mPulse);
+
+          context.fillStyle = 'rgba(234, 179, 8, 0.22)';
+          context.beginPath();
+          context.arc(0, 0, 18, 0, Math.PI * 2);
+          context.fill();
+
+          context.fillStyle = '#dc2626';
+          context.beginPath();
+          context.arc(0, 3, 9, 0, Math.PI * 2);
+          context.fill();
+          context.fillStyle = '#f59e0b';
+          context.fillRect(-4, -6, 8, 4);
+
+          const cP = (t * 0.8 + seed) % 1;
+          const cY = -8 - cP * 16;
+          context.fillStyle = `rgba(250, 204, 21, ${(1 - cP) * 0.9})`;
+          context.font = 'bold 9px Inter';
+          context.textAlign = 'center';
+          context.fillText('+RM', 0, cY);
+        } else if (item.kind === 'reward') {
+          const rP = (t * 1.5 + seed) % 1;
+          context.strokeStyle = `rgba(34, 197, 94, ${(1 - rP) * 0.85})`;
+          context.lineWidth = 2.4;
+          context.beginPath();
+          context.arc(0, 0, 8 + rP * 18, 0, Math.PI * 2);
+          context.stroke();
+
+          context.fillStyle = '#22c55e';
+          context.beginPath();
+          context.arc(0, 0, 7, 0, Math.PI * 2);
+          context.fill();
+          context.strokeStyle = '#ffffff';
+          context.lineWidth = 1.6;
+          context.stroke();
+        } else if (item.kind === 'penalty') {
+          const hPulse = 1 + Math.sin(t * 4.5 + seed) * 0.15;
+          context.strokeStyle = 'rgba(239, 68, 68, 0.85)';
+          context.lineWidth = 2.2;
+          context.setLineDash([4, 4]);
+          context.lineDashOffset = t * 14;
+          context.beginPath();
+          context.arc(0, 0, 18 * hPulse, 0, Math.PI * 2);
+          context.stroke();
+          context.setLineDash([]);
+          context.fillStyle = 'rgba(239, 68, 68, 0.25)';
+          context.fill();
+        }
+
+        context.restore();
+      });
+    };
+
+    const drawInteractiveCursorAndRipples = (context, g) => {
+      g.effects = g.effects.filter((eff) => {
+        if (eff.type !== 'ripple') return true;
+        const age = performance.now() - eff.startedAt;
+        if (age > (eff.duration || 750)) return false;
+        const p = age / (eff.duration || 750);
+        const pos = gridToPixel(eff.x, eff.y);
+        context.save();
+        context.strokeStyle = `rgba(56, 189, 248, ${(1 - p) * 0.95})`;
+        context.lineWidth = 3.5 * (1 - p * 0.6);
+        context.beginPath();
+        context.arc(pos.px, pos.py, p * 55, 0, Math.PI * 2);
+        context.stroke();
+        context.restore();
+        return true;
+      });
+
+      if (g.hoverCoord && !g.isDragging) {
+        const pos = gridToPixel(g.hoverCoord.x, g.hoverCoord.y);
+        const item = RRG_ITEMS.find((it) => it.x === g.hoverCoord.x && it.y === g.hoverCoord.y);
+        const landmark = RRG_LANDMARKS.find((lm) => Math.hypot(lm.x - g.hoverCoord.x, lm.y - g.hoverCoord.y) < 1.4);
+
+        context.save();
+        context.strokeStyle = 'rgba(56, 189, 248, 0.85)';
+        context.fillStyle = 'rgba(56, 189, 248, 0.16)';
+        context.lineWidth = 1.8;
+        context.strokeRect(pos.px - CELL / 2, pos.py - CELL / 2, CELL, CELL);
+        context.fillRect(pos.px - CELL / 2, pos.py - CELL / 2, CELL, CELL);
+
+        const bLen = 9;
+        context.strokeStyle = '#38bdf8';
+        context.lineWidth = 2.4;
+        [
+          [pos.px - CELL / 2, pos.py - CELL / 2, 1, 1],
+          [pos.px + CELL / 2, pos.py - CELL / 2, -1, 1],
+          [pos.px - CELL / 2, pos.py + CELL / 2, 1, -1],
+          [pos.px + CELL / 2, pos.py + CELL / 2, -1, -1]
+        ].forEach(([cx, cy, sx, sy]) => {
+          context.beginPath();
+          context.moveTo(cx, cy + sy * bLen);
+          context.lineTo(cx, cy);
+          context.lineTo(cx + sx * bLen, cy);
+          context.stroke();
+        });
+
+        const tag = item
+          ? `${item.label} (${g.hoverCoord.x}, ${g.hoverCoord.y})`
+          : landmark
+          ? `${landmark.label} (${g.hoverCoord.x}, ${g.hoverCoord.y})`
+          : isRrgSafeZone(g.hoverCoord)
+          ? `🚤 Zon Selamat (${g.hoverCoord.x}, ${g.hoverCoord.y})`
+          : `(${g.hoverCoord.x}, ${g.hoverCoord.y})`;
+
+        drawGuideLabel(tag, { px: pos.px, py: pos.py - 30 }, {
+          background: 'rgba(15, 23, 42, 0.92)',
+          border: 'rgba(56, 189, 248, 0.7)',
+          color: '#38bdf8',
+          font: 'bold 11px Inter'
+        });
+
+        context.restore();
+      }
     };
 
     const drawGuideLabel = (text, point, options = {}) => {
@@ -4618,10 +5177,24 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
         ctx.fillRect(0, 0, MAP_W, MAP_H);
       }
 
-      // Draw interactive item pulses on the board
-      RRG_ITEMS.forEach((item) => drawItem(item, game.time));
+      // 1. Living Environmental World Layers over Official Physical Board
+      drawLivingWaterfallAndRiver(ctx, game);
+      drawLivingBukitKristal(ctx, game);
+      drawLivingLighthouse(ctx, game);
+      drawLivingFactorySmoke(ctx, game);
+      drawLivingClinic(ctx, game);
+      drawLivingRescueBoats(ctx, game);
+      drawLivingPalmTrees(ctx, game);
+
+      // 2. Living Interactive Collectibles (Diamonds, Chests, Money Bags, Checkpoints)
+      drawLivingItems(ctx, game);
+
+      // 3. Interactive Transform Guides
       drawActiveTransformGuide();
       drawMotionTransformGuides();
+
+      // 4. Interactive Click Ripples & Real-time Hover Coordinate Reticle
+      drawInteractiveCursorAndRipples(ctx, game);
 
       if (game.selected) {
         drawSelectedImageToken();

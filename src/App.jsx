@@ -3939,14 +3939,14 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     };
 
     const trees = [];
-    for (let i = 0; i < 54; i++) {
+    for (let i = 0; i < 96; i++) {
       const gx = rand() * 28 - 14;
       const gy = rand() * 28 - 14;
       if (isOnIsland(gx, gy) && Math.sqrt(gx * gx + gy * gy) > HAZARD_RADIUS + 0.8) {
         trees.push({
           x: gx,
           y: gy,
-          size: 0.34 + rand() * 0.42,
+          size: 0.38 + rand() * 0.46,
           type: rand() > 0.5 ? 'palm' : 'tree',
           phase: rand() * Math.PI * 2,
           lean: -0.08 + rand() * 0.16,
@@ -3955,9 +3955,8 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     }
 
     const boats = [];
-    for (let i = 0; i < 12; i++) {
-      const baseAngle = (i / 12) * Math.PI * 2;
-      // Add a bit of random offset to the angle so they don't look perfectly rigid
+    for (let i = 0; i < 18; i++) {
+      const baseAngle = (i / 18) * Math.PI * 2;
       const angle = baseAngle + (-0.1 + rand() * 0.2);
       
       let radius = 12 + rand() * 3;
@@ -3976,23 +3975,23 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
         y: by,
         type: rand() > 0.5 ? 'speedboat' : 'sailboat',
         phase: rand() * Math.PI * 2,
-        scale: 0.82 + rand() * 0.34,
+        scale: (0.88 + rand() * 0.36) * 1.4,
         heading: angle + Math.PI / 2,
       });
     }
 
     const landmarks = [
-      { x: 0, y: -1, type: 'crystal', label: 'Bukit Kristal', label_ms: 'Bukit Kristal', label_en: 'Crystal Hill', size: 1.45 },
-      { x: -8, y: 5, type: 'farm', label: 'Kebun', label_ms: 'Kebun', label_en: 'Farm', size: 1.05 },
-      { x: 6, y: 3, type: 'factory', label: 'Kilang', label_ms: 'Kilang', label_en: 'Factory', size: 1.05 },
-      { x: -5, y: -6, type: 'waterfall', label: 'Air Terjun', label_ms: 'Air Terjun', label_en: 'Waterfall', size: 1.12 },
-      { x: 8, y: -4, type: 'clinic', label: 'Klinik', label_ms: 'Klinik', label_en: 'Clinic', size: 1 },
-      { x: 5, y: -7, type: 'village', label: 'Kampung', label_ms: 'Kampung', label_en: 'Village', size: 1.05 },
-      { x: 8, y: 10, type: 'harbor', label: 'Pelabuhan', label_ms: 'Pelabuhan', label_en: 'Harbor', size: 1.02 },
-      { x: 14, y: 7, type: 'lighthouse', label: 'Rumah Api', label_ms: 'Rumah Api', label_en: 'Lighthouse', size: 1.05 },
-      { x: 6, y: 8, type: 'bridge', label: 'Jambatan', label_ms: 'Jambatan', label_en: 'Bridge', size: 0.96 },
-      { x: -9, y: 8, type: 'ranch', label: 'Ladang', label_ms: 'Ladang', label_en: 'Ranch', size: 0.98 },
-      { x: 10, y: 0, type: 'market', label: 'Pasar', label_ms: 'Pasar', label_en: 'Market', size: 0.98 },
+      { x: 0, y: -1, type: 'crystal', label: 'Bukit Kristal', label_ms: 'Bukit Kristal', label_en: 'Crystal Hill', size: 1.65 },
+      { x: -8, y: 5, type: 'farm', label: 'Kebun', label_ms: 'Kebun', label_en: 'Farm', size: 1.25 },
+      { x: 6, y: 3, type: 'factory', label: 'Kilang', label_ms: 'Kilang', label_en: 'Factory', size: 1.25 },
+      { x: -5, y: -6, type: 'waterfall', label: 'Air Terjun', label_ms: 'Air Terjun', label_en: 'Waterfall', size: 1.30 },
+      { x: 8, y: -4, type: 'clinic', label: 'Klinik', label_ms: 'Klinik', label_en: 'Clinic', size: 1.20 },
+      { x: 5, y: -7, type: 'village', label: 'Kampung', label_ms: 'Kampung', label_en: 'Village', size: 1.25 },
+      { x: 8, y: 10, type: 'harbor', label: 'Pelabuhan', label_ms: 'Pelabuhan', label_en: 'Harbor', size: 1.22 },
+      { x: 14, y: 7, type: 'lighthouse', label: 'Rumah Api', label_ms: 'Rumah Api', label_en: 'Lighthouse', size: 1.25 },
+      { x: 6, y: 8, type: 'bridge', label: 'Jambatan', label_ms: 'Jambatan', label_en: 'Bridge', size: 1.16 },
+      { x: -9, y: 8, type: 'ranch', label: 'Ladang', label_ms: 'Ladang', label_en: 'Ranch', size: 1.18 },
+      { x: 10, y: 0, type: 'market', label: 'Pasar', label_ms: 'Pasar', label_en: 'Market', size: 1.18 },
     ];
 
     const paths = [
@@ -4004,20 +4003,20 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     const riverPath = [{ x: -4.2, y: -3.6 }, { x: -5, y: -6 }, { x: -6.4, y: -8.2 }, { x: -8.7, y: -10.7 }, { x: -11.2, y: -13 }];
 
     const sandSpecks = [];
-    for (let i = 0; i < 620; i++) {
+    for (let i = 0; i < 900; i++) {
       const gx = rand() * 31 - 15.5;
       const gy = rand() * 31 - 15.5;
       if (isOnIsland(gx, gy)) {
-        sandSpecks.push({ x: gx, y: gy, r: 0.018 + rand() * 0.055, alpha: 0.06 + rand() * 0.15, dark: rand() > 0.62 });
+        sandSpecks.push({ x: gx, y: gy, r: 0.02 + rand() * 0.065, alpha: 0.08 + rand() * 0.16, dark: rand() > 0.62 });
       }
     }
 
     const stones = [];
-    for (let i = 0; i < 36; i++) {
+    for (let i = 0; i < 65; i++) {
       const gx = rand() * 28 - 14;
       const gy = rand() * 28 - 14;
       if (isOnIsland(gx, gy) && Math.sqrt(gx * gx + gy * gy) > HAZARD_RADIUS + 1.1) {
-        stones.push({ x: gx, y: gy, rx: 4 + rand() * 7, ry: 2.5 + rand() * 4, rot: rand() * Math.PI, alpha: 0.12 + rand() * 0.13 });
+        stones.push({ x: gx, y: gy, rx: 6 + rand() * 10, ry: 4 + rand() * 6, rot: rand() * Math.PI, alpha: 0.14 + rand() * 0.14 });
       }
     }
 
@@ -4128,7 +4127,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       return roadCanvas;
     };
     const roadTexture = makeRoadTexture();
-    const LANDMARK_DRAW_BASE = 94;
+    const LANDMARK_DRAW_BASE = 145;
     const landmarkAssetMeta = {
       crystal: { drawScale: 1.28, shadowScale: 1.14, labelFactor: 0.36, crop: { left: 0.09, right: 0.09, top: 0.08, bottom: 0.18 }, fadeStart: 0.64 },
       farm: { drawScale: 1.08, shadowScale: 1.02, labelFactor: 0.33, crop: { left: 0.1, right: 0.1, top: 0.08, bottom: 0.22 }, fadeStart: 0.62 },
@@ -4688,6 +4687,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       const pos = gridToPixel(waterfall.x, waterfall.y);
       ctx.save();
       ctx.translate(pos.px, pos.py);
+      ctx.scale(1.45, 1.45);
 
       // 1. Splash pool glow & mist base
       ctx.globalCompositeOperation = 'screen';
@@ -4829,7 +4829,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
 
     const drawPalm = (tree, time) => {
       const pos = gridToPixel(tree.x, tree.y);
-      const s = 0.82 + tree.size;
+      const s = (0.82 + tree.size) * 1.45;
       
       const gust = Math.sin(time * 0.7 + tree.phase) * Math.sin(time * 1.3 + tree.phase * 0.8);
       const sway = tree.lean + gust * 0.18;
@@ -4900,7 +4900,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
 
     const drawCanopyTree = (tree, time) => {
       const pos = gridToPixel(tree.x, tree.y);
-      const s = 0.8 + tree.size;
+      const s = (0.8 + tree.size) * 1.45;
       
       const gust = Math.sin(time * 0.8 + tree.phase) * Math.cos(time * 0.4 + tree.phase * 0.5);
       const sway = tree.lean + gust * 0.15;
@@ -5228,7 +5228,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       drawLandmarkAmbientEffects(landmark, motion, { sizePx, drawHeight });
       return {
         sizePx: Math.max(sizePx, drawHeight),
-        labelOffset: Math.max(30, drawHeight * landmark.size * (meta.labelFactor || 0.34)),
+        labelOffset: Math.max(38, drawHeight * (meta.labelFactor || 0.38)),
       };
     };
 
@@ -5258,16 +5258,16 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       if (generatedMetrics) {
         ctx.restore();
         ctx.save();
-        ctx.font = 'bold 10px Inter';
+        ctx.font = 'bold 12.5px Inter';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         const labelY = pos.py + generatedMetrics.labelOffset;
         ctx.lineJoin = 'round';
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = 'rgba(15,23,42,0.34)';
-        ctx.fillStyle = 'rgba(248,250,252,0.98)';
-        ctx.shadowColor = 'rgba(15,23,42,0.28)';
-        ctx.shadowBlur = 6;
+        ctx.lineWidth = 4.5;
+        ctx.strokeStyle = 'rgba(15,23,42,0.6)';
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = 'rgba(15,23,42,0.38)';
+        ctx.shadowBlur = 8;
         ctx.shadowOffsetY = 2;
         ctx.strokeText(lmLabel, pos.px, labelY);
         ctx.fillText(lmLabel, pos.px, labelY);
@@ -5465,10 +5465,10 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
         // --- PRO BOMB ---
         if (textures.proBombTransparent) {
            ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-           ctx.shadowBlur = 10;
-           ctx.drawImage(textures.proBombTransparent, -28, -32, 56, 56);
+           ctx.shadowBlur = 12;
+           ctx.drawImage(textures.proBombTransparent, -42, -46, 84, 84);
         } else {
-           ctx.font = '32px serif';
+           ctx.font = '46px serif';
            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
            ctx.fillText('💣', 0, 0);
         }
@@ -5476,10 +5476,10 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
         // --- PRO CHEST (For all rewards) ---
         if (textures.proChestTransparent) {
            ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-           ctx.shadowBlur = 10;
-           ctx.drawImage(textures.proChestTransparent, -32, -32, 64, 64);
+           ctx.shadowBlur = 12;
+           ctx.drawImage(textures.proChestTransparent, -46, -46, 92, 92);
         } else {
-           ctx.font = '32px serif';
+           ctx.font = '46px serif';
            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
            ctx.fillText('🎁', 0, 0);
         }
@@ -5960,8 +5960,8 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       });
       ctx.globalAlpha = 1;
 
-      paths.forEach((pathPoints) => drawRoadPath(pathPoints, 24));
-      drawRealisticRiverPath(riverPath, 34);
+      paths.forEach((pathPoints) => drawRoadPath(pathPoints, 34));
+      drawRealisticRiverPath(riverPath, 48);
 
       stones.forEach((stone) => {
         const pos = gridToPixel(stone.x, stone.y);
@@ -6128,16 +6128,16 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       const ay2 = gridToPixel(GRID_MAX, 0);
       ctx.beginPath(); ctx.moveTo(ay1.px - CELL / 2, ay1.py); ctx.lineTo(ay2.px + CELL / 2, ay2.py); ctx.stroke();
 
-      ctx.fillStyle = 'rgba(0,0,0,0.38)';
-      ctx.font = '10px Inter';
+      ctx.fillStyle = 'rgba(0,0,0,0.52)';
+      ctx.font = 'bold 12px Inter';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       for (let i = GRID_MIN; i <= GRID_MAX; i++) {
         if (i === 0) continue;
         const px = gridToPixel(i, 0);
-        ctx.fillText(i, px.px, px.py + 14);
+        ctx.fillText(i, px.px, px.py + 15);
         const py = gridToPixel(0, i);
-        ctx.fillText(i, py.px - 14, py.py);
+        ctx.fillText(i, py.px - 15, py.py);
       }
 
       [
@@ -6366,21 +6366,21 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
           ctx.fillStyle = player.color + '40';
           ctx.fill();
           ctx.strokeStyle = player.color;
-          ctx.lineWidth = 3.5;
+          ctx.lineWidth = 4;
           ctx.stroke();
 
           // Lukis bucu-bucu (A, B, C...) di atas koordinat satah
-          ctx.font = 'bold 10.5px Inter';
+          ctx.font = 'bold 12px Inter';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           poly.vertices.forEach((v, vIdx) => {
             const vPos = gridToPixel(v.x, v.y);
             ctx.fillStyle = player.color;
             ctx.beginPath();
-            ctx.arc(vPos.px, vPos.py, 10, 0, Math.PI * 2);
+            ctx.arc(vPos.px, vPos.py, 13, 0, Math.PI * 2);
             ctx.fill();
             ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 2.5;
             ctx.stroke();
             ctx.fillStyle = '#ffffff';
             ctx.fillText(v.label, vPos.px, vPos.py + 0.5);
@@ -6388,18 +6388,18 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
             // Pada bucu utama A (vIdx === 0), paparkan lencana nama pemain
             if (vIdx === 0) {
               ctx.save();
-              ctx.font = 'bold 11px Inter';
+              ctx.font = 'bold 12px Inter';
               const displayName = getPlayerDisplayName(player, langRef.current);
               const textWidth = ctx.measureText(displayName).width;
-              const badgeWidth = textWidth + 16;
+              const badgeWidth = textWidth + 18;
               ctx.fillStyle = player.color;
-              drawRoundRect(ctx, vPos.px - badgeWidth / 2, vPos.py - 26, badgeWidth, 18, 4);
+              drawRoundRect(ctx, vPos.px - badgeWidth / 2, vPos.py - 29, badgeWidth, 22, 5);
               ctx.fill();
               ctx.strokeStyle = '#ffffff';
               ctx.lineWidth = 1.5;
               ctx.stroke();
               ctx.fillStyle = '#ffffff';
-              ctx.fillText(displayName, vPos.px, vPos.py - 17);
+              ctx.fillText(displayName, vPos.px, vPos.py - 18);
               ctx.restore();
             }
           });

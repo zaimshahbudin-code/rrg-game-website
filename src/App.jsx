@@ -2894,6 +2894,7 @@ const SectionRRGs = () => {
                 );
               })}
               {(() => {
+                if (hintLevel < 2 && !gameOver) return null;
                 const activePoly = getPlayerObjectPolygon(activePlayer, current);
                 const targetPoly = getTransformedPolygon(activePoly, card);
                 if (!targetPoly) return null;
@@ -2941,9 +2942,9 @@ const SectionRRGs = () => {
                     ))}
                   </div>
 
-                  {targetPoly && (
+                  {hintLevel >= 2 && targetPoly && (
                     <div className="mt-3 pt-3 border-t border-blue-200/80">
-                      <p className="text-xs font-extrabold text-blue-900 uppercase tracking-wide">Pemetaan Bucu Imej Hasil Transformasi:</p>
+                      <p className="text-xs font-extrabold text-blue-900 uppercase tracking-wide">Pemetaan Bucu Imej Hasil Transformasi (Hint):</p>
                       <div className="space-y-1 mt-2">
                         {activePoly.vertices.map((v, i) => {
                           const tv = targetPoly.vertices[i];
@@ -2956,6 +2957,19 @@ const SectionRRGs = () => {
                           );
                         })}
                       </div>
+                    </div>
+                  )}
+                  {card && hintLevel < 2 && (
+                    <div className="mt-3 pt-3 border-t border-blue-200/80 text-xs text-blue-900 font-medium">
+                      {chosenPoint ? (
+                        <p className="text-emerald-700 font-bold">
+                          📍 Pilihan anda: ({chosenPoint.x}, {chosenPoint.y}). Tekan butang Semak.
+                        </p>
+                      ) : (
+                        <p className="text-blue-800">
+                          👆 Kira koordinat bucu A' mengikut kad di atas, kemudian klik pada satah atau masukkan nilai x & y.
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
@@ -6371,43 +6385,45 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
         }
       });
 
-      // Lukis Imej Hasil Transformasi (A', B', C'...) bila ada kad aktif
-      const activePlayerObj = game.players[game.currentPlayer];
-      const activePoly = getPlayerObjectPolygon(activePlayerObj, game.currentPlayer, langRef.current);
-      const targetPoly = getTransformedPolygon(activePoly, game.card, langRef.current);
-      if (targetPoly && targetPoly.vertices.length > 0) {
-        ctx.save();
-        ctx.beginPath();
-        targetPoly.vertices.forEach((v, vIndex) => {
-          const vPos = gridToPixel(v.x, v.y);
-          if (vIndex === 0) ctx.moveTo(vPos.px, vPos.py);
-          else ctx.lineTo(vPos.px, vPos.py);
-        });
-        ctx.closePath();
-        ctx.fillStyle = 'rgba(37, 99, 235, 0.22)';
-        ctx.fill();
-        ctx.setLineDash([8, 6]);
-        ctx.strokeStyle = '#2563eb';
-        ctx.lineWidth = 3.5;
-        ctx.stroke();
-
-        ctx.setLineDash([]);
-        ctx.font = 'bold 10px Inter';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        targetPoly.vertices.forEach((v) => {
-          const vPos = gridToPixel(v.x, v.y);
-          ctx.fillStyle = '#2563eb';
+      // Lukis Imej Hasil Transformasi (A', B', C'...) HANYA bila solutionPreview aktif (bukan semasa pemain sedang berfikir)
+      if (game.solutionPreview) {
+        const activePlayerObj = game.players[game.currentPlayer];
+        const activePoly = getPlayerObjectPolygon(activePlayerObj, game.currentPlayer, langRef.current);
+        const targetPoly = getTransformedPolygon(activePoly, game.card, langRef.current);
+        if (targetPoly && targetPoly.vertices.length > 0) {
+          ctx.save();
           ctx.beginPath();
-          ctx.arc(vPos.px, vPos.py, 10, 0, Math.PI * 2);
+          targetPoly.vertices.forEach((v, vIndex) => {
+            const vPos = gridToPixel(v.x, v.y);
+            if (vIndex === 0) ctx.moveTo(vPos.px, vPos.py);
+            else ctx.lineTo(vPos.px, vPos.py);
+          });
+          ctx.closePath();
+          ctx.fillStyle = 'rgba(37, 99, 235, 0.22)';
           ctx.fill();
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 2;
+          ctx.setLineDash([8, 6]);
+          ctx.strokeStyle = '#2563eb';
+          ctx.lineWidth = 3.5;
           ctx.stroke();
-          ctx.fillStyle = '#ffffff';
-          ctx.fillText(v.label, vPos.px, vPos.py + 0.5);
-        });
-        ctx.restore();
+
+          ctx.setLineDash([]);
+          ctx.font = 'bold 10px Inter';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          targetPoly.vertices.forEach((v) => {
+            const vPos = gridToPixel(v.x, v.y);
+            ctx.fillStyle = '#2563eb';
+            ctx.beginPath();
+            ctx.arc(vPos.px, vPos.py, 10, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(v.label, vPos.px, vPos.py + 0.5);
+          });
+          ctx.restore();
+        }
       }
 
       game.effects = game.effects.filter((effect) => performance.now() - effect.startedAt < 950);
@@ -6611,9 +6627,9 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
                   </span>
                 ))}
               </div>
-              {targetPoly && (
+              {hud.solutionPreview && targetPoly && (
                 <div className="mt-2 pt-2 border-t border-slate-700/80">
-                  <p className="font-extrabold text-amber-300 uppercase tracking-wide text-[10px]">{lang === 'en' ? 'Transformed Image (Cartesian Plane):' : 'Imej Transformasi (Satah Cartes):'}</p>
+                  <p className="font-extrabold text-amber-300 uppercase tracking-wide text-[10px]">{lang === 'en' ? 'Transformed Image (Solution):' : 'Imej Transformasi (Penyelesaian):'}</p>
                   <div className="space-y-1 mt-1 max-h-28 overflow-y-auto pr-1">
                     {activePoly.vertices.map((v, i) => {
                       const tv = targetPoly.vertices[i];
@@ -6626,6 +6642,19 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
                       );
                     })}
                   </div>
+                </div>
+              )}
+              {!hud.solutionPreview && hud.card && (
+                <div className="mt-2 pt-2 border-t border-slate-700/80 text-[10px] text-slate-300">
+                  {hud.selected ? (
+                    <p className="text-emerald-400 font-bold">
+                      📍 {lang === 'en' ? 'Target A\' selected at' : 'Sasaran A\' dipilih pada'} ({hud.selected.x}, {hud.selected.y}). {lang === 'en' ? 'Press Check Answer.' : 'Tekan Semak.'}
+                    </p>
+                  ) : (
+                    <p className="text-amber-300/90">
+                      👆 {lang === 'en' ? 'Click on Cartesian grid to place Image A\', then check answer.' : 'Klik pada satah Cartes untuk letakkan Imej A\', kemudian tekan Semak.'}
+                    </p>
+                  )}
                 </div>
               )}
             </div>

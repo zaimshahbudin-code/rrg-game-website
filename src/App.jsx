@@ -4314,6 +4314,12 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       game.dragDistance = 0;
     };
     const onPointerMove = (event) => {
+      const hover = screenToGrid(event.clientX, event.clientY, game);
+      if (hover && hover.x >= GRID_MIN && hover.x <= GRID_MAX && hover.y >= GRID_MIN && hover.y <= GRID_MAX) {
+        game.hoverCoord = hover;
+      } else {
+        game.hoverCoord = null;
+      }
       if (!game.isDragging) return;
       const dx = event.clientX - game.dragStartX;
       const dy = event.clientY - game.dragStartY;
@@ -4333,6 +4339,10 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
           : `Pilihan koordinat: (${game.selected.x}, ${game.selected.y}). Tekan Semak Jawapan.`;
         syncHud(game);
       }
+    };
+    const onMouseLeave = (event) => {
+      game.hoverCoord = null;
+      onPointerUp(event);
     };
     const onWheel = (event) => {
       const delta = event.deltaY > 0 ? 0.9 : 1.1;
@@ -4354,7 +4364,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     canvas.addEventListener('mousedown', onPointerDown);
     canvas.addEventListener('mousemove', onPointerMove);
     window.addEventListener('mouseup', onPointerUp);
-    canvas.addEventListener('mouseleave', onPointerUp);
+    canvas.addEventListener('mouseleave', onMouseLeave);
     canvas.addEventListener('wheel', onWheel, { passive: false });
 
     const makeIslandPath = (context) => {
@@ -5430,22 +5440,48 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       if (!game.selected) return;
       const player = game.players[game.currentPlayer];
       const pos = gridToPixel(game.selected.x, game.selected.y);
-      const pulse = 1 + Math.sin(game.time * 4) * 0.05;
+      const pulse = 1 + Math.sin(game.time * 4) * 0.08;
       ctx.save();
-      ctx.strokeStyle = 'rgba(29, 78, 216, 0.7)';
-      ctx.fillStyle = 'rgba(96, 165, 250, 0.16)';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([6, 6]);
+      // Target pulse rings
+      ctx.strokeStyle = '#2563eb';
+      ctx.fillStyle = 'rgba(59, 130, 246, 0.25)';
+      ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.arc(pos.px, pos.py, 28 * pulse, 0, Math.PI * 2);
+      ctx.arc(pos.px, pos.py, 24 * pulse, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
-      ctx.setLineDash([]);
-      drawPlayerToken(player, game.currentPlayer, pos.px, pos.py, 'image', { size: 22 * pulse, alpha: 0.92, label: true });
+
+      // Sharp white & blue target cross
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.moveTo(pos.px - 10, pos.py); ctx.lineTo(pos.px + 10, pos.py);
+      ctx.moveTo(pos.px, pos.py - 10); ctx.lineTo(pos.px, pos.py + 10);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#1d4ed8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(pos.px - 10, pos.py); ctx.lineTo(pos.px + 10, pos.py);
+      ctx.moveTo(pos.px, pos.py - 10); ctx.lineTo(pos.px, pos.py + 10);
+      ctx.stroke();
+
+      drawPlayerToken(player, game.currentPlayer, pos.px, pos.py, 'image', { size: 24 * pulse, alpha: 0.95, label: true });
+      
+      const badgeText = `${langRef.current === 'en' ? 'Marked' : 'Ditanda'}: (${game.selected.x}, ${game.selected.y})`;
+      ctx.font = 'bold 12px Inter';
+      const textW = ctx.measureText(badgeText).width;
+      const badgeW = textW + 16;
       ctx.fillStyle = '#1e3a8a';
-      ctx.font = 'bold 11px Inter';
+      drawRoundRect(ctx, pos.px - badgeW / 2, pos.py - 44, badgeW, 22, 5);
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.fillStyle = '#ffffff';
       ctx.textAlign = 'center';
-      ctx.fillText(`${langRef.current === 'en' ? 'Selected image' : 'Imej pilihan'} (${game.selected.x}, ${game.selected.y})`, pos.px, pos.py - 36);
+      ctx.textBaseline = 'middle';
+      ctx.fillText(badgeText, pos.px, pos.py - 33);
       ctx.restore();
     };
 
@@ -6109,35 +6145,160 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       }
       ctx.restore();
 
-      ctx.strokeStyle = 'rgba(0,0,0,0.08)';
-      ctx.lineWidth = 1;
+      // 1. Dual-tone crisp grid lines (faint glow + clean dark line)
       for (let i = GRID_MIN; i <= GRID_MAX; i++) {
+        const isMajor = i % 5 === 0;
         const v1 = gridToPixel(i, GRID_MAX);
         const v2 = gridToPixel(i, GRID_MIN);
-        ctx.beginPath(); ctx.moveTo(v1.px, v1.py - CELL / 2); ctx.lineTo(v2.px, v2.py + CELL / 2); ctx.stroke();
         const h1 = gridToPixel(GRID_MIN, i);
         const h2 = gridToPixel(GRID_MAX, i);
+
+        // Subtle white glow underlay for contrast against dark sand/water
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+        ctx.lineWidth = isMajor ? 3.0 : 2.0;
+        ctx.beginPath(); ctx.moveTo(v1.px, v1.py - CELL / 2); ctx.lineTo(v2.px, v2.py + CELL / 2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(h1.px - CELL / 2, h1.py); ctx.lineTo(h2.px + CELL / 2, h2.py); ctx.stroke();
+
+        // Sharp dark grid line
+        ctx.strokeStyle = isMajor ? 'rgba(15, 23, 42, 0.45)' : 'rgba(30, 41, 59, 0.25)';
+        ctx.lineWidth = isMajor ? 1.8 : 1.2;
+        ctx.beginPath(); ctx.moveTo(v1.px, v1.py - CELL / 2); ctx.lineTo(v2.px, v2.py + CELL / 2); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(h1.px - CELL / 2, h1.py); ctx.lineTo(h2.px + CELL / 2, h2.py); ctx.stroke();
       }
-      ctx.strokeStyle = 'rgba(0,0,0,0.32)';
-      ctx.lineWidth = 2;
+
+      // 2. Intersection dots at every grid cross point so players can pinpoint integer coordinates easily
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
+      for (let x = GRID_MIN; x <= GRID_MAX; x++) {
+        for (let y = GRID_MIN; y <= GRID_MAX; y++) {
+          const pt = gridToPixel(x, y);
+          ctx.beginPath();
+          ctx.arc(pt.px, pt.py, (x === 0 || y === 0) ? 2.5 : 1.8, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // 3. Primary X and Y Axes (Paksi-X & Paksi-Y)
       const ax1 = gridToPixel(0, GRID_MAX);
       const ax2 = gridToPixel(0, GRID_MIN);
-      ctx.beginPath(); ctx.moveTo(ax1.px, ax1.py - CELL / 2); ctx.lineTo(ax2.px, ax2.py + CELL / 2); ctx.stroke();
       const ay1 = gridToPixel(GRID_MIN, 0);
       const ay2 = gridToPixel(GRID_MAX, 0);
+
+      // White outline for primary axes
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 5.5;
+      ctx.beginPath(); ctx.moveTo(ax1.px, ax1.py - CELL / 2); ctx.lineTo(ax2.px, ax2.py + CELL / 2); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(ay1.px - CELL / 2, ay1.py); ctx.lineTo(ay2.px + CELL / 2, ay2.py); ctx.stroke();
 
-      ctx.fillStyle = 'rgba(0,0,0,0.52)';
-      ctx.font = 'bold 12px Inter';
+      // Deep dark primary axes
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 3.2;
+      ctx.beginPath(); ctx.moveTo(ax1.px, ax1.py - CELL / 2); ctx.lineTo(ax2.px, ax2.py + CELL / 2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(ay1.px - CELL / 2, ay1.py); ctx.lineTo(ay2.px + CELL / 2, ay2.py); ctx.stroke();
+
+      // Top of Y-axis (+10): Arrow pointing Up & Badge 'y'
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.moveTo(ax1.px, ax1.py - CELL / 2 - 12);
+      ctx.lineTo(ax1.px - 6, ax1.py - CELL / 2 + 2);
+      ctx.lineTo(ax1.px + 6, ax1.py - CELL / 2 + 2);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.save();
+      ctx.font = 'bold 13px Inter';
+      ctx.beginPath();
+      ctx.arc(ax1.px, ax1.py - CELL / 2 - 24, 11, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.strokeStyle = '#1e3a8a';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = '#1e3a8a';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('y', ax1.px, ax1.py - CELL / 2 - 24);
+      ctx.restore();
+
+      // Right of X-axis (+10): Arrow pointing Right & Badge 'x'
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.moveTo(ay2.px + CELL / 2 + 12, ay2.py);
+      ctx.lineTo(ay2.px + CELL / 2 - 2, ay2.py - 6);
+      ctx.lineTo(ay2.px + CELL / 2 - 2, ay2.py + 6);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.save();
+      ctx.font = 'bold 13px Inter';
+      ctx.beginPath();
+      ctx.arc(ay2.px + CELL / 2 + 24, ay2.py, 11, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.strokeStyle = '#1e3a8a';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = '#1e3a8a';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('x', ay2.px + CELL / 2 + 24, ay2.py);
+      ctx.restore();
+
+      // Origin (0,0) Badge '0'
+      const originPt = gridToPixel(0, 0);
+      ctx.save();
+      ctx.font = 'bold 11px Inter';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(originPt.px - 14, originPt.py + 14, 9, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#0f172a';
+      ctx.fillText('0', originPt.px - 14, originPt.py + 14);
+      ctx.restore();
+
+      // 4. Axis Tick Marks and Number Pills
+      ctx.font = 'bold 11px Inter';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       for (let i = GRID_MIN; i <= GRID_MAX; i++) {
         if (i === 0) continue;
+        // X-axis ticks & number pills
         const px = gridToPixel(i, 0);
-        ctx.fillText(i, px.px, px.py + 15);
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(px.px, px.py - 5); ctx.lineTo(px.px, px.py + 5); ctx.stroke();
+
+        const numTextX = String(i);
+        const wX = Math.max(18, ctx.measureText(numTextX).width + 8);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.94)';
+        drawRoundRect(ctx, px.px - wX / 2, px.py + 8, wX, 16, 4);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(15, 23, 42, 0.28)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.fillStyle = '#0f172a';
+        ctx.fillText(numTextX, px.px, px.py + 16);
+
+        // Y-axis ticks & number pills
         const py = gridToPixel(0, i);
-        ctx.fillText(i, py.px - 15, py.py);
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(py.px - 5, py.py); ctx.lineTo(py.px + 5, py.py); ctx.stroke();
+
+        const numTextY = String(i);
+        const wY = Math.max(18, ctx.measureText(numTextY).width + 8);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.94)';
+        drawRoundRect(ctx, py.px - wY - 7, py.py - 8, wY, 16, 4);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(15, 23, 42, 0.28)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.fillStyle = '#0f172a';
+        ctx.fillText(numTextY, py.px - wY / 2 - 7, py.py);
       }
 
       [
@@ -6159,6 +6320,53 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       RRG_ITEMS.forEach((item) => drawItem(item, game.time));
       drawActiveTransformGuide();
       drawMotionTransformGuides();
+
+      // Lukis sasaran kursor tetikus (hover target reticle) bila pemain sedia menandakan koordinat
+      if (game.hoverCoord && game.card && !game.animating && !game.gameOver) {
+        const hoverPt = gridToPixel(game.hoverCoord.x, game.hoverCoord.y);
+        const pulse = 1 + Math.sin(game.time * 6) * 0.08;
+        ctx.save();
+        // Crosshair halus pada persilangan grid yang dituju
+        ctx.strokeStyle = 'rgba(37, 99, 235, 0.75)';
+        ctx.lineWidth = 1.6;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(hoverPt.px - 26, hoverPt.py); ctx.lineTo(hoverPt.px + 26, hoverPt.py);
+        ctx.moveTo(hoverPt.px, hoverPt.py - 26); ctx.lineTo(hoverPt.px, hoverPt.py + 26);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Gelung sasaran berdenyut
+        ctx.strokeStyle = '#2563eb';
+        ctx.fillStyle = 'rgba(59, 130, 246, 0.22)';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(hoverPt.px, hoverPt.py, 16 * pulse, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Titik tengah tepat
+        ctx.fillStyle = '#1d4ed8';
+        ctx.beginPath();
+        ctx.arc(hoverPt.px, hoverPt.py, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Lencana terapung menunjukkan koordinat yang sedang dituju
+        const coordText = `(${game.hoverCoord.x}, ${game.hoverCoord.y})`;
+        ctx.font = 'bold 12px Inter';
+        const badgeW = ctx.measureText(coordText).width + 14;
+        ctx.fillStyle = '#1e40af';
+        drawRoundRect(ctx, hoverPt.px - badgeW / 2, hoverPt.py - 34, badgeW, 20, 5);
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(coordText, hoverPt.px, hoverPt.py - 24);
+        ctx.restore();
+      }
 
       if (game.selected) {
         drawSelectedImageToken();
@@ -6561,7 +6769,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       canvas.removeEventListener('mousedown', onPointerDown);
       canvas.removeEventListener('mousemove', onPointerMove);
       window.removeEventListener('mouseup', onPointerUp);
-      canvas.removeEventListener('mouseleave', onPointerUp);
+      canvas.removeEventListener('mouseleave', onMouseLeave);
       canvas.removeEventListener('wheel', onWheel);
     };
   }, [resetTrigger, getAxisSegmentDuration, getSegmentDuration, makePlayers, showPopup, submitAnswer, syncHud]);

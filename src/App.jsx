@@ -1407,8 +1407,11 @@ const generateQuestionsData = (num = 10) => {
 
     const selectedTemplate = shapeTemplates[getRandomInt(0, shapeTemplates.length - 1)];
     const vertices = selectedTemplate.map(v => ({ x: v.x + x, y: v.y + y }));
+    const targetVertex = vertices[0];
+    const targetX = targetVertex.x;
+    const targetY = targetVertex.y;
 
-    let q = { id: i, type, x, y };
+    let q = { id: i, type, x: targetX, y: targetY };
     let correctStr = "";
     let distractors = [];
     let ptLabel = type === 'translasi' ? 'P' : type === 'pantulan' ? 'K' : 'R';
@@ -1418,20 +1421,20 @@ const generateQuestionsData = (num = 10) => {
     if (type === 'translasi') {
       const dx = getRandomInt(-5, 5);
       const dy = getRandomInt(-5, 5);
-      correctStr = `(${x + dx}, ${y + dy})`;
-      q.dx = dx; q.dy = dy; q.newX = x + dx; q.newY = y + dy;
+      correctStr = `(${targetX + dx}, ${targetY + dy})`;
+      q.dx = dx; q.dy = dy; q.newX = targetX + dx; q.newY = targetY + dy;
       imageVertices = vertices.map(v => ({x: v.x + dx, y: v.y + dy}));
-      q.visualData = { type: 'translasi', pt: {x, y}, correct: {x: x + dx, y: y + dy}, detail: `(${dx}, ${dy})`, vertices, imageVertices, ptLabel };
-      distractors = [`(${x - dx}, ${y - dy})`, `(${x + dy}, ${y + dx})`, `(${x - dy}, ${y - dx})`];
+      q.visualData = { type: 'translasi', pt: {x: targetX, y: targetY}, correct: {x: targetX + dx, y: targetY + dy}, detail: `(${dx}, ${dy})`, vertices, imageVertices, ptLabel };
+      distractors = [`(${targetX - dx}, ${targetY - dy})`, `(${targetX + dy}, ${targetY + dx})`, `(${targetX - dy}, ${targetY - dx})`];
     } 
     else if (type === 'pantulan') {
       const axes = ['Paksi-x', 'Paksi-y', 'Garis y=x', 'Garis y=-x'];
       const axis = axes[getRandomInt(0, axes.length - 1)];
       let newX, newY;
-      if (axis === 'Paksi-x') { newX = x; newY = -y; distractors = [`(${-x}, ${y})`, `(${y}, ${x})`, `(${-y}, ${-x})`]; }
-      else if (axis === 'Paksi-y') { newX = -x; newY = y; distractors = [`(${x}, ${-y})`, `(${y}, ${x})`, `(${-y}, ${-x})`]; }
-      else if (axis === 'Garis y=x') { newX = y; newY = x; distractors = [`(${x}, ${-y})`, `(${-x}, ${y})`, `(${-y}, ${-x})`]; }
-      else { newX = -y; newY = -x; distractors = [`(${x}, ${-y})`, `(${-x}, ${y})`, `(${y}, ${x})`]; }
+      if (axis === 'Paksi-x') { newX = targetX; newY = -targetY; distractors = [`(${-targetX}, ${targetY})`, `(${targetY}, ${targetX})`, `(${-targetY}, ${-targetX})`]; }
+      else if (axis === 'Paksi-y') { newX = -targetX; newY = targetY; distractors = [`(${targetX}, ${-targetY})`, `(${targetY}, ${targetX})`, `(${-targetY}, ${-targetX})`]; }
+      else if (axis === 'Garis y=x') { newX = targetY; newY = targetX; distractors = [`(${targetX}, ${-targetY})`, `(${-targetX}, ${targetY})`, `(${-targetY}, ${-targetX})`]; }
+      else { newX = -targetY; newY = -targetX; distractors = [`(${targetX}, ${-targetY})`, `(${-targetX}, ${targetY})`, `(${targetY}, ${targetX})`]; }
       correctStr = `(${newX}, ${newY})`;
       
       q.axis = axis; q.newX = newX; q.newY = newY;
@@ -1444,7 +1447,7 @@ const generateQuestionsData = (num = 10) => {
         else if (axis === 'Garis y=-x') { nx = -v.y; ny = -v.x; }
         return {x: nx, y: ny};
       });
-      q.visualData = { type: 'pantulan', pt: {x, y}, correct: {x: newX, y: newY}, detail: axis, vertices, imageVertices, ptLabel };
+      q.visualData = { type: 'pantulan', pt: {x: targetX, y: targetY}, correct: {x: newX, y: newY}, detail: axis, vertices, imageVertices, ptLabel };
     } 
     else { 
       const angles = [
@@ -1456,9 +1459,9 @@ const generateQuestionsData = (num = 10) => {
       const cx = getRandomInt(-3, 3);
       const cy = getRandomInt(-3, 3);
       
-      let {nx, ny} = angleObj.calc({x, y}, cx, cy);
+      let {nx, ny} = angleObj.calc({x: targetX, y: targetY}, cx, cy);
       correctStr = `(${nx}, ${ny})`;
-      distractors = [`(${-x + cx}, ${y + cy})`, `(${x - cy}, ${-y + cx})`, `(${nx + 1}, ${ny + 1})`, `(${nx - 2}, ${ny + 2})`];
+      distractors = [`(${-targetX + cx}, ${targetY + cy})`, `(${targetX - cy}, ${-targetY + cx})`, `(${nx + 1}, ${ny + 1})`, `(${nx - 2}, ${ny + 2})`];
       
       q.angleCode = angleObj.labelCode; q.newX = nx; q.newY = ny; q.cx = cx; q.cy = cy;
       
@@ -1466,7 +1469,7 @@ const generateQuestionsData = (num = 10) => {
         let {nx: vnx, ny: vny} = angleObj.calc({x: v.x, y: v.y}, cx, cy);
         return {x: vnx, y: vny};
       });
-      q.visualData = { type: 'putaran', pt: {x, y}, correct: {x: nx, y: ny}, detail: angleObj.label, vertices, imageVertices, ptLabel, cx, cy };
+      q.visualData = { type: 'putaran', pt: {x: targetX, y: targetY}, correct: {x: nx, y: ny}, detail: angleObj.label, vertices, imageVertices, ptLabel, cx, cy };
     }
 
     let uniqueD = [...new Set(distractors)].filter(d => d !== correctStr);
@@ -1483,7 +1486,7 @@ const generateQuestionsData = (num = 10) => {
     
     q.pilihan = allOpts;
     q.jawapanBetul = allOpts.indexOf(correctStr);
-    q.kategori_ms = type === 'translasi' ? 'Translasi' : type === 'pantulan' ? 'Refleksi' : 'Rotasi';
+    q.kategori_ms = type === 'translasi' ? 'Translasi' : type === 'pantulan' ? 'Pantulan' : 'Putaran';
     q.kategori_en = type === 'translasi' ? 'Translation' : type === 'pantulan' ? 'Reflection' : 'Rotation';
     q.iconString = type === 'translasi' ? 'move' : type === 'pantulan' ? 'flip' : 'rotate';
     q.warna = type === 'translasi' ? 'bg-blue-500' : type === 'pantulan' ? 'bg-purple-500' : 'bg-amber-500';
@@ -1683,12 +1686,12 @@ const SectionKuiz = ({ lang, sessionUser }) => {
       const axisEn = q.axis === 'Paksi-x' ? 'X-axis' : q.axis === 'Paksi-y' ? 'Y-axis' : q.axis === 'Garis y=x' ? 'Line y=x' : 'Line y=-x';
       return lang === 'en'
         ? `The diagram shows an object with vertex ${q.ptLabel}(${q.x}, ${q.y}). The object is reflected on the ${axisEn}. What are the coordinates of the image vertex ${q.ptLabel}'?`
-        : `Graf menunjukkan sebuah objek dengan bucu ${q.ptLabel}(${q.x}, ${q.y}). Objek ini melalui refleksi pada ${q.axis}. Apakah koordinat bagi imej bucu ${q.ptLabel}'?`;
+        : `Graf menunjukkan sebuah objek dengan bucu ${q.ptLabel}(${q.x}, ${q.y}). Objek ini melalui pantulan pada ${q.axis}. Apakah koordinat bagi imej bucu ${q.ptLabel}'?`;
     } else {
       const angleEn = q.angleCode === '90cw' ? '90° clockwise' : q.angleCode === '90ccw' ? '90° anticlockwise' : '180°';
       return lang === 'en'
         ? `The diagram shows an object with vertex ${q.ptLabel}(${q.x}, ${q.y}). The object is rotated ${angleEn} at the center (${q.cx}, ${q.cy}). Find the coordinates of the image vertex ${q.ptLabel}'.`
-        : `Graf menunjukkan sebuah objek dengan bucu ${q.ptLabel}(${q.x}, ${q.y}). Objek ini melalui rotasi ${q.angleCode === '90cw' ? '90° ikut arah jam' : q.angleCode === '90ccw' ? '90° lawan arah jam' : '180°'} pada pusat (${q.cx}, ${q.cy}). Cari koordinat bagi imej bucu ${q.ptLabel}'.`;
+        : `Graf menunjukkan sebuah objek dengan bucu ${q.ptLabel}(${q.x}, ${q.y}). Objek ini melalui putaran ${q.angleCode === '90cw' ? '90° ikut arah jam' : q.angleCode === '90ccw' ? '90° lawan arah jam' : '180°'} pada pusat (${q.cx}, ${q.cy}). Cari koordinat bagi imej bucu ${q.ptLabel}'.`;
     }
   };
 
@@ -1701,12 +1704,12 @@ const SectionKuiz = ({ lang, sessionUser }) => {
       const axisEn = q.axis === 'Paksi-x' ? 'X-axis' : q.axis === 'Paksi-y' ? 'Y-axis' : q.axis === 'Garis y=x' ? 'Line y=x' : 'Line y=-x';
       return lang === 'en'
         ? `Reflection on ${axisEn} changes coordinates (${q.x}, ${q.y}) to its image at (${q.newX}, ${q.newY}).`
-        : `Refleksi pada ${q.axis} menukarkan koordinat (${q.x}, ${q.y}) kepada imej (${q.newX}, ${q.newY}).`;
+        : `Pantulan pada ${q.axis} menukarkan koordinat (${q.x}, ${q.y}) kepada imej (${q.newX}, ${q.newY}).`;
     } else {
       const angleEn = q.angleCode === '90cw' ? '90° clockwise' : q.angleCode === '90ccw' ? '90° anticlockwise' : '180°';
       return lang === 'en'
         ? `Rotation ${angleEn} at center (${q.cx}, ${q.cy}). The point moves from (${q.x}, ${q.y}) to its image at (${q.newX}, ${q.newY}).`
-        : `Rotasi ${q.angleCode === '90cw' ? '90° ikut arah jam' : q.angleCode === '90ccw' ? '90° lawan arah jam' : '180°'} pada pusat (${q.cx}, ${q.cy}) mengubah kedudukan dari (${q.x}, ${q.y}) kepada (${q.newX}, ${q.newY}).`;
+        : `Putaran ${q.angleCode === '90cw' ? '90° ikut arah jam' : q.angleCode === '90ccw' ? '90° lawan arah jam' : '180°'} pada pusat (${q.cx}, ${q.cy}) mengubah kedudukan dari (${q.x}, ${q.y}) kepada (${q.newX}, ${q.newY}).`;
     }
   };
 
@@ -1857,11 +1860,11 @@ const RRG_CARD_IMAGE = (deck, page) => `/assets/rrgs/cards/${deck}-page-${page}.
 const makeRrgCard = (deck, page, card) => ({ ...card, deck, page, cardImage: RRG_CARD_IMAGE(deck, page) });
 
 const RRG_DECK_META = {
-  red: { deck: 'merah', label: 'Merah', cardName: 'Kad Translasi', symbol: '🔴', color: '#ef4444' },
-  green: { deck: 'hijau', label: 'Hijau', cardName: 'Kad Pantulan', symbol: '🟢', color: '#16a34a' },
-  blue: { deck: 'biru', label: 'Biru', cardName: 'Kad Putaran', symbol: '🔵', color: '#2563eb' },
-  reward: { deck: 'kuning', label: 'Kuning', cardName: 'Kad Ganjaran', symbol: '🟡', color: '#facc15' },
-  penalty: { deck: 'hitam', label: 'Hitam', cardName: 'Kad Denda', symbol: '⚫', color: '#111827' },
+  red: { deck: 'merah', label: 'Merah', label_en: 'Red', cardName: 'Kad Translasi', cardName_en: 'Translation Card', symbol: '🔴', color: '#ef4444' },
+  green: { deck: 'hijau', label: 'Hijau', label_en: 'Green', cardName: 'Kad Pantulan', cardName_en: 'Reflection Card', symbol: '🟢', color: '#16a34a' },
+  blue: { deck: 'biru', label: 'Biru', label_en: 'Blue', cardName: 'Kad Putaran', cardName_en: 'Rotation Card', symbol: '🔵', color: '#2563eb' },
+  reward: { deck: 'kuning', label: 'Kuning', label_en: 'Yellow', cardName: 'Kad Ganjaran', cardName_en: 'Reward Card', symbol: '🟡', color: '#facc15' },
+  penalty: { deck: 'hitam', label: 'Hitam', label_en: 'Black', cardName: 'Kad Denda', cardName_en: 'Penalty Card', symbol: '⚫', color: '#111827' },
 };
 
 const RRG_TRANSFORM_CARDS = {
@@ -1934,71 +1937,311 @@ const RRG_TRANSFORM_CARDS = {
 };
 
 const RRG_REWARD_CARDS = [
-  makeRrgCard('kuning', 2, { title: 'Ganjaran RM65', text: 'Wang terkumpul anda bertambah sebanyak RM65 kerana berjaya menjual sayuran kepada para nelayan.', effect: { score: 65 } }),
-  makeRrgCard('kuning', 4, { title: 'Giliran Tambahan', text: 'Hari ini adalah hari ulang tahun kelahiran anda. Anda diberi giliran bermain sekali lagi.', effect: { extraTurn: 1 } }),
-  makeRrgCard('kuning', 6, { title: 'Peti Harta Karun', text: 'Anda berjaya menemui peti harta karun. Anda menerima wang ganjaran sebanyak RM300.', effect: { score: 300 } }),
-  makeRrgCard('kuning', 8, { title: 'Sekarung Syiling Emas', text: 'Anda berjaya menemui sekarung syiling emas. Anda menerima wang ganjaran sebanyak RM200.', effect: { score: 200 } }),
-  makeRrgCard('kuning', 10, { title: 'Bantu Baca Peta', text: 'Anda menerima RM10 daripada setiap pemain lain kerana membantu mereka membaca peta.', effect: { transferFromAll: 10 } }),
-  makeRrgCard('kuning', 12, { title: 'Upah Gerai Tasik', text: 'Anda menerima RM80 sebagai upah mempromosi gerai jualan di tasik.', effect: { score: 80 } }),
-  makeRrgCard('kuning', 14, { title: 'Wang Sagu Hati', text: 'Anda menerima wang sagu hati sebanyak RM20 daripada setiap pemain lain.', effect: { transferFromAll: 20 } }),
-  makeRrgCard('kuning', 16, { title: 'Bekukan Semua Pemain', text: 'Anda berpeluang membekukan satu giliran semua pemain lain.', effect: { freezeOthers: 1 } }),
-  makeRrgCard('kuning', 18, { title: 'Jumpa Kuda Hilang', text: 'Anda menerima RM100 daripada pemilik ladang kuda kerana berjaya menjumpai seekor kuda yang hilang.', effect: { score: 100 } }),
-  makeRrgCard('kuning', 20, { title: 'Menyiram Sayur', text: 'Anda menerima RM50 daripada pemilik kebun sayur kerana membantu menyiram sayur.', effect: { score: 50 } }),
-  makeRrgCard('kuning', 22, { title: 'Memerah Susu Lembu', text: 'Anda menerima RM50 daripada pemilik ladang lembu kerana membantu memerah susu lembu.', effect: { score: 50 } }),
-  makeRrgCard('kuning', 24, { title: 'Selamatkan Kanak-kanak', text: 'Anda menerima RM100 daripada Ketua Bomba Pulau Idaman sebagai ganjaran menyelamatkan dua orang kanak-kanak.', effect: { score: 100 } }),
-  makeRrgCard('kuning', 26, { title: 'Jumpa Artifak', text: 'Anda menerima RM150 daripada Ketua Polis Pulau Idaman sebagai ganjaran menjumpai artifak berharga.', effect: { score: 150 } }),
-  makeRrgCard('kuning', 28, { title: 'Bersihkan Air Terjun', text: 'Anda menerima RM100 kerana membantu membersihkan kawasan rekreasi air terjun.', effect: { score: 100 } }),
-  makeRrgCard('kuning', 30, { title: 'Jumpa Anak Hilang', text: 'Anda menerima RM100 daripada pelancong asing kerana menjumpai anaknya yang hilang.', effect: { score: 100 } }),
-  makeRrgCard('kuning', 32, { title: 'Jual Kelapa Laut', text: 'Hasil jualan kelapa laut, anda menerima RM55.', effect: { score: 55 } }),
-  makeRrgCard('kuning', 34, { title: 'Bekukan Seorang Pemain', text: 'Anda berpeluang membekukan giliran bermain seorang pemain lain yang anda pilih.', effect: { freezeNext: 1 } }),
-  makeRrgCard('kuning', 36, { title: 'Kad Ganjaran Lagi', text: 'Sebagai penghargaan sukarelawan bomba, anda berpeluang mendapatkan satu lagi kad ganjaran.', effect: { drawRewardAgain: true } }),
-  makeRrgCard('kuning', 38, { title: 'Dibantu Pemain Sebelum', text: 'Anda menerima RM15 daripada pemain sebelum anda kerana anda telah membantunya ketika tercedera.', effect: { transferFromPrevious: 15 } }),
-  makeRrgCard('kuning', 40, { title: 'Selamatkan Rakan', text: 'Anda menerima wang ganjaran sebanyak RM100 daripada Ketua Bomba Pulau Idaman.', effect: { score: 100 } }),
+  makeRrgCard('kuning', 2, {
+    title: 'Ganjaran RM65',
+    title_en: 'RM65 Reward',
+    text: 'Wang terkumpul anda bertambah sebanyak RM65 kerana berjaya menjual sayuran kepada para nelayan.',
+    text_en: 'Your accumulated money increases by RM65 from selling vegetables to fishermen.',
+    effect: { score: 65 }
+  }),
+  makeRrgCard('kuning', 4, {
+    title: 'Giliran Tambahan',
+    title_en: 'Extra Turn',
+    text: 'Hari ini adalah hari ulang tahun kelahiran anda. Anda diberi giliran bermain sekali lagi.',
+    text_en: 'Today is your birthday! You are granted an extra turn.',
+    effect: { extraTurn: 1 }
+  }),
+  makeRrgCard('kuning', 6, {
+    title: 'Peti Harta Karun',
+    title_en: 'Treasure Chest',
+    text: 'Anda berjaya menemui peti harta karun. Anda menerima wang ganjaran sebanyak RM300.',
+    text_en: 'You discovered a treasure chest. You receive a reward of RM300.',
+    effect: { score: 300 }
+  }),
+  makeRrgCard('kuning', 8, {
+    title: 'Sekarung Syiling Emas',
+    title_en: 'Sack of Gold Coins',
+    text: 'Anda berjaya menemui sekarung syiling emas. Anda menerima wang ganjaran sebanyak RM200.',
+    text_en: 'You found a sack of gold coins. You receive a reward of RM200.',
+    effect: { score: 200 }
+  }),
+  makeRrgCard('kuning', 10, {
+    title: 'Bantu Baca Peta',
+    title_en: 'Map Reading Assistance',
+    text: 'Anda menerima RM10 daripada setiap pemain lain kerana membantu mereka membaca peta.',
+    text_en: 'You receive RM10 from each other player for helping them read the map.',
+    effect: { transferFromAll: 10 }
+  }),
+  makeRrgCard('kuning', 12, {
+    title: 'Upah Gerai Tasik',
+    title_en: 'Lakeside Stall Wages',
+    text: 'Anda menerima RM80 sebagai upah mempromosi gerai jualan di tasik.',
+    text_en: 'You receive RM80 wages for promoting sales stalls at the lake.',
+    effect: { score: 80 }
+  }),
+  makeRrgCard('kuning', 14, {
+    title: 'Wang Sagu Hati',
+    title_en: 'Consolation Reward',
+    text: 'Anda menerima wang sagu hati sebanyak RM20 daripada setiap pemain lain.',
+    text_en: 'You receive a consolation sum of RM20 from each other player.',
+    effect: { transferFromAll: 20 }
+  }),
+  makeRrgCard('kuning', 16, {
+    title: 'Bekukan Semua Pemain',
+    title_en: 'Freeze All Players',
+    text: 'Anda berpeluang membekukan satu giliran semua pemain lain.',
+    text_en: 'You get to freeze one turn of all other players.',
+    effect: { freezeOthers: 1 }
+  }),
+  makeRrgCard('kuning', 18, {
+    title: 'Jumpa Kuda Hilang',
+    title_en: 'Found Lost Horse',
+    text: 'Anda menerima RM100 daripada pemilik ladang kuda kerana berjaya menjumpai seekor kuda yang hilang.',
+    text_en: 'You receive RM100 from the horse ranch owner for finding a lost horse.',
+    effect: { score: 100 }
+  }),
+  makeRrgCard('kuning', 20, {
+    title: 'Menyiram Sayur',
+    title_en: 'Watering Vegetables',
+    text: 'Anda menerima RM50 daripada pemilik kebun sayur kerana membantu menyiram sayur.',
+    text_en: 'You receive RM50 from the vegetable farm owner for helping to water vegetables.',
+    effect: { score: 50 }
+  }),
+  makeRrgCard('kuning', 22, {
+    title: 'Memerah Susu Lembu',
+    title_en: 'Milking Cows',
+    text: 'Anda menerima RM50 daripada pemilik ladang lembu kerana membantu memerah susu lembu.',
+    text_en: 'You receive RM50 from the cattle ranch owner for helping to milk cows.',
+    effect: { score: 50 }
+  }),
+  makeRrgCard('kuning', 24, {
+    title: 'Selamatkan Kanak-kanak',
+    title_en: 'Rescue Children',
+    text: 'Anda menerima RM100 daripada Ketua Bomba Pulau Idaman sebagai ganjaran menyelamatkan dua orang kanak-kanak.',
+    text_en: 'You receive RM100 from the Dream Island Fire Chief for rescuing two children.',
+    effect: { score: 100 }
+  }),
+  makeRrgCard('kuning', 26, {
+    title: 'Jumpa Artifak',
+    title_en: 'Found Ancient Artifact',
+    text: 'Anda menerima RM150 daripada Ketua Polis Pulau Idaman sebagai ganjaran menjumpai artifak berharga.',
+    text_en: 'You receive RM150 from the Dream Island Police Chief for discovering a valuable artifact.',
+    effect: { score: 150 }
+  }),
+  makeRrgCard('kuning', 28, {
+    title: 'Bersihkan Air Terjun',
+    title_en: 'Clean Waterfall',
+    text: 'Anda menerima RM100 kerana membantu membersihkan kawasan rekreasi air terjun.',
+    text_en: 'You receive RM100 for helping clean up the waterfall recreation area.',
+    effect: { score: 100 }
+  }),
+  makeRrgCard('kuning', 30, {
+    title: 'Jumpa Anak Hilang',
+    title_en: 'Found Lost Child',
+    text: 'Anda menerima RM100 daripada pelancong asing kerana menjumpai anaknya yang hilang.',
+    text_en: 'You receive RM100 from a tourist for finding their lost child.',
+    effect: { score: 100 }
+  }),
+  makeRrgCard('kuning', 32, {
+    title: 'Jual Kelapa Laut',
+    title_en: 'Sea Coconut Sales',
+    text: 'Hasil jualan kelapa laut, anda menerima RM55.',
+    text_en: 'From selling sea coconuts, you earn RM55.',
+    effect: { score: 55 }
+  }),
+  makeRrgCard('kuning', 34, {
+    title: 'Bekukan Seorang Pemain',
+    title_en: 'Freeze a Player',
+    text: 'Anda berpeluang membekukan giliran bermain seorang pemain lain yang anda pilih.',
+    text_en: 'You get to freeze the turn of the next player.',
+    effect: { freezeNext: 1 }
+  }),
+  makeRrgCard('kuning', 36, {
+    title: 'Kad Ganjaran Lagi',
+    title_en: 'Bonus Reward Card',
+    text: 'Sebagai penghargaan sukarelawan bomba, anda berpeluang mendapatkan satu lagi kad ganjaran.',
+    text_en: 'As a volunteer appreciation bonus, you draw another reward card.',
+    effect: { drawRewardAgain: true }
+  }),
+  makeRrgCard('kuning', 38, {
+    title: 'Dibantu Pemain Sebelum',
+    title_en: 'Helped by Previous Player',
+    text: 'Anda menerima RM15 daripada pemain sebelum anda kerana anda telah membantunya ketika tercedera.',
+    text_en: 'You receive RM15 from the player before you for aiding them when injured.',
+    effect: { transferFromPrevious: 15 }
+  }),
+  makeRrgCard('kuning', 40, {
+    title: 'Selamatkan Rakan',
+    title_en: 'Rescue a Friend',
+    text: 'Anda menerima wang ganjaran sebanyak RM100 daripada Ketua Bomba Pulau Idaman.',
+    text_en: 'You receive a reward of RM100 from the Dream Island Fire Chief.',
+    effect: { score: 100 }
+  }),
 ];
 
 const RRG_PENALTY_CARDS = [
-  makeRrgCard('hitam', 2, { title: 'Beri Wang Kepada Pemain Lain', text: 'Beri RM20 daripada wang terkumpul anda kepada setiap pemain lain.', effect: { payAll: 20 } }),
-  makeRrgCard('hitam', 4, { title: 'Telefon Jatuh Ke Tasik', text: 'Telefon pintar anda terjatuh ke dalam tasik. Anda hilang satu giliran bermain yang berikutnya.', effect: { skipSelf: 1 } }),
-  makeRrgCard('hitam', 6, { title: 'Kompaun Sampah', text: 'Wang terkumpul anda dikurangkan sebanyak RM50 untuk membayar kompaun.', effect: { score: -50 } }),
-  makeRrgCard('hitam', 8, { title: 'Beg Dilarikan Monyet', text: 'Monyet di hutan melarikan beg anda. Anda kehilangan RM70.', effect: { score: -70 } }),
-  makeRrgCard('hitam', 10, { title: 'Sewa Kuda', text: 'Wang terkumpul anda dikurangkan sebanyak RM60 kerana membayar kos sewaan kuda.', effect: { score: -60 } }),
-  makeRrgCard('hitam', 12, { title: 'Wang Dicuri', text: 'Wang terkumpul anda telah dicuri sebanyak RM40.', effect: { score: -40 } }),
-  makeRrgCard('hitam', 14, { title: 'Kos Rawatan', text: 'Anda tercedera. Wang terkumpul anda dikurangkan sebanyak RM65 untuk kos rawatan.', effect: { score: -65 } }),
-  makeRrgCard('hitam', 16, { title: 'Tertinggal Kunci', text: 'Anda tertinggal kunci di rumah asap. Anda hilang satu giliran berikutnya.', effect: { skipSelf: 1 } }),
-  makeRrgCard('hitam', 18, { title: 'Beli Rumput Lembu', text: 'Wang terkumpul anda dikurangkan sebanyak RM45 untuk membeli rumput.', effect: { score: -45 } }),
-  makeRrgCard('hitam', 20, { title: 'Wang Tercicir', text: 'Wang terkumpul anda telah tercicir sebanyak RM80.', effect: { score: -80 } }),
-  makeRrgCard('hitam', 22, { title: 'Denda Pulau Idaman', text: 'Anda melanggar peraturan Pulau Idaman. Wang dikurangkan RM70 untuk membayar denda.', effect: { score: -70 } }),
-  makeRrgCard('hitam', 24, { title: 'Tertidur', text: 'Anda tertidur. Anda hilang dua giliran bermain yang seterusnya.', effect: { skipSelf: 2 } }),
-  makeRrgCard('hitam', 26, { title: 'Beli Air', text: 'Anda terhidrat. Wang terkumpul dikurangkan sebanyak RM10 untuk membeli air.', effect: { score: -10 } }),
-  makeRrgCard('hitam', 28, { title: 'Kembali Ke Mula', text: 'Anda tertinggal kad pengenalan di Bukit Kristal. Sila kembali ke tempat mula bermain.', effect: { resetStart: true } }),
-  makeRrgCard('hitam', 30, { title: 'Sesat Jalan', text: 'Anda sesat jalan kerana tersalah membaca peta. Anda hilang dua giliran bermain.', effect: { skipSelf: 2 } }),
-  makeRrgCard('hitam', 32, { title: 'Putaran 360°', text: 'Putarkan token anda 360° lawan arah jam pada titik (0, 0).', effect: { rotate360: true } }),
-  makeRrgCard('hitam', 34, { title: 'Sewa Kayak', text: 'Wang terkumpul anda dikurangkan sebanyak RM55 kerana membayar kos sewaan kayak.', effect: { score: -55 } }),
-  makeRrgCard('hitam', 36, { title: 'Beli Makanan', text: 'Kurangkan RM60 daripada wang terkumpul anda untuk membeli pizza dan ayam goreng.', effect: { score: -60 } }),
-  makeRrgCard('hitam', 38, { title: 'Selenggara Lampu', text: 'Wang terkumpul anda dikurangkan sebanyak RM30 kerana membayar kos penyelenggaraan lampu.', effect: { score: -30 } }),
-  makeRrgCard('hitam', 40, { title: 'Sakit Perut', text: 'Anda hilang satu giliran yang berikutnya kerana perlu ke tandas.', effect: { skipSelf: 1 } }),
+  makeRrgCard('hitam', 2, {
+    title: 'Beri Wang Kepada Pemain Lain',
+    title_en: 'Give Money to Other Players',
+    text: 'Beri RM20 daripada wang terkumpul anda kepada setiap pemain lain.',
+    text_en: 'Pay RM20 from your accumulated money to each other player.',
+    effect: { payAll: 20 }
+  }),
+  makeRrgCard('hitam', 4, {
+    title: 'Telefon Jatuh Ke Tasik',
+    title_en: 'Phone Dropped into Lake',
+    text: 'Telefon pintar anda terjatuh ke dalam tasik. Anda hilang satu giliran bermain yang berikutnya.',
+    text_en: 'Your smartphone fell into the lake. You lose your next turn.',
+    effect: { skipSelf: 1 }
+  }),
+  makeRrgCard('hitam', 6, {
+    title: 'Kompaun Sampah',
+    title_en: 'Littering Fine',
+    text: 'Wang terkumpul anda dikurangkan sebanyak RM50 untuk membayar kompaun.',
+    text_en: 'Your money is reduced by RM50 to pay a littering fine.',
+    effect: { score: -50 }
+  }),
+  makeRrgCard('hitam', 8, {
+    title: 'Beg Dilarikan Monyet',
+    title_en: 'Bag Snatched by Monkey',
+    text: 'Monyet di hutan melarikan beg anda. Anda kehilangan RM70.',
+    text_en: 'A forest monkey snatched your bag. You lose RM70.',
+    effect: { score: -70 }
+  }),
+  makeRrgCard('hitam', 10, {
+    title: 'Sewa Kuda',
+    title_en: 'Horse Rental',
+    text: 'Wang terkumpul anda dikurangkan sebanyak RM60 kerana membayar kos sewaan kuda.',
+    text_en: 'Your money is reduced by RM60 to pay horse rental costs.',
+    effect: { score: -60 }
+  }),
+  makeRrgCard('hitam', 12, {
+    title: 'Wang Dicuri',
+    title_en: 'Stolen Money',
+    text: 'Wang terkumpul anda telah dicuri sebanyak RM40.',
+    text_en: 'RM40 of your accumulated money has been stolen.',
+    effect: { score: -40 }
+  }),
+  makeRrgCard('hitam', 14, {
+    title: 'Kos Rawatan',
+    title_en: 'Medical Treatment',
+    text: 'Anda tercedera. Wang terkumpul anda dikurangkan sebanyak RM65 untuk kos rawatan.',
+    text_en: 'You got injured. Your money is reduced by RM65 for treatment costs.',
+    effect: { score: -65 }
+  }),
+  makeRrgCard('hitam', 16, {
+    title: 'Tertinggal Kunci',
+    title_en: 'Keys Left Behind',
+    text: 'Anda tertinggal kunci di rumah asap. Anda hilang satu giliran berikutnya.',
+    text_en: 'You left your keys behind. You lose your next turn.',
+    effect: { skipSelf: 1 }
+  }),
+  makeRrgCard('hitam', 18, {
+    title: 'Beli Rumput Lembu',
+    title_en: 'Buy Cattle Feed',
+    text: 'Wang terkumpul anda dikurangkan sebanyak RM45 untuk membeli rumput.',
+    text_en: 'Your money is reduced by RM45 to purchase cattle feed.',
+    effect: { score: -45 }
+  }),
+  makeRrgCard('hitam', 20, {
+    title: 'Wang Tercicir',
+    title_en: 'Lost Money',
+    text: 'Wang terkumpul anda telah tercicir sebanyak RM80.',
+    text_en: 'You dropped and lost RM80 from your pocket.',
+    effect: { score: -80 }
+  }),
+  makeRrgCard('hitam', 22, {
+    title: 'Denda Pulau Idaman',
+    title_en: 'Dream Island Fine',
+    text: 'Anda melanggar peraturan Pulau Idaman. Wang dikurangkan RM70 untuk membayar denda.',
+    text_en: 'You violated island regulations. Money reduced by RM70 to pay the fine.',
+    effect: { score: -70 }
+  }),
+  makeRrgCard('hitam', 24, {
+    title: 'Tertidur',
+    title_en: 'Fell Asleep',
+    text: 'Anda tertidur. Anda hilang dua giliran bermain yang seterusnya.',
+    text_en: 'You overslept. You lose your next two turns.',
+    effect: { skipSelf: 2 }
+  }),
+  makeRrgCard('hitam', 26, {
+    title: 'Beli Air',
+    title_en: 'Buy Water',
+    text: 'Anda terhidrat. Wang terkumpul dikurangkan sebanyak RM10 untuk membeli air.',
+    text_en: 'You are dehydrated. Money reduced by RM10 to buy bottled water.',
+    effect: { score: -10 }
+  }),
+  makeRrgCard('hitam', 28, {
+    title: 'Kembali Ke Mula',
+    title_en: 'Return to Start',
+    text: 'Anda tertinggal kad pengenalan di Bukit Kristal. Sila kembali ke tempat mula bermain.',
+    text_en: 'You left your ID card at Crystal Hill. Return to the starting point.',
+    effect: { resetStart: true }
+  }),
+  makeRrgCard('hitam', 30, {
+    title: 'Sesat Jalan',
+    title_en: 'Lost the Way',
+    text: 'Anda sesat jalan kerana tersalah membaca peta. Anda hilang dua giliran bermain.',
+    text_en: 'You got lost after misreading the map. You lose two turns.',
+    effect: { skipSelf: 2 }
+  }),
+  makeRrgCard('hitam', 32, {
+    title: 'Putaran 360°',
+    title_en: '360° Rotation',
+    text: 'Putarkan token anda 360° lawan arah jam pada titik (0, 0).',
+    text_en: 'Rotate your token 360° anticlockwise about the point (0, 0).',
+    effect: { rotate360: true }
+  }),
+  makeRrgCard('hitam', 34, {
+    title: 'Sewa Kayak',
+    title_en: 'Kayak Rental',
+    text: 'Wang terkumpul anda dikurangkan sebanyak RM55 kerana membayar kos sewaan kayak.',
+    text_en: 'Your money is reduced by RM55 to pay kayak rental fees.',
+    effect: { score: -55 }
+  }),
+  makeRrgCard('hitam', 36, {
+    title: 'Beli Makanan',
+    title_en: 'Buy Food',
+    text: 'Kurangkan RM60 daripada wang terkumpul anda untuk membeli pizza dan ayam goreng.',
+    text_en: 'Deduct RM60 from your money to buy pizza and fried chicken.',
+    effect: { score: -60 }
+  }),
+  makeRrgCard('hitam', 38, {
+    title: 'Selenggara Lampu',
+    title_en: 'Lantern Maintenance',
+    text: 'Wang terkumpul anda dikurangkan sebanyak RM30 kerana membayar kos penyelenggaraan lampu.',
+    text_en: 'Your money is reduced by RM30 for lantern maintenance fees.',
+    effect: { score: -30 }
+  }),
+  makeRrgCard('hitam', 40, {
+    title: 'Sakit Perut',
+    title_en: 'Stomach Ache',
+    text: 'Anda hilang satu giliran yang berikutnya kerana perlu ke tandas.',
+    text_en: 'You lose your next turn because you need to rush to the restroom.',
+    effect: { skipSelf: 1 }
+  }),
 ];
 
 const RRG_ITEMS = [
   // 4 Money
-  { x: 2, y: 6, kind: 'money', label: 'RM', amount: 50 }, { x: -2, y: -8, kind: 'money', label: 'RM', amount: 50 },
-  { x: 8, y: -4, kind: 'money', label: 'RM', amount: 50 }, { x: -6, y: -2, kind: 'money', label: 'RM', amount: 50 },
+  { x: 2, y: 6, kind: 'money', label: 'RM', label_en: 'RM', amount: 50 }, { x: -2, y: -8, kind: 'money', label: 'RM', label_en: 'RM', amount: 50 },
+  { x: 8, y: -4, kind: 'money', label: 'RM', label_en: 'RM', amount: 50 }, { x: -6, y: -2, kind: 'money', label: 'RM', label_en: 'RM', amount: 50 },
   // 4 Diamond
-  { x: 6, y: 8, kind: 'diamond', label: 'Berlian', amount: 100 }, { x: -8, y: -4, kind: 'diamond', label: 'Berlian', amount: 100 },
-  { x: 10, y: 4, kind: 'diamond', label: 'Berlian', amount: 100 }, { x: -4, y: 10, kind: 'diamond', label: 'Berlian', amount: 100 },
+  { x: 6, y: 8, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 }, { x: -8, y: -4, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
+  { x: 10, y: 4, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 }, { x: -4, y: 10, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
   // 4 Chest
-  { x: 8, y: 8, kind: 'chest', label: 'Peti emas', amount: 200 }, { x: -8, y: 6, kind: 'chest', label: 'Peti emas', amount: 200 },
-  { x: 10, y: -10, kind: 'chest', label: 'Peti emas', amount: 200 }, { x: -10, y: -8, kind: 'chest', label: 'Peti emas', amount: 200 },
+  { x: 8, y: 8, kind: 'chest', label: 'Peti emas', label_en: 'Gold Chest', amount: 200 }, { x: -8, y: 6, kind: 'chest', label: 'Peti emas', label_en: 'Gold Chest', amount: 200 },
+  { x: 10, y: -10, kind: 'chest', label: 'Peti emas', label_en: 'Gold Chest', amount: 200 }, { x: -10, y: -8, kind: 'chest', label: 'Peti emas', label_en: 'Gold Chest', amount: 200 },
   // 8 Reward
-  { x: 0, y: 10, kind: 'reward', label: 'Mentol' }, { x: 10, y: 0, kind: 'reward', label: 'Mentol' },
-  { x: 0, y: -10, kind: 'reward', label: 'Mentol' }, { x: -10, y: 0, kind: 'reward', label: 'Mentol' },
-  { x: 4, y: -2, kind: 'reward', label: 'Mentol' }, { x: -2, y: 4, kind: 'reward', label: 'Mentol' },
-  { x: 7, y: 5, kind: 'reward', label: 'Mentol' }, { x: -7, y: -5, kind: 'reward', label: 'Mentol' },
+  { x: 0, y: 10, kind: 'reward', label: 'Mentol', label_en: 'Bulb' }, { x: 10, y: 0, kind: 'reward', label: 'Mentol', label_en: 'Bulb' },
+  { x: 0, y: -10, kind: 'reward', label: 'Mentol', label_en: 'Bulb' }, { x: -10, y: 0, kind: 'reward', label: 'Mentol', label_en: 'Bulb' },
+  { x: 4, y: -2, kind: 'reward', label: 'Mentol', label_en: 'Bulb' }, { x: -2, y: 4, kind: 'reward', label: 'Mentol', label_en: 'Bulb' },
+  { x: 7, y: 5, kind: 'reward', label: 'Mentol', label_en: 'Bulb' }, { x: -7, y: -5, kind: 'reward', label: 'Mentol', label_en: 'Bulb' },
   // 8 Penalty (Bom)
-  { x: 4, y: 4, kind: 'penalty', label: 'Bom' }, { x: -4, y: -6, kind: 'penalty', label: 'Bom' },
-  { x: 6, y: -6, kind: 'penalty', label: 'Bom' }, { x: -6, y: 4, kind: 'penalty', label: 'Bom' },
-  { x: 0, y: 8, kind: 'penalty', label: 'Bom' }, { x: 0, y: -8, kind: 'penalty', label: 'Bom' },
-  { x: 8, y: 0, kind: 'penalty', label: 'Bom' }, { x: -8, y: 0, kind: 'penalty', label: 'Bom' },
+  { x: 4, y: 4, kind: 'penalty', label: 'Bom', label_en: 'Bomb' }, { x: -4, y: -6, kind: 'penalty', label: 'Bom', label_en: 'Bomb' },
+  { x: 6, y: -6, kind: 'penalty', label: 'Bom', label_en: 'Bomb' }, { x: -6, y: 4, kind: 'penalty', label: 'Bom', label_en: 'Bomb' },
+  { x: 0, y: 8, kind: 'penalty', label: 'Bom', label_en: 'Bomb' }, { x: 0, y: -8, kind: 'penalty', label: 'Bom', label_en: 'Bomb' },
+  { x: 8, y: 0, kind: 'penalty', label: 'Bom', label_en: 'Bomb' }, { x: -8, y: 0, kind: 'penalty', label: 'Bom', label_en: 'Bomb' },
 ];
 
 const RRG_COLORS = [
@@ -2031,6 +2274,7 @@ const RRG_PLAYER_OFFSETS = [
 const RRG_SHAPE_VERTICES = [
   {
     name: 'Rumah Pentagon',
+    name_en: 'Pentagon House',
     labels: ['A', 'B', 'C', 'D', 'E'],
     relative: [
       { dx: 0, dy: 0 },
@@ -2042,6 +2286,7 @@ const RRG_SHAPE_VERTICES = [
   },
   {
     name: 'Menara L',
+    name_en: 'L-Tower',
     labels: ['A', 'B', 'C', 'D', 'E', 'F'],
     relative: [
       { dx: 0, dy: 0 },
@@ -2054,6 +2299,7 @@ const RRG_SHAPE_VERTICES = [
   },
   {
     name: 'Segitiga Tiga Bucu',
+    name_en: 'Triangle',
     labels: ['A', 'B', 'C'],
     relative: [
       { dx: 0, dy: 0 },
@@ -2063,6 +2309,7 @@ const RRG_SHAPE_VERTICES = [
   },
   {
     name: 'Trapezium Segi Empat',
+    name_en: 'Trapezium',
     labels: ['A', 'B', 'C', 'D'],
     relative: [
       { dx: 0, dy: 0 },
@@ -2071,9 +2318,43 @@ const RRG_SHAPE_VERTICES = [
       { dx: 3, dy: 0 },
     ],
   },
+  {
+    name: 'Segi Empat Selari',
+    name_en: 'Parallelogram',
+    labels: ['A', 'B', 'C', 'D'],
+    relative: [
+      { dx: 0, dy: 0 },
+      { dx: 1, dy: 2 },
+      { dx: 3, dy: 2 },
+      { dx: 2, dy: 0 },
+    ],
+  },
+  {
+    name: 'Anak Panah Poligon',
+    name_en: 'Polygon Arrow',
+    labels: ['A', 'B', 'C', 'D', 'E'],
+    relative: [
+      { dx: 0, dy: 0 },
+      { dx: 0, dy: 2 },
+      { dx: 2, dy: 1 },
+      { dx: 1, dy: 1 },
+      { dx: 1, dy: 0 },
+    ],
+  },
 ];
 
-const getPlayerObjectPolygon = (player, index = 0) => {
+const getPlayerDisplayName = (player, lang = 'ms') => {
+  if (!player) return '';
+  const name = player.name || '';
+  if (lang === 'en') {
+    if (name.startsWith('Pemain ')) return name.replace('Pemain ', 'Player ');
+  } else {
+    if (name.startsWith('Player ')) return name.replace('Player ', 'Pemain ');
+  }
+  return name;
+};
+
+const getPlayerObjectPolygon = (player, index = 0, lang = 'ms') => {
   if (!player) return null;
   const shapeDef = RRG_SHAPE_VERTICES[index % RRG_SHAPE_VERTICES.length];
   const vertices = shapeDef.relative.map((rel, i) => ({
@@ -2081,10 +2362,11 @@ const getPlayerObjectPolygon = (player, index = 0) => {
     x: player.x + rel.dx,
     y: player.y + rel.dy,
   }));
-  return { name: shapeDef.name, vertices };
+  const name = lang === 'en' ? (shapeDef.name_en || shapeDef.name) : shapeDef.name;
+  return { name, vertices };
 };
 
-const getTransformedPolygon = (polygon, card) => {
+const getTransformedPolygon = (polygon, card, lang = 'ms') => {
   if (!polygon || !card) return null;
   const transformedVertices = polygon.vertices.map((v) => {
     const raw = getRrgRawTransformPoint({ x: v.x, y: v.y }, card);
@@ -2094,7 +2376,8 @@ const getTransformedPolygon = (polygon, card) => {
       y: clampBoard(raw.y),
     };
   });
-  return { name: `${polygon.name} (Imej)`, vertices: transformedVertices };
+  const suffix = lang === 'en' ? 'Image' : 'Imej';
+  return { name: `${polygon.name} (${suffix})`, vertices: transformedVertices };
 };
 
 const HINT_COST = 30;
@@ -2133,14 +2416,58 @@ const transformRrgPoint = (point, card) => {
   return { x: clampBoard(raw.x), y: clampBoard(raw.y) };
 };
 
-const getRrgReflectionLineLabel = (card) => ({
-  x: 'paksi-x',
-  y: 'paksi-y',
-  yx: 'garis y = x',
-  ynx: 'garis y = -x',
-  xLine: `garis x = ${card.value}`,
-  yLine: `garis y = ${card.value}`,
-}[card?.axis] || 'garis pantulan');
+const getRrgReflectionLineLabel = (card, lang = 'ms') => {
+  if (lang === 'en') {
+    return ({
+      x: 'x-axis',
+      y: 'y-axis',
+      yx: 'line y = x',
+      ynx: 'line y = -x',
+      xLine: `line x = ${card?.value}`,
+      yLine: `line y = ${card?.value}`,
+    }[card?.axis] || 'reflection line');
+  }
+  return ({
+    x: 'paksi-x',
+    y: 'paksi-y',
+    yx: 'garis y = x',
+    ynx: 'garis y = -x',
+    xLine: `garis x = ${card?.value}`,
+    yLine: `garis y = ${card?.value}`,
+  }[card?.axis] || 'garis pantulan');
+};
+
+const getRrgCardTitle = (card, lang = 'ms') => {
+  if (!card) return '';
+  if (lang === 'en') {
+    if (card.title_en) return card.title_en;
+    if (card.type === 'translasi') return `Translation (${card.dx}, ${card.dy})`;
+    if (card.type === 'pantulan') return `Reflection ${getRrgReflectionLineLabel(card, 'en')}`;
+    if (card.type === 'putaran') {
+      const dir = card.dir === 'cw' ? 'clockwise' : 'anticlockwise';
+      return `Rotation ${card.angle}° ${dir}`;
+    }
+  }
+  return card.title || '';
+};
+
+const getRrgCardText = (card, lang = 'ms') => {
+  if (!card) return '';
+  if (lang === 'en') {
+    if (card.text_en) return card.text_en;
+    if (card.type === 'translasi') return `Translation by vector (${card.dx}, ${card.dy}).`;
+    if (card.type === 'pantulan') {
+      const axisName = getRrgReflectionLineLabel(card, 'en');
+      if (card.axis === 'x' || card.axis === 'y') return `Reflection across the ${axisName}.`;
+      return `Reflection in ${axisName}.`;
+    }
+    if (card.type === 'putaran') {
+      const dir = card.dir === 'cw' ? 'clockwise' : 'anticlockwise';
+      return `Rotation of ${card.angle}° ${dir} about point (${card.cx}, ${card.cy}).`;
+    }
+  }
+  return card.text || '';
+};
 
 const getRrgReflectionGuideSegment = (card) => {
   if (!card || card.type !== 'pantulan') return null;
@@ -2187,16 +2514,28 @@ const getRrgGuessSignedRadians = (from, destination, card) => {
     : getRrgPositiveRadians(endAngle - startAngle);
 };
 
-const getRrgMovementMessage = (player, card, destination) => {
-  if (!card) return `${player.name} bergerak ke (${destination.x}, ${destination.y})...`;
+const getRrgMovementMessage = (player, card, destination, lang = 'ms') => {
+  const pName = getPlayerDisplayName(player, lang);
+  if (lang === 'en') {
+    if (!card) return `${pName} moves to (${destination.x}, ${destination.y})...`;
+    if (card.type === 'translasi') {
+      return `${pName} moves by vector (${card.dx}, ${card.dy}) to (${destination.x}, ${destination.y})...`;
+    }
+    if (card.type === 'pantulan') {
+      return `${pName} reflects across ${getRrgReflectionLineLabel(card, 'en')} to (${destination.x}, ${destination.y})...`;
+    }
+    const dir = card.dir === 'cw' ? 'clockwise' : 'anticlockwise';
+    return `${pName} rotates ${card.angle}° ${dir} about (${card.cx}, ${card.cy}) to (${destination.x}, ${destination.y})...`;
+  }
+  if (!card) return `${pName} bergerak ke (${destination.x}, ${destination.y})...`;
   if (card.type === 'translasi') {
-    return `${player.name} bergerak ikut vektor (${card.dx}, ${card.dy}) ke (${destination.x}, ${destination.y})...`;
+    return `${pName} bergerak ikut vektor (${card.dx}, ${card.dy}) ke (${destination.x}, ${destination.y})...`;
   }
   if (card.type === 'pantulan') {
-    return `${player.name} dipantulkan pada ${getRrgReflectionLineLabel(card)} ke (${destination.x}, ${destination.y})...`;
+    return `${pName} dipantulkan pada ${getRrgReflectionLineLabel(card)} ke (${destination.x}, ${destination.y})...`;
   }
   const dir = card.dir === 'cw' ? 'ikut jam' : 'lawan jam';
-  return `${player.name} berputar ${card.angle}° ${dir} pada (${card.cx}, ${card.cy}) ke (${destination.x}, ${destination.y})...`;
+  return `${pName} berputar ${card.angle}° ${dir} pada (${card.cx}, ${card.cy}) ke (${destination.x}, ${destination.y})...`;
 };
 
 const isRrgActionZoneItem = (item) => item.kind === 'reward' || item.kind === 'penalty';
@@ -2255,8 +2594,30 @@ const playRrgSound = (kind) => {
   }
 };
 
-const getRrgHint = (player, card, level) => {
+const getRrgHint = (player, card, level, lang = 'ms') => {
   if (!card) return '';
+  if (lang === 'en') {
+    if (card.type === 'translasi') {
+      return level === 1
+        ? `Add ${card.dx} to x and ${card.dy} to y. Calculate from (${player.x}, ${player.y}).`
+        : `The final x coordinate is ${clampBoard(player.x + card.dx)}. Find y on your own.`;
+    }
+    if (card.type === 'pantulan') {
+      const axisText = {
+        x: 'x-axis: x stays the same, y sign changes',
+        y: 'y-axis: y stays the same, x sign changes',
+        yx: 'line y = x: x and y swap places',
+        ynx: 'line y = -x: swap x and y, then flip both signs',
+        xLine: `line x = ${card.value}: distance left/right from the line must be equal`,
+        yLine: `line y = ${card.value}: distance above/below the line must be equal`,
+      }[card.axis];
+      return level === 1 ? `Use ${axisText}.` : `One final coordinate is x = ${transformRrgPoint(player, card).x}. Find y on your own.`;
+    }
+    const dir = card.dir === 'cw' ? 'clockwise' : 'anticlockwise';
+    return level === 1
+      ? `Shift point so centre of rotation (${card.cx}, ${card.cy}) is reference, rotate ${card.angle}° ${dir}, then shift back.`
+      : `After rotation, the final x is ${transformRrgPoint(player, card).x}. Find y on your own.`;
+  }
   if (card.type === 'translasi') {
     return level === 1
       ? `Tambah x dengan ${card.dx} dan tambah y dengan ${card.dy}. Kira dari (${player.x}, ${player.y}).`
@@ -2653,11 +3014,162 @@ const SectionRRGs = () => {
   );
 };
 
-const RRGCanvasGame = ({ sessionUser }) => {
+const RRGCardVisual = ({ card, lang = 'ms', className = '', isThumbnail = false, onClick }) => {
+  if (!card || typeof card !== 'object') return null;
+  const isEn = lang === 'en';
+  const title = getRrgCardTitle(card, lang);
+  const cardImgSrc = card.cardImage || (card.deck && card.page ? RRG_CARD_IMAGE(card.deck, card.page) : '');
+
+  if (!isEn) {
+    if (!cardImgSrc) return null;
+    return (
+      <img
+        className={className}
+        src={cardImgSrc}
+        alt={title}
+        onClick={onClick}
+      />
+    );
+  }
+
+  return (
+    <div
+      className={`rrg-card-visual ${isThumbnail ? 'rrg-card-visual-thumb' : ''} ${className}`}
+      title={title}
+      onClick={onClick}
+    >
+      {cardImgSrc && (
+        <img
+          src={cardImgSrc}
+          alt={title}
+          className="rrg-card-visual-bg"
+        />
+      )}
+      <div className="rrg-card-visual-overlay">
+        {card.type === 'translasi' && (
+          <div className="rrg-card-content">
+            <span className="rrg-card-type-label text-red-600 font-black">Translation</span>
+            <div className="rrg-card-vector">
+              <span className="rrg-vector-paren">(</span>
+              <div className="rrg-vector-vals text-red-700 font-bold">
+                <span>{card.dx > 0 ? `+${card.dx}` : card.dx}</span>
+                <span>{card.dy > 0 ? `+${card.dy}` : card.dy}</span>
+              </div>
+              <span className="rrg-vector-paren">)</span>
+            </div>
+          </div>
+        )}
+
+        {card.type === 'pantulan' && (
+          <div className="rrg-card-content">
+            <span className="rrg-card-type-label text-green-700 font-black">Reflection</span>
+            <span className="rrg-card-sublabel text-slate-500 italic">across</span>
+            <span className="rrg-card-highlight text-slate-900 font-mono font-bold">
+              {getRrgReflectionLineLabel(card, 'en')}
+            </span>
+          </div>
+        )}
+
+        {card.type === 'putaran' && (
+          <div className="rrg-card-content">
+            <span className="rrg-card-type-label text-blue-600 font-black">
+              Rotation {card.angle}°
+            </span>
+            <span className="rrg-card-sublabel text-slate-800 font-bold">
+              {card.dir === 'cw' ? 'clockwise' : 'anticlockwise'}
+            </span>
+            <span className="rrg-card-highlight text-slate-600 font-mono text-[9px] sm:text-[10px]">
+              about point ({card.cx}, {card.cy})
+            </span>
+          </div>
+        )}
+
+        {card.deck === 'kuning' && (
+          <div className="rrg-card-content">
+            <span className="rrg-card-type-label text-amber-600 font-black">
+              ⭐ {card.title_en || 'Reward'}
+            </span>
+            <p className="rrg-card-desc text-slate-800 font-semibold">
+              {card.text_en || card.text}
+            </p>
+          </div>
+        )}
+
+        {card.deck === 'hitam' && (
+          <div className="rrg-card-content">
+            <span className="rrg-card-type-label text-slate-900 font-black">
+              ⚠️ {card.title_en || 'Penalty'}
+            </span>
+            <p className="rrg-card-desc text-slate-800 font-semibold">
+              {card.text_en || card.text}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+class RRGErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("RRGErrorBoundary caught an error:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      const isEn = this.props.lang === 'en';
+      return (
+        <div className="p-8 text-center bg-white rounded-2xl shadow-xl border border-red-200 max-w-lg mx-auto my-12">
+          <div className="text-4xl mb-3">🏝️⚠️</div>
+          <h2 className="text-xl font-black text-slate-800 mb-2">
+            {isEn ? 'Game Encountered an Issue' : 'Ralat Permainan Dikesan'}
+          </h2>
+          <p className="text-sm text-slate-500 mb-6">
+            {isEn
+              ? 'An unexpected error occurred while loading the game canvas. You can reset current game data to resume playing.'
+              : 'Terdapat ralat semasa memuatkan kanvas permainan. Anda boleh menetapkan semula sesi permainan untuk bermain seperti biasa.'}
+          </p>
+          <div className="flex justify-center gap-3">
+            <button
+              onClick={() => {
+                try {
+                  const saveKey = `rrg_save_${this.props.sessionUser?.uid || 'guest'}`;
+                  localStorage.removeItem(saveKey);
+                  localStorage.removeItem('rrg_save');
+                } catch (_) {}
+                this.setState({ hasError: false, error: null });
+                window.location.reload();
+              }}
+              className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow transition text-sm flex items-center gap-2"
+            >
+              <RefreshCw className="w-4 h-4" />
+              {isEn ? 'Reset & Reload Game' : 'Set Semula & Muat Semula Permainan'}
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
   const [resetTrigger, setResetTrigger] = useState(0);
+  const [zoomedCard, setZoomedCard] = useState(null);
   const canvasRef = useRef(null);
   const miniMapRef = useRef(null);
   const gameRef = useRef(null);
+  const langRef = useRef(lang);
+  useEffect(() => {
+    langRef.current = lang;
+  }, [lang]);
+
   const [playerCount, setPlayerCount] = useState(6);
   const [hud, setHud] = useState({
     currentPlayer: 0,
@@ -2666,7 +3178,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
     card: null,
     selected: null,
     hintLevel: 0,
-    message: 'Roll dadu warna untuk ambil Kad Transformasi.',
+    message: lang === 'en' ? 'Roll color dice to draw Transformation Card.' : 'Roll dadu warna untuk ambil Kad Transformasi.',
     popup: null,
     drawCard: null,
     lastActionCard: null,
@@ -2676,7 +3188,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
 
   const makePlayers = useCallback((count = playerCount) => Array.from({ length: count }, (_, index) => ({
     id: index + 1,
-    name: `Pemain ${index + 1}`,
+    name: lang === 'en' ? `Player ${index + 1}` : `Pemain ${index + 1}`,
     x: 0,
     y: 0,
     drawX: 0,
@@ -2695,13 +3207,13 @@ const RRGCanvasGame = ({ sessionUser }) => {
     motionStretch: 0,
     motionTransformRotation: 0,
     landingPulseAt: 0,
-  })), [playerCount]);
+  })), [playerCount, lang]);
 
   const syncHud = useCallback((game, popup = game?.popup || null) => {
     if (!game) return;
     setHud({
       currentPlayer: game.currentPlayer,
-      players: game.players.map((player) => ({ ...player })),
+      players: (game.players || []).map((player) => ({ ...player })),
       dice: game.dice,
       card: game.card,
       selected: game.selected,
@@ -2724,7 +3236,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
       try {
         const saveData = {
           currentPlayer: game.currentPlayer,
-          players: game.players.map(p => ({
+          players: (game.players || []).map(p => ({
             id: p.id, name: p.name, x: p.x, y: p.y, score: p.score, skipTurns: p.skipTurns, extraTurns: p.extraTurns, finished: p.finished, finishOrder: p.finishOrder, color: p.color, ring: p.ring
           })),
           dice: game.dice,
@@ -2744,6 +3256,35 @@ const RRGCanvasGame = ({ sessionUser }) => {
     }
   }, [sessionUser?.uid]);
 
+  // Synchronize language changes with in-progress game state
+  useEffect(() => {
+    const game = gameRef.current;
+    if (!game || !game.players || !game.players.length) return;
+
+    // Update players
+    game.players.forEach((p, idx) => {
+      p.name = lang === 'en' ? `Player ${idx + 1}` : `Pemain ${idx + 1}`;
+    });
+
+    if (game.card) {
+      const p = game.players[game.currentPlayer] || game.players[0];
+      const pName = getPlayerDisplayName(p, lang);
+      const dLabel = lang === 'en' ? (game.dice?.label_en || game.dice?.label) : game.dice?.label;
+      const cTitle = getRrgCardTitle(game.card, lang);
+      game.message = lang === 'en'
+        ? `${pName} got ${dLabel}: ${cTitle}. Click destination coordinate on grid.`
+        : `${pName} mendapat ${game.dice?.label || ''}: ${cTitle}. Klik koordinat destinasi pada grid.`;
+    } else if (!game.gameOver) {
+      if (!game.message || game.message.includes('Bukit Kristal') || game.message.includes('Crystal Hill') || game.message.includes('Roll dadu') || game.message.includes('Roll color') || game.message.includes('Misi bermula') || game.message.includes('Mission begins')) {
+        game.message = lang === 'en'
+          ? 'Roll color dice to draw Transformation Card.'
+          : 'Roll dadu warna untuk ambil Kad Transformasi.';
+      }
+    }
+
+    syncHud(game);
+  }, [lang, syncHud]);
+
   // Save game record when game is over
   useEffect(() => {
     if (hud.gameOver && sessionUser && sessionUser.role !== 'admin') {
@@ -2751,10 +3292,10 @@ const RRGCanvasGame = ({ sessionUser }) => {
       const sortedPlayers = [...hud.players].sort((a, b) => b.score - a.score);
       const winner = sortedPlayers[0];
       if (winner) {
-        saveGameRecord(sessionUser, winner.name, winner.score, hud.players.length);
+        saveGameRecord(sessionUser, getPlayerDisplayName(winner, lang), winner.score, hud.players.length);
       }
     }
-  }, [hud.gameOver, sessionUser, hud.players]);
+  }, [hud.gameOver, sessionUser, hud.players, lang]);
 
   const nextActiveIndex = (game, fromIndex) => {
     for (let step = 1; step <= game.players.length * 2; step++) {
@@ -2763,7 +3304,10 @@ const RRGCanvasGame = ({ sessionUser }) => {
       if (candidate.finished) continue;
       if (candidate.skipTurns > 0) {
         candidate.skipTurns -= 1;
-        game.message = `${candidate.name} dibekukan/terlepas giliran. Baki skip: ${candidate.skipTurns}.`;
+        const cName = getPlayerDisplayName(candidate, lang);
+        game.message = lang === 'en'
+          ? `${cName} is frozen/skips turn. Remaining skips: ${candidate.skipTurns}.`
+          : `${cName} dibekukan/terlepas giliran. Baki skip: ${candidate.skipTurns}.`;
         continue;
       }
       return next;
@@ -2924,9 +3468,14 @@ const RRGCanvasGame = ({ sessionUser }) => {
         player.motionStretch = 0;
         player.motionTransformRotation = 0;
         game.animating = true;
+        const pName = getPlayerDisplayName(player, lang);
         game.message = options.previewOnly
-          ? `${player.name} menguji pilihan (${destination.x}, ${destination.y}) satu petak demi satu petak...`
-          : `${player.name} bergerak ikut vektor (${card.dx}, ${card.dy}) satu petak demi satu petak...`;
+          ? (lang === 'en'
+            ? `${pName} testing choice (${destination.x}, ${destination.y}) grid by grid...`
+            : `${pName} menguji pilihan (${destination.x}, ${destination.y}) satu petak demi satu petak...`)
+          : (lang === 'en'
+            ? `${pName} moving by vector (${card.dx}, ${card.dy}) grid by grid...`
+            : `${pName} bergerak ikut vektor (${card.dx}, ${card.dy}) satu petak demi satu petak...`);
         centerOnPoints(game, [from, xStep, destination]);
         syncHud(game);
         return;
@@ -2958,9 +3507,12 @@ const RRGCanvasGame = ({ sessionUser }) => {
       player.motionStretch = 0;
       player.motionTransformRotation = 0;
       game.animating = true;
+      const pName = getPlayerDisplayName(player, lang);
       game.message = options.previewOnly
-        ? `${player.name} menguji pilihan (${destination.x}, ${destination.y})...`
-        : getRrgMovementMessage(player, card, destination);
+        ? (lang === 'en'
+          ? `${pName} testing choice (${destination.x}, ${destination.y})...`
+          : `${pName} menguji pilihan (${destination.x}, ${destination.y})...`)
+        : getRrgMovementMessage(player, card, destination, lang);
       centerOnPoints(game, [
         from,
         destination,
@@ -2990,10 +3542,10 @@ const RRGCanvasGame = ({ sessionUser }) => {
     player.motionStretch = 0;
     player.motionTransformRotation = 0;
     game.animating = true;
-    game.message = getRrgMovementMessage(player, card, destination);
+    game.message = getRrgMovementMessage(player, card, destination, lang);
     centerOnPoints(game, [from, destination]);
     syncHud(game);
-  }), [buildAxisTravelPath, buildTravelPath, getAxisSegmentDuration, getSegmentDuration, getTransformMotionDuration, kickCamera, syncHud]);
+  }), [buildAxisTravelPath, buildTravelPath, getAxisSegmentDuration, getSegmentDuration, getTransformMotionDuration, kickCamera, lang, syncHud]);
 
   const endTurn = useCallback((game, message) => {
     const endingPlayer = game.players[game.currentPlayer];
@@ -3001,10 +3553,11 @@ const RRGCanvasGame = ({ sessionUser }) => {
     game.dice = null;
     game.selected = null;
     game.hintLevel = 0;
-    game.message = message || 'Giliran seterusnya.';
+    game.message = message || (lang === 'en' ? 'Next turn.' : 'Giliran seterusnya.');
     if (!game.gameOver && endingPlayer?.extraTurns > 0 && !endingPlayer.finished) {
       endingPlayer.extraTurns -= 1;
-      game.message += ` ${endingPlayer.name} mendapat giliran tambahan.`;
+      const pName = getPlayerDisplayName(endingPlayer, lang);
+      game.message += lang === 'en' ? ` ${pName} receives an extra turn.` : ` ${pName} mendapat giliran tambahan.`;
       centerOnPlayer(game, endingPlayer);
       syncHud(game);
       return;
@@ -3012,7 +3565,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
     game.currentPlayer = nextActiveIndex(game, game.currentPlayer);
     centerOnPlayer(game, game.players[game.currentPlayer]);
     syncHud(game);
-  }, [syncHud]);
+  }, [lang, syncHud]);
 
   const rollDice = useCallback(() => {
     const game = gameRef.current;
@@ -3042,9 +3595,16 @@ const RRGCanvasGame = ({ sessionUser }) => {
         game.animating = false;
         game.diceRolling = false;
         game.rollTimer = null;
-        game.message = `${player.name} mendapat ${game.dice.label}: ${game.card.title}. Klik koordinat destinasi pada grid.`;
+        const pName = getPlayerDisplayName(player, lang);
+        const dLabel = lang === 'en' ? (game.dice.label_en || game.dice.label) : game.dice.label;
+        const dCardName = lang === 'en' ? (game.dice.cardName_en || game.dice.cardName) : game.dice.cardName;
+        const cTitle = getRrgCardTitle(game.card, lang);
+        const cText = getRrgCardText(game.card, lang);
+        game.message = lang === 'en'
+          ? `${pName} got ${dLabel}: ${cTitle}. Click destination coordinate on grid.`
+          : `${pName} mendapat ${game.dice.label}: ${game.card.title}. Klik koordinat destinasi pada grid.`;
         showCardDraw(game.dice.deck, game.card);
-        showPopup(game.dice.symbol, game.dice.cardName, game.card.text);
+        showPopup(game.dice.symbol, dCardName, cText);
         syncHud(game);
         return;
       }
@@ -3052,7 +3612,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
     };
 
     runRoll();
-  }, [showCardDraw, showPopup, syncHud]);
+  }, [lang, showCardDraw, showPopup, syncHud]);
 
   const buyHint = useCallback(() => {
     const game = gameRef.current;
@@ -3061,11 +3621,11 @@ const RRGCanvasGame = ({ sessionUser }) => {
     if (player.score < HINT_COST || game.hintLevel >= 2) return;
     player.score -= HINT_COST;
     game.hintLevel += 1;
-    game.message = getRrgHint(player, game.card, game.hintLevel);
+    game.message = getRrgHint(player, game.card, game.hintLevel, lang);
     playRrgSound('correct');
     showPopup('💡', `Hint ${game.hintLevel} (-RM${HINT_COST})`, game.message);
     syncHud(game);
-  }, [showPopup, syncHud]);
+  }, [lang, showPopup, syncHud]);
 
   const resetGame = useCallback((requestedCount = playerCount) => {
     const game = gameRef.current;
@@ -3089,11 +3649,13 @@ const RRGCanvasGame = ({ sessionUser }) => {
     window.clearTimeout(game.rollTimer);
     game.rollTimer = null;
     window.clearTimeout(game.drawCardTimer);
-    game.message = 'Misi bermula di Bukit Kristal. Semua pemain menerima RM100.';
+    game.message = lang === 'en'
+      ? 'Mission begins at Crystal Hill. All players receive RM100.'
+      : 'Misi bermula di Bukit Kristal. Semua pemain menerima RM100.';
     centerOnPlayer(game, game.players[0], true);
-    showPopup('☢️', 'Misi Bermula', 'Selamatkan diri dari Bukit Kristal menuju Zon Selamat.');
+    showPopup('☢️', lang === 'en' ? 'Mission Begins' : 'Misi Bermula', lang === 'en' ? 'Escape Crystal Hill towards the Safe Zone.' : 'Selamatkan diri dari Bukit Kristal menuju Zon Selamat.');
     syncHud(game);
-  }, [makePlayers, playerCount, showPopup, syncHud]);
+  }, [lang, makePlayers, playerCount, showPopup, syncHud]);
 
   const updatePlayerCount = useCallback((event) => {
     const count = Number(event.target.value);
@@ -3118,9 +3680,11 @@ const RRGCanvasGame = ({ sessionUser }) => {
   }, []);
 
   const applyActionCard = useCallback((game, player, actionCard, depth = 0) => {
+    const pName = getPlayerDisplayName(player, lang);
     const applyCard = (card, currentDepth) => {
       const effect = card.effect || {};
-      const notes = [card.text];
+      const cardText = lang === 'en' ? (card.text_en || card.text) : card.text;
+      const notes = [cardText];
       if (effect.score) {
         player.score += effect.score;
         notes.push(`${effect.score > 0 ? '+' : ''}RM${effect.score}.`);
@@ -3134,92 +3698,98 @@ const RRGCanvasGame = ({ sessionUser }) => {
           }
         });
         player.score += total;
-        notes.push(`${player.name} menerima RM${total} daripada pemain lain.`);
+        notes.push(lang === 'en' ? `${pName} receives RM${total} from other players.` : `${pName} menerima RM${total} daripada pemain lain.`);
       }
       if (effect.payAll) {
         let total = 0;
         game.players.forEach((other) => {
           if (other.id !== player.id && !other.finished) {
-            other.score += effect.payAll;
+            other.score -= effect.payAll;
             total += effect.payAll;
           }
         });
-        player.score -= total;
-        notes.push(`${player.name} membayar RM${total} kepada pemain lain.`);
+        player.score += total;
+        notes.push(lang === 'en' ? `${pName} pays RM${total} to other players.` : `${pName} membayar RM${total} kepada pemain lain.`);
       }
       if (effect.transferFromPrevious) {
         const previous = findPreviousPlayer(game);
         if (previous) {
+          const prevName = getPlayerDisplayName(previous, lang);
           previous.score -= effect.transferFromPrevious;
           player.score += effect.transferFromPrevious;
-          notes.push(`${previous.name} memberi RM${effect.transferFromPrevious}.`);
+          notes.push(lang === 'en' ? `${prevName} gives RM${effect.transferFromPrevious}.` : `${prevName} memberi RM${effect.transferFromPrevious}.`);
         }
       }
       if (effect.freezeOthers) {
         game.players.forEach((other) => {
           if (other.id !== player.id && !other.finished) other.skipTurns += effect.freezeOthers;
         });
-        notes.push('Semua pemain lain hilang satu giliran.');
+        notes.push(lang === 'en' ? 'All other players lose one turn.' : 'Semua pemain lain hilang satu giliran.');
       }
       if (effect.freezeNext) {
         const target = findNextTargetPlayer(game);
         if (target) {
+          const targetName = getPlayerDisplayName(target, lang);
           target.skipTurns += effect.freezeNext;
-          notes.push(`${target.name} dibekukan satu giliran.`);
+          notes.push(lang === 'en' ? `${targetName} is frozen for one turn.` : `${targetName} dibekukan satu giliran.`);
         }
       }
       if (effect.extraTurn) {
         player.extraTurns += effect.extraTurn;
-        notes.push(`${player.name} mendapat ${effect.extraTurn} giliran tambahan.`);
+        notes.push(lang === 'en' ? `${pName} receives ${effect.extraTurn} extra turn(s).` : `${pName} mendapat ${effect.extraTurn} giliran tambahan.`);
       }
       if (effect.skipSelf) {
         player.skipTurns += effect.skipSelf;
-        notes.push(`${player.name} akan hilang ${effect.skipSelf} giliran.`);
+        notes.push(lang === 'en' ? `${pName} will lose ${effect.skipSelf} turn(s).` : `${pName} akan hilang ${effect.skipSelf} giliran.`);
       }
       if (effect.resetStart) {
         player.trail.push({ x: player.x, y: player.y, time: performance.now() });
         player.x = 0;
         player.y = 0;
-        notes.push(`${player.name} kembali ke Bukit Kristal (0, 0).`);
+        notes.push(lang === 'en' ? `${pName} returns to Crystal Hill (0, 0).` : `${pName} kembali ke Bukit Kristal (0, 0).`);
       }
       if (effect.rotate360) {
         game.effects.push({ type: 'correct', x: player.x, y: player.y, startedAt: performance.now() });
-        notes.push('Token diputar 360° dan kekal pada koordinat yang sama.');
+        notes.push(lang === 'en' ? 'Token rotated 360° and remains at the same coordinates.' : 'Token diputar 360° dan kekal pada koordinat yang sama.');
       }
       if (effect.drawRewardAgain && currentDepth < 1) {
         const nextReward = randomFrom(RRG_REWARD_CARDS.filter(card => !card.effect?.drawRewardAgain));
         showCardDraw(nextReward.deck, nextReward);
         game.lastActionCard = nextReward;
-        notes.push(`Kad ganjaran tambahan: ${applyCard(nextReward, currentDepth + 1)}`);
+        const prefix = lang === 'en' ? 'Additional reward card: ' : 'Kad ganjaran tambahan: ';
+        notes.push(`${prefix}${applyCard(nextReward, currentDepth + 1)}`);
       }
       return notes.join(' ');
     };
 
     return applyCard(actionCard, depth);
-  }, [findNextTargetPlayer, findPreviousPlayer, showCardDraw]);
+  }, [findNextTargetPlayer, findPreviousPlayer, lang, showCardDraw]);
 
   const resolveItem = useCallback((game, player, destination) => {
     const item = getRrgItemAt(destination);
     let effectType = 'correct';
-    let note = 'Tiada item pada persilangan grid ini.';
+    let note = lang === 'en' ? 'No item on this grid intersection.' : 'Tiada item pada persilangan grid ini.';
     if (item?.kind === 'money' || item?.kind === 'diamond' || item?.kind === 'chest') {
       player.score += item.amount;
       effectType = 'coin';
-      note = `${item.label}: +RM${item.amount}`;
+      const itemLabel = lang === 'en' ? (item.label_en || item.label) : item.label;
+      note = `${itemLabel}: +RM${item.amount}`;
     }
     if (item?.kind === 'reward') {
       const reward = randomFrom(RRG_REWARD_CARDS);
       showCardDraw(reward.deck, reward);
       game.lastActionCard = reward;
       effectType = 'coin';
-      note = `${reward.title}: ${applyActionCard(game, player, reward)}`;
+      const rTitle = getRrgCardTitle(reward, lang);
+      note = `${rTitle}: ${applyActionCard(game, player, reward)}`;
     }
     if (item?.kind === 'penalty') {
       const penalty = randomFrom(RRG_PENALTY_CARDS);
       showCardDraw(penalty.deck, penalty);
       game.lastActionCard = penalty;
       effectType = 'boom';
-      note = `${penalty.title}: ${applyActionCard(game, player, penalty)}`;
+      const pTitle = getRrgCardTitle(penalty, lang);
+      note = `${pTitle}: ${applyActionCard(game, player, penalty)}`;
     }
 
     if (isRrgSafeZone(destination) && !player.finished) {
@@ -3229,7 +3799,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
       const bonus = player.finishOrder === 1 ? 1000 : player.finishOrder === 2 ? 700 : player.finishOrder === 3 ? 400 : 0;
       if (bonus) {
         player.score += bonus;
-        note += ` Bonus Zon Selamat: +RM${bonus}`;
+        note += lang === 'en' ? ` Safe Zone Bonus: +RM${bonus}` : ` Bonus Zon Selamat: +RM${bonus}`;
       }
       if (game.finishCount >= Math.min(3, game.players.length)) game.gameOver = true;
     }
@@ -3237,25 +3807,28 @@ const RRGCanvasGame = ({ sessionUser }) => {
     game.effects.push({ type: effectType, x: destination.x, y: destination.y, startedAt: performance.now() });
     playRrgSound(effectType);
     return { effectType, note };
-  }, [applyActionCard, showCardDraw]);
+  }, [applyActionCard, lang, showCardDraw]);
 
   const submitAnswer = useCallback(async () => {
     const game = gameRef.current;
     if (!game || !game.card || !game.selected || game.gameOver || game.animating) return;
     const player = game.players[game.currentPlayer];
+    const pName = getPlayerDisplayName(player, lang);
     const correct = transformRrgPoint(player, game.card);
     const selected = game.selected;
     if (selected.x !== correct.x || selected.y !== correct.y) {
-      game.message = `${player.name} menguji pilihan (${selected.x}, ${selected.y})...`;
+      game.message = lang === 'en'
+        ? `${pName} testing choice (${selected.x}, ${selected.y})...`
+        : `${pName} menguji pilihan (${selected.x}, ${selected.y})...`;
       syncHud(game);
       await animatePlayerMove(game, player, selected, game.card, { previewOnly: true });
       player.score -= WRONG_COST;
       game.effects.push({ type: 'wrong', x: selected.x, y: selected.y, startedAt: performance.now() });
       kickCamera(game, 8, 260);
       playRrgSound('wrong');
-      showPopup('❌', `Jawapan belum tepat`, `${player.name} kehilangan RM${WRONG_COST}. Giliran tamat.`);
+      showPopup('❌', lang === 'en' ? 'Incorrect Answer' : 'Jawapan belum tepat', lang === 'en' ? `${pName} lost RM${WRONG_COST}. Turn ended.` : `${pName} kehilangan RM${WRONG_COST}. Giliran tamat.`);
       game.animating = false;
-      endTurn(game, `${player.name} memilih (${selected.x}, ${selected.y}) tetapi tidak tepat.`);
+      endTurn(game, lang === 'en' ? `${pName} chose (${selected.x}, ${selected.y}) but it was incorrect.` : `${pName} memilih (${selected.x}, ${selected.y}) tetapi tidak tepat.`);
       return;
     }
 
@@ -3265,12 +3838,12 @@ const RRGCanvasGame = ({ sessionUser }) => {
     await animatePlayerMove(game, player, destination, game.card);
     const { note, effectType } = resolveItem(game, player, destination);
     const emoji = effectType === 'boom' ? '💣' : effectType === 'coin' ? '💰' : '✅';
-    showPopup(emoji, 'Jawapan Tepat!', note);
+    showPopup(emoji, lang === 'en' ? 'Correct Answer!' : 'Jawapan Tepat!', note);
     syncHud(game);
     await new Promise((resolve) => window.setTimeout(resolve, 280));
     game.animating = false;
-    endTurn(game, `${player.name} berjaya bergerak ke (${destination.x}, ${destination.y}). ${note}`);
-  }, [animatePlayerMove, endTurn, kickCamera, resolveItem, showPopup, syncHud]);
+    endTurn(game, lang === 'en' ? `${pName} successfully moved to (${destination.x}, ${destination.y}). ${note}` : `${pName} berjaya bergerak ke (${destination.x}, ${destination.y}). ${note}`);
+  }, [animatePlayerMove, endTurn, kickCamera, lang, resolveItem, showPopup, syncHud]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -3373,17 +3946,17 @@ const RRGCanvasGame = ({ sessionUser }) => {
     }
 
     const landmarks = [
-      { x: 0, y: -1, type: 'crystal', label: 'Bukit Kristal', size: 1.45 },
-      { x: -8, y: 5, type: 'farm', label: 'Farm', size: 1.05 },
-      { x: 6, y: 3, type: 'factory', label: 'Factory', size: 1.05 },
-      { x: -5, y: -6, type: 'waterfall', label: 'Waterfall', size: 1.12 },
-      { x: 8, y: -4, type: 'clinic', label: 'Klinik', size: 1 },
-      { x: 5, y: -7, type: 'village', label: 'Village', size: 1.05 },
-      { x: 8, y: 10, type: 'harbor', label: 'Harbor', size: 1.02 },
-      { x: 14, y: 7, type: 'lighthouse', label: 'Lighthouse', size: 1.05 },
-      { x: 6, y: 8, type: 'bridge', label: 'Bridge', size: 0.96 },
-      { x: -9, y: 8, type: 'ranch', label: 'Ranch', size: 0.98 },
-      { x: 10, y: 0, type: 'market', label: 'Market', size: 0.98 },
+      { x: 0, y: -1, type: 'crystal', label: 'Bukit Kristal', label_ms: 'Bukit Kristal', label_en: 'Crystal Hill', size: 1.45 },
+      { x: -8, y: 5, type: 'farm', label: 'Kebun', label_ms: 'Kebun', label_en: 'Farm', size: 1.05 },
+      { x: 6, y: 3, type: 'factory', label: 'Kilang', label_ms: 'Kilang', label_en: 'Factory', size: 1.05 },
+      { x: -5, y: -6, type: 'waterfall', label: 'Air Terjun', label_ms: 'Air Terjun', label_en: 'Waterfall', size: 1.12 },
+      { x: 8, y: -4, type: 'clinic', label: 'Klinik', label_ms: 'Klinik', label_en: 'Clinic', size: 1 },
+      { x: 5, y: -7, type: 'village', label: 'Kampung', label_ms: 'Kampung', label_en: 'Village', size: 1.05 },
+      { x: 8, y: 10, type: 'harbor', label: 'Pelabuhan', label_ms: 'Pelabuhan', label_en: 'Harbor', size: 1.02 },
+      { x: 14, y: 7, type: 'lighthouse', label: 'Rumah Api', label_ms: 'Rumah Api', label_en: 'Lighthouse', size: 1.05 },
+      { x: 6, y: 8, type: 'bridge', label: 'Jambatan', label_ms: 'Jambatan', label_en: 'Bridge', size: 0.96 },
+      { x: -9, y: 8, type: 'ranch', label: 'Ladang', label_ms: 'Ladang', label_en: 'Ranch', size: 0.98 },
+      { x: 10, y: 0, type: 'market', label: 'Pasar', label_ms: 'Pasar', label_en: 'Market', size: 0.98 },
     ];
 
     const paths = [
@@ -3634,7 +4207,12 @@ const RRGCanvasGame = ({ sessionUser }) => {
     try {
       const saveKey = `rrg_save_${sessionUser?.uid || 'guest'}`;
       const saved = localStorage.getItem(saveKey);
-      if (saved) savedState = JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && Array.isArray(parsed.players) && parsed.players.length > 0) {
+          savedState = parsed;
+        }
+      }
     } catch (e) {
       console.warn("Failed to load saved game", e);
     }
@@ -3662,8 +4240,10 @@ const RRGCanvasGame = ({ sessionUser }) => {
       finishCount: savedState ? savedState.finishCount : 0,
       gameOver: false,
       animating: false,
-      message: savedState ? savedState.message : 'Misi bermula di Bukit Kristal. Semua pemain menerima RM100.',
-      players: savedState ? savedState.players.map(p => ({ ...p, trail: [], motion: null, motionLift: 0, motionTilt: 0, motionStretch: 0, motionTransformRotation: 0, landingPulseAt: 0, drawX: p.x, drawY: p.y })) : makePlayers(),
+      message: savedState ? savedState.message : (lang === 'en' ? 'Mission begins at Crystal Hill. All players receive RM100.' : 'Misi bermula di Bukit Kristal. Semua pemain menerima RM100.'),
+      players: (savedState && Array.isArray(savedState.players) && savedState.players.length > 0)
+        ? savedState.players.map(p => ({ ...p, trail: [], motion: null, motionLift: 0, motionTilt: 0, motionStretch: 0, motionTransformRotation: 0, landingPulseAt: 0, drawX: p.x, drawY: p.y }))
+        : makePlayers(),
       drawCard: savedState ? savedState.drawCard : null,
       lastActionCard: savedState ? savedState.lastActionCard : null,
       solutionPreview: savedState ? savedState.solutionPreview : null,
@@ -3675,7 +4255,9 @@ const RRGCanvasGame = ({ sessionUser }) => {
       lastTime: performance.now(),
     };
     gameRef.current = game;
-    centerOnPlayer(game, game.players[0], true);
+    if (game.players && game.players[0]) {
+      centerOnPlayer(game, game.players[0], true);
+    }
     syncHud(game);
 
     const resize = () => {
@@ -3711,7 +4293,9 @@ const RRGCanvasGame = ({ sessionUser }) => {
       game.isDragging = false;
       if (game.dragDistance < 6 && game.card && !game.gameOver && !game.animating) {
         game.selected = screenToGrid(event.clientX, event.clientY, game);
-        game.message = `Pilihan koordinat: (${game.selected.x}, ${game.selected.y}). Tekan Semak Jawapan.`;
+        game.message = lang === 'en'
+          ? `Selected coordinate: (${game.selected.x}, ${game.selected.y}). Press Check Answer.`
+          : `Pilihan koordinat: (${game.selected.x}, ${game.selected.y}). Tekan Semak Jawapan.`;
         syncHud(game);
       }
     };
@@ -4613,6 +5197,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
     };
 
     const drawLandmark = (landmark) => {
+      const lmLabel = (langRef.current === 'en' ? landmark.label_en : landmark.label_ms) || landmark.label;
       const pos = gridToPixel(landmark.x, landmark.y);
       const s = landmark.size;
       const assetMeta = landmarkAssetMeta[landmark.type] || {};
@@ -4648,8 +5233,8 @@ const RRGCanvasGame = ({ sessionUser }) => {
         ctx.shadowColor = 'rgba(15,23,42,0.28)';
         ctx.shadowBlur = 6;
         ctx.shadowOffsetY = 2;
-        ctx.strokeText(landmark.label, pos.px, labelY);
-        ctx.fillText(landmark.label, pos.px, labelY);
+        ctx.strokeText(lmLabel, pos.px, labelY);
+        ctx.fillText(lmLabel, pos.px, labelY);
         ctx.restore();
         return;
       }
@@ -4664,12 +5249,12 @@ const RRGCanvasGame = ({ sessionUser }) => {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         const labelY = pos.py + 34 * landmark.size;
-        const textWidth = ctx.measureText(landmark.label).width + 12;
+        const textWidth = ctx.measureText(lmLabel).width + 12;
         drawRoundRect(ctx, pos.px - textWidth / 2, labelY - 8, textWidth, 16, 5);
         ctx.fill();
         ctx.stroke();
         ctx.fillStyle = '#334155';
-        ctx.fillText(landmark.label, pos.px, labelY);
+        ctx.fillText(lmLabel, pos.px, labelY);
         ctx.restore();
         return;
       }
@@ -4738,12 +5323,12 @@ const RRGCanvasGame = ({ sessionUser }) => {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       const labelY = pos.py + 34 * landmark.size;
-      const textWidth = ctx.measureText(landmark.label).width + 12;
+      const textWidth = ctx.measureText(lmLabel).width + 12;
       drawRoundRect(ctx, pos.px - textWidth / 2, labelY - 8, textWidth, 16, 5);
       ctx.fill();
       ctx.stroke();
       ctx.fillStyle = '#334155';
-      ctx.fillText(landmark.label, pos.px, labelY);
+      ctx.fillText(lmLabel, pos.px, labelY);
       ctx.restore();
     };
 
@@ -4824,7 +5409,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
       ctx.fillStyle = '#1e3a8a';
       ctx.font = 'bold 11px Inter';
       ctx.textAlign = 'center';
-      ctx.fillText(`Imej pilihan (${game.selected.x}, ${game.selected.y})`, pos.px, pos.py - 36);
+      ctx.fillText(`${langRef.current === 'en' ? 'Selected image' : 'Imej pilihan'} (${game.selected.x}, ${game.selected.y})`, pos.px, pos.py - 36);
       ctx.restore();
     };
 
@@ -4959,7 +5544,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
         dashOffset: -game.time * 28,
       });
       const mid = { x: (segment.from.x + segment.to.x) / 2, y: (segment.from.y + segment.to.y) / 2 };
-      drawGuideLabel(getRrgReflectionLineLabel(card), mid, {
+      drawGuideLabel(getRrgReflectionLineLabel(card, langRef.current), mid, {
         alpha,
         background: 'rgba(5, 150, 105, 0.9)',
         offsetY: card.axis === 'x' || card.axis === 'yLine' ? -24 : -34,
@@ -4973,7 +5558,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
       const progress = options.progress ?? 1;
       const alpha = options.alpha ?? 1;
       const color = options.color || '#2563eb';
-      drawPointMarker(center, '#2563eb', `Pusat (${card.cx}, ${card.cy})`, {
+      drawPointMarker(center, '#2563eb', `${langRef.current === 'en' ? 'Center' : 'Pusat'} (${card.cx}, ${card.cy})`, {
         alpha,
         radius: 7,
         labelBackground: 'rgba(37, 99, 235, 0.9)',
@@ -5007,7 +5592,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
       ctx.stroke();
       ctx.restore();
       if (prev && last) drawArrowHead(prev, last, color, alpha, 12);
-      const dir = card.dir === 'cw' ? 'ikut jam' : 'lawan jam';
+      const dir = langRef.current === 'en' ? (card.dir === 'cw' ? 'clockwise' : 'anticlockwise') : (card.dir === 'cw' ? 'ikut jam' : 'lawan jam');
       drawGuideLabel(options.label || `${card.angle}° ${dir}`, {
         x: center.x + Math.cos(startAngle + signedAngle * progress * 0.5) * Math.max(1.25, radius * 0.72),
         y: center.y + Math.sin(startAngle + signedAngle * progress * 0.5) * Math.max(1.25, radius * 0.72),
@@ -5052,7 +5637,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
             y: (xStep.y + destination.y) / 2,
           }, { alpha, background: 'rgba(249, 115, 22, 0.9)', offsetY: -24 });
         }
-        drawGuideLabel(`${isGuess ? 'vektor tekaan' : 'vektor'} (${vectorDx}, ${vectorDy})`, {
+        drawGuideLabel(`${isGuess ? (langRef.current === 'en' ? 'guess vector' : 'vektor tekaan') : (langRef.current === 'en' ? 'vector' : 'vektor')} (${vectorDx}, ${vectorDy})`, {
           x: (from.x + destination.x) / 2,
           y: (from.y + destination.y) / 2,
         }, { alpha, background: 'rgba(127, 29, 29, 0.86)' });
@@ -5061,7 +5646,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
         drawReflectionLineGuide(card, alpha);
         if (foot) {
           drawGridLine(from, foot, '#0f766e', { alpha: alpha * 0.78, width: 3, dash: [7, 7] });
-          drawPointMarker(foot, '#0f766e', showAnswer ? 'Jarak sama' : 'Tegak ke garis', {
+          drawPointMarker(foot, '#0f766e', showAnswer ? (langRef.current === 'en' ? 'Equal dist' : 'Jarak sama') : (langRef.current === 'en' ? 'Perp to line' : 'Tegak ke garis'), {
             alpha: alpha * 0.88,
             radius: 5.5,
             labelOffsetY: -26,
@@ -5085,21 +5670,21 @@ const RRGCanvasGame = ({ sessionUser }) => {
           progress: showDestination ? 1 : 0.86,
           color: '#2563eb',
           signedAngle: isGuess ? getRrgGuessSignedRadians(from, destination, card) : undefined,
-          label: isGuess ? 'putaran tekaan' : undefined,
+          label: isGuess ? (langRef.current === 'en' ? 'guess rotation' : 'putaran tekaan') : undefined,
           dash: mode === 'active' ? [12, 9] : [],
         });
         if (showDestination) {
           drawGridLine({ x: card.cx, y: card.cy }, destination, '#1d4ed8', { alpha: alpha * 0.48, width: 2.6, dash: [6, 7] });
         }
       }
-      drawPointMarker(from, '#0f172a', 'Mula', {
+      drawPointMarker(from, '#0f172a', langRef.current === 'en' ? 'Start' : 'Mula', {
         alpha: alpha * 0.9,
         radius: 6.5,
         labelOffsetY: 30,
         labelBackground: 'rgba(15, 23, 42, 0.86)',
       });
       if (showDestination) {
-        drawPointMarker(destination, isGuess ? '#f97316' : '#16a34a', `${isGuess ? 'Pilihan' : 'Jawapan'} (${destination.x}, ${destination.y})`, {
+        drawPointMarker(destination, isGuess ? '#f97316' : '#16a34a', `${isGuess ? (langRef.current === 'en' ? 'Choice' : 'Pilihan') : (langRef.current === 'en' ? 'Answer' : 'Jawapan')} (${destination.x}, ${destination.y})`, {
           alpha,
           radius: 8.5,
           labelBackground: isGuess ? 'rgba(249, 115, 22, 0.92)' : 'rgba(22, 163, 74, 0.92)',
@@ -5113,7 +5698,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
       if (!player) return;
       const pos = gridToPixel(player.x, player.y);
       if (game.card.type === 'translasi') {
-        drawGuideLabel(`vektor kad (${game.card.dx}, ${game.card.dy})`, { px: pos.px, py: pos.py }, {
+        drawGuideLabel(`${langRef.current === 'en' ? 'card vector' : 'vektor kad'} (${game.card.dx}, ${game.card.dy})`, { px: pos.px, py: pos.py }, {
           alpha: 0.74,
           offsetY: -48,
           background: 'rgba(127, 29, 29, 0.86)',
@@ -5125,7 +5710,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
         return;
       }
       if (game.card.type === 'putaran') {
-        drawPointMarker({ x: game.card.cx, y: game.card.cy }, '#2563eb', `Pusat (${game.card.cx}, ${game.card.cy})`, {
+        drawPointMarker({ x: game.card.cx, y: game.card.cy }, '#2563eb', `${langRef.current === 'en' ? 'Center' : 'Pusat'} (${game.card.cx}, ${game.card.cy})`, {
           alpha: 0.76,
           radius: 7,
           labelBackground: 'rgba(37, 99, 235, 0.9)',
@@ -5730,12 +6315,11 @@ const RRGCanvasGame = ({ sessionUser }) => {
           ctx.stroke();
           ctx.restore();
         }
-        drawPlayerToken(player, index, pos.px, pos.py, 'object', { size: tokenSize, bounce, label: true, scaleX, scaleY, shadowScale, rotation });
-        
-        // Draw 2D Polygon Shape (House Shape) directly on the grid lines
-        const poly = getPlayerObjectPolygon(player, index);
+        // Penanda Sebenar Pemain: Objek Bentuk 2D Mengikut Koordinat Satah Cartes
+        const poly = getPlayerObjectPolygon(player, index, langRef.current);
         if (poly && poly.vertices.length > 0) {
           ctx.save();
+          // Lukis bentuk poligon
           ctx.beginPath();
           poly.vertices.forEach((v, vIndex) => {
             const vPos = gridToPixel(v.x, v.y);
@@ -5743,35 +6327,55 @@ const RRGCanvasGame = ({ sessionUser }) => {
             else ctx.lineTo(vPos.px, vPos.py);
           });
           ctx.closePath();
-          ctx.fillStyle = player.color + '44';
+          ctx.fillStyle = player.color + '40';
           ctx.fill();
           ctx.strokeStyle = player.color;
           ctx.lineWidth = 3.5;
           ctx.stroke();
 
-          ctx.font = 'bold 10px Inter';
+          // Lukis bucu-bucu (A, B, C...) di atas koordinat satah
+          ctx.font = 'bold 10.5px Inter';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          poly.vertices.forEach((v) => {
+          poly.vertices.forEach((v, vIdx) => {
             const vPos = gridToPixel(v.x, v.y);
             ctx.fillStyle = player.color;
             ctx.beginPath();
-            ctx.arc(vPos.px, vPos.py, 9, 0, Math.PI * 2);
+            ctx.arc(vPos.px, vPos.py, 10, 0, Math.PI * 2);
             ctx.fill();
             ctx.strokeStyle = '#ffffff';
             ctx.lineWidth = 2;
             ctx.stroke();
             ctx.fillStyle = '#ffffff';
             ctx.fillText(v.label, vPos.px, vPos.py + 0.5);
+
+            // Pada bucu utama A (vIdx === 0), paparkan lencana nama pemain
+            if (vIdx === 0) {
+              ctx.save();
+              ctx.font = 'bold 11px Inter';
+              const displayName = getPlayerDisplayName(player, langRef.current);
+              const textWidth = ctx.measureText(displayName).width;
+              const badgeWidth = textWidth + 16;
+              ctx.fillStyle = player.color;
+              ctx.beginPath();
+              ctx.roundRect(vPos.px - badgeWidth / 2, vPos.py - 26, badgeWidth, 18, 4);
+              ctx.fill();
+              ctx.strokeStyle = '#ffffff';
+              ctx.lineWidth = 1.5;
+              ctx.stroke();
+              ctx.fillStyle = '#ffffff';
+              ctx.fillText(displayName, vPos.px, vPos.py - 17);
+              ctx.restore();
+            }
           });
           ctx.restore();
         }
       });
 
-      // Draw Transformed Image 2D Polygon Shape (A', B', C', D', E') on Grid Lines
+      // Lukis Imej Hasil Transformasi (A', B', C'...) bila ada kad aktif
       const activePlayerObj = game.players[game.currentPlayer];
-      const activePoly = getPlayerObjectPolygon(activePlayerObj, game.currentPlayer);
-      const targetPoly = getTransformedPolygon(activePoly, game.card);
+      const activePoly = getPlayerObjectPolygon(activePlayerObj, game.currentPlayer, langRef.current);
+      const targetPoly = getTransformedPolygon(activePoly, game.card, langRef.current);
       if (targetPoly && targetPoly.vertices.length > 0) {
         ctx.save();
         ctx.beginPath();
@@ -5781,7 +6385,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
           else ctx.lineTo(vPos.px, vPos.py);
         });
         ctx.closePath();
-        ctx.fillStyle = 'rgba(37, 99, 235, 0.25)';
+        ctx.fillStyle = 'rgba(37, 99, 235, 0.22)';
         ctx.fill();
         ctx.setLineDash([8, 6]);
         ctx.strokeStyle = '#2563eb';
@@ -5796,7 +6400,7 @@ const RRGCanvasGame = ({ sessionUser }) => {
           const vPos = gridToPixel(v.x, v.y);
           ctx.fillStyle = '#2563eb';
           ctx.beginPath();
-          ctx.arc(vPos.px, vPos.py, 9, 0, Math.PI * 2);
+          ctx.arc(vPos.px, vPos.py, 10, 0, Math.PI * 2);
           ctx.fill();
           ctx.strokeStyle = '#ffffff';
           ctx.lineWidth = 2;
@@ -5853,8 +6457,9 @@ const RRGCanvasGame = ({ sessionUser }) => {
       ctx.font = 'bold 16px Inter';
       ctx.fillStyle = 'rgba(0,0,0,0.28)';
       ctx.textAlign = 'center';
-      ctx.fillText('ZON SELAMAT', gridToPixel(0, 15).px, gridToPixel(0, 15).py - 10);
-      ctx.fillText('ZON SELAMAT', gridToPixel(0, -15).px, gridToPixel(0, -15).py + 20);
+      const safeZoneLabel = langRef.current === 'en' ? 'SAFE ZONE' : 'ZON SELAMAT';
+      ctx.fillText(safeZoneLabel, gridToPixel(0, 15).px, gridToPixel(0, 15).py - 10);
+      ctx.fillText(safeZoneLabel, gridToPixel(0, -15).px, gridToPixel(0, -15).py + 20);
 
       // --- ULTRA-REALISTIC DRIFTING CLOUDS (High-altitude) ---
       ctx.save();
@@ -5925,56 +6530,81 @@ const RRGCanvasGame = ({ sessionUser }) => {
   }, [resetTrigger, getAxisSegmentDuration, getSegmentDuration, makePlayers, showPopup, submitAnswer, syncHud]);
 
   const handleRestartGame = () => {
-    if (window.confirm("Adakah anda pasti mahu memulakan semula permainan? Semua data yang belum tamat akan dipadam.")) {
+    const confirmText = lang === 'en'
+      ? "Are you sure you want to restart the game? All ongoing game data will be cleared."
+      : "Adakah anda pasti mahu memulakan semula permainan? Semua data yang belum tamat akan dipadam.";
+    if (window.confirm(confirmText)) {
+      const saveKey = `rrg_save_${sessionUser?.uid || 'guest'}`;
+      localStorage.removeItem(saveKey);
       localStorage.removeItem('rrg_save');
       setResetTrigger(prev => prev + 1);
     }
   };
 
   const activePlayer = hud.players[hud.currentPlayer];
-  const diceLabel = hud.diceRolling ? `${hud.dice?.symbol || '🎲'} Memilih warna...` : hud.dice ? `${hud.dice.symbol} ${hud.dice.label}` : 'Belum roll';
+  const activePlayerDisplayName = getPlayerDisplayName(activePlayer, lang);
+  const diceLabel = hud.diceRolling
+    ? (lang === 'en' ? `${hud.dice?.symbol || '🎲'} Choosing color...` : `${hud.dice?.symbol || '🎲'} Memilih warna...`)
+    : hud.dice
+    ? `${hud.dice.symbol} ${lang === 'en' ? (hud.dice.label_en || hud.dice.label) : hud.dice.label}`
+    : (lang === 'en' ? 'Not rolled' : 'Belum roll');
 
   return (
     <div className="rrg-canvas-game">
       <canvas ref={canvasRef} className="rrg-game-canvas" aria-label="Running Rangers Game digital canvas" />
       <div className="rrg-game-hud">
         <div className="rrg-hud-left">
-          <div className="rrg-title-bar">🏝️ RRG — PULAU IDAMAN</div>
+          <div className="rrg-title-bar">🏝️ RRG — {lang === 'en' ? 'DREAM ISLAND' : 'PULAU IDAMAN'}</div>
           <button onClick={handleRestartGame} className="mt-2 text-xs bg-red-500/80 hover:bg-red-600 text-white px-3 py-1.5 rounded shadow-sm font-bold transition flex items-center gap-1">
-            <RefreshCw className="w-3 h-3" /> Mula Semula
+            <RefreshCw className="w-3 h-3" /> {lang === 'en' ? 'Restart' : 'Mula Semula'}
           </button>
         </div>
         <div className="rrg-hud-right">
-          <div className="rrg-hud-panel"><span>Giliran</span><b>{activePlayer?.name || 'Pemain'}</b></div>
+          <div className="rrg-hud-panel"><span>{lang === 'en' ? 'Current Turn' : 'Giliran Semasa'}</span><b>{activePlayerDisplayName || (lang === 'en' ? 'Player 1' : 'Pemain 1')}</b></div>
           <label className="rrg-hud-panel rrg-player-hud-control">
-            <span>Pemain</span>
-            <select value={playerCount} onChange={updatePlayerCount} disabled={hud.animating} aria-label="Bilangan pemain">
-              {[2, 3, 4, 5, 6].map((count) => <option key={count} value={count}>{count}</option>)}
+            <span>{lang === 'en' ? 'Players' : 'Bil. Pemain'}</span>
+            <select value={playerCount} onChange={updatePlayerCount} disabled={hud.animating} aria-label={lang === 'en' ? 'Number of players' : 'Bilangan pemain'}>
+              {[2, 3, 4, 5, 6].map((count) => <option key={count} value={count}>{count} {lang === 'en' ? 'Players' : 'Pemain'}</option>)}
             </select>
           </label>
-          <div className="rrg-hud-panel"><span>Wang</span><b>RM{activePlayer?.score ?? 0}</b></div>
-          <div className="rrg-hud-panel"><span>Posisi</span><b>({activePlayer?.x ?? 0}, {activePlayer?.y ?? 0})</b></div>
+          <div className="rrg-hud-panel"><span>{lang === 'en' ? 'Cash' : 'Wang'}</span><b>RM{activePlayer?.score ?? 0}</b></div>
+          <div className="rrg-hud-panel"><span>{lang === 'en' ? 'Position' : 'Posisi'}</span><b>({activePlayer?.x ?? 0}, {activePlayer?.y ?? 0})</b></div>
         </div>
       </div>
       <div className={`rrg-turn-indicator ${hud.animating ? 'animating' : ''}`}>
         {hud.players.map((player, index) => <span key={player.id} className={`rrg-turn-dot ${hud.currentPlayer === index ? 'active' : ''}`} style={{ background: player.finished ? '#22c55e' : player.color, color: player.color }} />)}
-        <b>{hud.gameOver ? 'Game tamat' : `${activePlayer?.name || 'Pemain'} sedang bermain`}</b>
+        <b>{hud.gameOver ? (lang === 'en' ? 'Game Over' : 'Game tamat') : `${activePlayerDisplayName || (lang === 'en' ? 'Player' : 'Pemain')} ${lang === 'en' ? 'is playing' : 'sedang bermain'}`}</b>
       </div>
       <div className="rrg-card-panel">
-        <div className="rrg-card-title">Kad Transformasi</div>
+        <div className="rrg-card-title">{lang === 'en' ? 'Transformation Card' : 'Kad Transformasi'}</div>
         <div className={`rrg-card-dice ${hud.diceRolling ? 'rolling' : ''}`}>{diceLabel}</div>
-        <h3>{hud.card ? hud.card.title : 'Roll dadu warna'}</h3>
-        <p>{hud.card ? hud.card.text : hud.message}</p>
-        {hud.card?.cardImage && <img className="rrg-current-card-img" src={hud.card.cardImage} alt={hud.card.title} />}
+        <h3>{hud.card ? getRrgCardTitle(hud.card, lang) : (lang === 'en' ? 'Roll color dice' : 'Roll dadu warna')}</h3>
+        <p>{hud.card ? getRrgCardText(hud.card, lang) : hud.message}</p>
+        {hud.card && (
+          <div className="mt-2">
+            <RRGCardVisual
+              card={hud.card}
+              lang={lang}
+              className="rrg-current-card-img"
+              onClick={() => setZoomedCard(hud.card)}
+            />
+            <button
+              type="button"
+              onClick={() => setZoomedCard(hud.card)}
+              className="mt-1 text-[11px] text-blue-300 hover:text-white underline font-semibold flex items-center gap-1 transition"
+            >
+              🔍 {lang === 'en' ? 'Click card to enlarge' : 'Klik kad untuk besarkan'}
+            </button>
+          </div>
+        )}
         
-        {/* Form 2 2D Polygon Vertex Mapping Panel */}
         {(() => {
-          const activePoly = getPlayerObjectPolygon(activePlayer, hud.currentPlayer);
-          const targetPoly = getTransformedPolygon(activePoly, hud.card);
+          const activePoly = getPlayerObjectPolygon(activePlayer, hud.currentPlayer, lang);
+          const targetPoly = getTransformedPolygon(activePoly, hud.card, lang);
           if (!activePoly) return null;
           return (
             <div className="mt-3 p-2.5 rounded-lg bg-slate-900/90 text-white border border-blue-400/40 text-xs">
-              <p className="font-extrabold text-blue-300 uppercase tracking-wide text-[10px]">📐 Bentuk 2D (Tingkatan 2): <span className="text-white font-bold">{activePoly.name}</span></p>
+              <p className="font-extrabold text-blue-300 uppercase tracking-wide text-[10px]">📐 {lang === 'en' ? '2D Marker' : 'Penanda 2D'}: <span className="text-white font-bold">{activePoly.name}</span></p>
               <div className="flex flex-wrap gap-1 mt-1.5">
                 {activePoly.vertices.map(v => (
                   <span key={v.label} className="px-1.5 py-0.5 rounded bg-slate-800 text-blue-200 text-[10px] font-mono font-bold border border-slate-700">
@@ -5984,8 +6614,8 @@ const RRGCanvasGame = ({ sessionUser }) => {
               </div>
               {targetPoly && (
                 <div className="mt-2 pt-2 border-t border-slate-700/80">
-                  <p className="font-extrabold text-amber-300 uppercase tracking-wide text-[10px]">Pemetaan Bucu Imej Transformasi:</p>
-                  <div className="space-y-1 mt-1 max-h-32 overflow-y-auto pr-1">
+                  <p className="font-extrabold text-amber-300 uppercase tracking-wide text-[10px]">{lang === 'en' ? 'Transformed Image (Cartesian Plane):' : 'Imej Transformasi (Satah Cartes):'}</p>
+                  <div className="space-y-1 mt-1 max-h-28 overflow-y-auto pr-1">
                     {activePoly.vertices.map((v, i) => {
                       const tv = targetPoly.vertices[i];
                       return (
@@ -6003,22 +6633,22 @@ const RRGCanvasGame = ({ sessionUser }) => {
           );
         })()}
 
-        {!hud.card && hud.lastActionCard?.cardImage && (
-          <div className="rrg-last-card">
-            <span>Kad item terakhir</span>
-            <img src={hud.lastActionCard.cardImage} alt={hud.lastActionCard.title} />
+        {!hud.card && hud.lastActionCard && (
+          <div className="rrg-last-card cursor-pointer" onClick={() => setZoomedCard(hud.lastActionCard)}>
+            <span>{lang === 'en' ? 'Last item card' : 'Kad item terakhir'}</span>
+            <RRGCardVisual card={hud.lastActionCard} lang={lang} isThumbnail />
           </div>
         )}
-        {hud.selected && <div className="rrg-selected-coord">Pilihan: ({hud.selected.x}, {hud.selected.y})</div>}
+        {hud.selected && <div className="rrg-selected-coord">{lang === 'en' ? 'Selection' : 'Pilihan'}: ({hud.selected.x}, {hud.selected.y})</div>}
         {hud.hintLevel > 0 && <div className="rrg-selected-coord hint">Hint {hud.hintLevel}: {hud.message}</div>}
       </div>
-      <div className="rrg-deck-rack" aria-label="Deck kad RRGs">
+      <div className="rrg-deck-rack" aria-label={lang === 'en' ? 'RRGs Card Decks' : 'Deck kad RRGs'}>
         {[
-          { deck: 'merah', label: 'Translasi' },
-          { deck: 'hijau', label: 'Pantulan' },
-          { deck: 'biru', label: 'Putaran' },
-          { deck: 'kuning', label: 'Ganjaran' },
-          { deck: 'hitam', label: 'Denda' },
+          { deck: 'merah', label: lang === 'en' ? 'Translation' : 'Translasi' },
+          { deck: 'hijau', label: lang === 'en' ? 'Reflection' : 'Pantulan' },
+          { deck: 'biru', label: lang === 'en' ? 'Rotation' : 'Putaran' },
+          { deck: 'kuning', label: lang === 'en' ? 'Reward' : 'Ganjaran' },
+          { deck: 'hitam', label: lang === 'en' ? 'Penalty' : 'Denda' },
         ].map(item => (
           <div key={item.deck} className={`rrg-deck-stack rrg-deck-${item.deck}`}>
             <img src={RRG_CARD_IMAGE(item.deck, 1)} alt={`Deck ${item.label}`} />
@@ -6028,22 +6658,22 @@ const RRGCanvasGame = ({ sessionUser }) => {
       </div>
       {hud.drawCard && (
         <div key={hud.drawCard.token} className={`rrg-card-flight rrg-deck-${hud.drawCard.deckKey}`}>
-          <img src={hud.drawCard.card.cardImage} alt={hud.drawCard.card.title} />
+          <RRGCardVisual card={hud.drawCard.card} lang={lang} />
         </div>
       )}
       <div className="rrg-dice-panel rrg-transform-actions">
-        <button type="button" className={hud.diceRolling ? 'roll-active' : ''} onClick={rollDice} disabled={!!hud.card || hud.gameOver || hud.animating}>🎲 Roll Warna</button>
+        <button type="button" className={hud.diceRolling ? 'roll-active' : ''} onClick={rollDice} disabled={!!hud.card || hud.gameOver || hud.animating}>🎲 {lang === 'en' ? 'Roll Color' : 'Roll Warna'}</button>
         <button type="button" onClick={buyHint} disabled={!hud.card || hud.hintLevel >= 2 || hud.gameOver || hud.animating || (activePlayer?.score ?? 0) < HINT_COST}>💡 Hint RM{HINT_COST}</button>
-        <button type="button" onClick={submitAnswer} disabled={!hud.card || !hud.selected || hud.gameOver || hud.animating}>✅ Semak</button>
+        <button type="button" onClick={submitAnswer} disabled={!hud.card || !hud.selected || hud.gameOver || hud.animating}>✅ {lang === 'en' ? 'Check' : 'Semak'}</button>
         <button type="button" onClick={() => resetGame()} disabled={hud.animating}>↻ Reset</button>
       </div>
       <div className="rrg-minimap"><canvas ref={miniMapRef} width="140" height="140" /></div>
       <div className="rrg-controls-hint">
-        <span><kbd>Click</kbd> Pilih koordinat</span>
-        <span><kbd>WASD</kbd> Laras pilihan</span>
-        <span><kbd>Enter</kbd> Semak</span>
-        <span><kbd>Putih</kbd> Objek</span>
-        <span><kbd>Biru</kbd> Imej</span>
+        <span><kbd>Click</kbd> {lang === 'en' ? 'Select coord' : 'Pilih koordinat'}</span>
+        <span><kbd>WASD</kbd> {lang === 'en' ? 'Adjust selection' : 'Laras pilihan'}</span>
+        <span><kbd>Enter</kbd> {lang === 'en' ? 'Check' : 'Semak'}</span>
+        <span><kbd>{lang === 'en' ? 'White' : 'Putih'}</kbd> {lang === 'en' ? 'Object' : 'Objek'}</span>
+        <span><kbd>{lang === 'en' ? 'Blue' : 'Biru'}</kbd> {lang === 'en' ? 'Image' : 'Imej'}</span>
         <span><kbd>Scroll</kbd> Zoom</span>
         <span><kbd>Drag</kbd> Pan</span>
       </div>
@@ -6052,6 +6682,43 @@ const RRGCanvasGame = ({ sessionUser }) => {
           <div className="rrg-popup-emoji">{hud.popup.emoji}</div>
           <h3>{hud.popup.title}</h3>
           <p>{hud.popup.text}</p>
+        </div>
+      )}
+      {zoomedCard && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200" onClick={() => setZoomedCard(null)}>
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl relative text-white flex flex-col items-center" onClick={e => e.stopPropagation()}>
+            <button
+              type="button"
+              className="absolute top-4 right-4 text-slate-400 hover:text-white text-xl font-bold p-1 rounded-lg bg-slate-800"
+              onClick={() => setZoomedCard(null)}
+              aria-label="Close"
+            >
+              ✕
+            </button>
+            <h3 className="text-lg font-black text-amber-400 mb-3 tracking-wide">
+              {getRrgCardTitle(zoomedCard, lang)}
+            </h3>
+            <div className="w-[180px] my-2">
+              <RRGCardVisual card={zoomedCard} lang={lang} className="w-full" />
+            </div>
+            <div className="mt-4 p-3.5 rounded-xl bg-slate-800/90 border border-slate-700 w-full text-center">
+              <p className="text-sm font-semibold text-blue-200 mb-1.5">
+                {getRrgCardText(zoomedCard, lang)}
+              </p>
+              <p className="text-xs text-slate-400">
+                {lang === 'en'
+                  ? 'Identify the transformation rule and select your target coordinate on the grid.'
+                  : 'Kenal pasti peraturan transformasi dan klik koordinat sasaran pada grid.'}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setZoomedCard(null)}
+              className="mt-4 px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 font-bold text-sm text-white shadow-lg transition"
+            >
+              {lang === 'en' ? 'Got It' : 'Faham'}
+            </button>
+          </div>
         </div>
       )}
     </div>
@@ -6084,7 +6751,7 @@ const getFirebaseAuthMessage = (error) => {
   if (code === 'auth/network-request-failed') return 'Sambungan internet/Firebase gagal. Cuba semula.';
   if (code === 'auth/too-many-requests') return 'Terlalu banyak percubaan. Tunggu sekejap sebelum cuba lagi.';
   if (code === 'auth/unauthorized-domain') return 'Domain website belum authorized dalam Firebase Authentication settings.';
-  if (code === 'permission-denied') return 'Firestore menolak akses. Buat Firestore Database dan set rules untuk user login dahulu.';
+  if (code === 'permission-denied') return 'Firestore menolak akses. Pergi ke Firebase Console > Firestore Database > Rules, tukar kepada "allow read, write: if true;" dan tekan Publish.';
   if (code === 'failed-precondition') return 'Firestore Database belum siap. Pergi Firestore Database dan klik Create database.';
   if (code === 'unavailable' || code === 'deadline-exceeded') return 'Firestore/Firebase lambat atau tidak dapat dicapai. Cuba semula sebentar lagi.';
   return 'Firebase error: ' + (code || 'unknown') + '. ' + (error?.message || 'Semak Authentication dan Firestore.');
@@ -6127,17 +6794,21 @@ const LoginPage = ({ onLogin }) => {
     const credential = await signInWithEmailAndPassword(auth, email, password);
     await credential.user.reload();
 
-    if (!credential.user.emailVerified) {
-      setError('Emel belum disahkan. Sila buka inbox emel anda dan klik link verification daripada Firebase.');
-      return;
-    }
-
     const profileRef = doc(db, 'users', credential.user.uid);
     const profileSnap = await getDoc(profileRef);
     const profile = profileSnap.exists() ? profileSnap.data() : {};
     const name = profile.name || credential.user.displayName || getDisplayName(email);
     
-    if (profile.role !== 'admin' && profile.isApproved !== true) {
+    const isAdminEmail = email.toLowerCase() === 'zaimshahbudin@gmail.com' || profile.role === 'admin';
+
+    if (!credential.user.emailVerified && !isAdminEmail) {
+      setError('Emel belum disahkan. Sila buka inbox emel anda dan klik link verification daripada Firebase.');
+      return;
+    }
+    const role = isAdminEmail ? 'admin' : (profile.role || 'Pelajar');
+    const isApproved = isAdminEmail ? true : (profile.isApproved === true);
+
+    if (role !== 'admin' && isApproved !== true) {
       await auth.signOut();
       setError('Akaun anda sedang diproses. Sila tunggu kelulusan cikgu untuk mula bermain.');
       return;
@@ -6146,13 +6817,14 @@ const LoginPage = ({ onLogin }) => {
     await setDoc(profileRef, {
       name,
       email,
-      role: profile.role || 'Pelajar',
+      role,
+      isApproved,
       emailVerified: true,
       lastLoginAt: serverTimestamp(),
     }, { merge: true });
 
     updateRememberedEmail(email);
-    onLogin({ uid: credential.user.uid, name, email, role: profile.role || 'Pelajar', database: 'firebase' });
+    onLogin({ uid: credential.user.uid, name, email, role, database: 'firebase' });
   };
 
   const handleForgotPassword = async () => {
@@ -6233,12 +6905,14 @@ const LoginPage = ({ onLogin }) => {
   const handleFirebaseRegister = async (name, email, password) => {
     const credential = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(credential.user, { displayName: name });
-    await sendEmailVerification(credential.user);
+    try { await sendEmailVerification(credential.user); } catch (e) { console.warn("Email verification failed to send", e); }
+    
+    const isAdminEmail = email.toLowerCase() === 'zaimshahbudin@gmail.com';
     await setDoc(doc(db, 'users', credential.user.uid), {
       name,
       email,
-      role: 'Pelajar',
-      isApproved: false,
+      role: isAdminEmail ? 'admin' : 'Pelajar',
+      isApproved: isAdminEmail ? true : false,
       emailVerified: false,
       createdAt: serverTimestamp(),
       lastLoginAt: null,
@@ -6246,7 +6920,7 @@ const LoginPage = ({ onLogin }) => {
 
     setRegisterData({ name: '', email: '', password: '', confirmPassword: '' });
     setLoginData({ email, password: '' });
-    setSuccess('Akaun berjaya didaftarkan. Sila tunggu kelulusan cikgu sebelum anda boleh log masuk.');
+    setSuccess(isAdminEmail ? 'Akaun Admin berjaya didaftarkan! Sila log masuk.' : 'Akaun berjaya didaftarkan. Sila tunggu kelulusan cikgu sebelum anda boleh log masuk.');
     setError('');
     setIsRegister(false);
   };
@@ -6589,7 +7263,11 @@ export default function App() {
           {activeTab === 'nota' && <SectionNota lang={lang} />}
           {activeTab === 'makmal' && <SectionMakmal lang={lang} />}
           {activeTab === 'kuiz' && <SectionKuiz lang={lang} sessionUser={sessionUser} />}
-          {activeTab === 'rrgs' && <RRGCanvasGame sessionUser={sessionUser} />}
+          {activeTab === 'rrgs' && (
+            <RRGErrorBoundary lang={lang} sessionUser={sessionUser}>
+              <RRGCanvasGame lang={lang} sessionUser={sessionUser} />
+            </RRGErrorBoundary>
+          )}
           {activeTab === 'admin' && sessionUser.role === 'admin' && <AdminDashboard />}
         </div>
       </main>

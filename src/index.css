@@ -2178,3 +2178,151 @@ body {
     width: 104px;
   }
 }
+
+/* Bilingual RRG Card Visuals */
+.rrg-card-visual {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.36);
+  aspect-ratio: 339 / 452;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rrg-card-visual:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.45);
+}
+
+.rrg-card-visual-bg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rrg-card-visual-overlay {
+  position: absolute;
+  top: 17%;
+  bottom: 15%;
+  left: 6%;
+  right: 6%;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4px 6px;
+  pointer-events: none;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+.rrg-card-visual-thumb {
+  width: 54px !important;
+  border-radius: 6px !important;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3) !important;
+  cursor: default;
+}
+
+.rrg-card-visual-thumb:hover {
+  transform: none;
+}
+
+.rrg-card-flight .rrg-card-visual {
+  width: 100%;
+  cursor: default;
+}
+
+.rrg-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.rrg-card-type-label {
+  font-size: 0.8rem;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.rrg-card-vector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.rrg-vector-paren {
+  font-size: 2.1rem;
+  font-weight: 200;
+  color: #64748b;
+  transform: scaleY(1.2);
+}
+
+.rrg-vector-vals {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0 2px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.rrg-card-sublabel {
+  font-size: 0.72rem;
+  line-height: 1.1;
+  margin-bottom: 2px;
+}
+
+.rrg-card-highlight {
+  font-size: 0.85rem;
+  line-height: 1.15;
+}
+
+.rrg-card-desc {
+  font-size: 0.62rem;
+  line-height: 1.25;
+  margin-top: 4px;
+  max-height: 85px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+}
+
+/* Sizing for thumbnail */
+.rrg-card-visual-thumb .rrg-card-type-label {
+  font-size: 0.44rem;
+  margin-bottom: 1px;
+}
+.rrg-card-visual-thumb .rrg-card-vector {
+  font-size: 0.68rem;
+}
+.rrg-card-visual-thumb .rrg-vector-paren {
+  font-size: 1rem;
+}
+.rrg-card-visual-thumb .rrg-card-sublabel {
+  font-size: 0.4rem;
+}
+.rrg-card-visual-thumb .rrg-card-highlight {
+  font-size: 0.44rem;
+}
+.rrg-card-visual-thumb .rrg-card-desc {
+  font-size: 0.38rem;
+  line-height: 1.1;
+  max-height: 32px;
+  -webkit-line-clamp: 3;
+}
+

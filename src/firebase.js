@@ -4,13 +4,13 @@ import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, o
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyA6I-tP_viGeAepADdPHnAoKHIpTvxi_wc",
-  authDomain: "rrg-game.firebaseapp.com",
-  projectId: "rrg-game",
-  storageBucket: "rrg-game.firebasestorage.app",
-  messagingSenderId: "253063914434",
-  appId: "1:253063914434:web:1051860a84c26ca19eec5b",
-  measurementId: "G-0QYGSXX650"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyBxoNTwFYAc2B78Df6L89uinWOqRbtL7WM",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "rrg-game-website.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "rrg-game-website",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "rrg-game-website.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "1089840178829",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:1089840178829:web:a2283ed37a3299943324c4",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-53S6KD8FTS"
 };
 
 // Initialize Firebase

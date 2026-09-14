@@ -53,11 +53,9 @@ export const registerWithEmail = async (name, email, password) => {
       email: user.email,
       role: 'Pelajar',
       isApproved: true,
+      emailVerified: true,
       createdAt: new Date().toISOString(),
     });
-    
-    // Attempt to send email verification (optional but good practice)
-    await sendEmailVerification(user);
     
     return user;
   } catch (error) {

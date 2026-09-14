@@ -6828,13 +6828,8 @@ const LoginPage = ({ onLogin }) => {
     const name = profile.name || credential.user.displayName || getDisplayName(email);
     
     const isAdminEmail = email.toLowerCase() === 'zaimshahbudin@gmail.com' || email.toLowerCase() === 'ahmadzaim2021@gmail.com' || profile.role === 'admin';
-
-    if (!credential.user.emailVerified && !isAdminEmail) {
-      setError('Emel belum disahkan. Sila buka inbox emel anda dan klik link verification daripada Firebase.');
-      return;
-    }
     const role = isAdminEmail ? 'admin' : (profile.role || 'Pelajar');
-    // Pengesahan admin dinyahaktifkan buat masa ini (semua pengguna dibenarkan masuk terus)
+    // Pengesahan admin & pengesahan emel dinyahaktifkan buat masa ini (semua pengguna boleh terus log masuk)
     const isApproved = true;
 
     await setDoc(profileRef, {
@@ -6928,7 +6923,6 @@ const LoginPage = ({ onLogin }) => {
   const handleFirebaseRegister = async (name, email, password) => {
     const credential = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(credential.user, { displayName: name });
-    try { await sendEmailVerification(credential.user); } catch (e) { console.warn("Email verification failed to send", e); }
     
     const isAdminEmail = email.toLowerCase() === 'zaimshahbudin@gmail.com' || email.toLowerCase() === 'ahmadzaim2021@gmail.com';
     await setDoc(doc(db, 'users', credential.user.uid), {
@@ -6936,14 +6930,14 @@ const LoginPage = ({ onLogin }) => {
       email,
       role: isAdminEmail ? 'admin' : 'Pelajar',
       isApproved: true,
-      emailVerified: false,
+      emailVerified: true,
       createdAt: serverTimestamp(),
       lastLoginAt: null,
     });
 
     setRegisterData({ name: '', email: '', password: '', confirmPassword: '' });
     setLoginData({ email, password: '' });
-    setSuccess('Akaun berjaya didaftarkan! Sila log masuk.');
+    setSuccess('Akaun berjaya didaftarkan! Anda boleh terus log masuk sekarang.');
     setError('');
     setIsRegister(false);
   };

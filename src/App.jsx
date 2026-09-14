@@ -2223,25 +2223,68 @@ const RRG_PENALTY_CARDS = [
 ];
 
 const RRG_ITEMS = [
-  // 4 Money
-  { x: 2, y: 6, kind: 'money', label: 'RM', label_en: 'RM', amount: 50 }, { x: -2, y: -8, kind: 'money', label: 'RM', label_en: 'RM', amount: 50 },
-  { x: 8, y: -4, kind: 'money', label: 'RM', label_en: 'RM', amount: 50 }, { x: -6, y: -2, kind: 'money', label: 'RM', label_en: 'RM', amount: 50 },
-  // 4 Diamond
-  { x: 6, y: 8, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 }, { x: -8, y: -4, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
-  { x: 10, y: 4, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 }, { x: -4, y: 10, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
-  // 4 Chest
-  { x: 8, y: 8, kind: 'chest', label: 'Peti emas', label_en: 'Gold Chest', amount: 200 }, { x: -8, y: 6, kind: 'chest', label: 'Peti emas', label_en: 'Gold Chest', amount: 200 },
-  { x: 10, y: -10, kind: 'chest', label: 'Peti emas', label_en: 'Gold Chest', amount: 200 }, { x: -10, y: -8, kind: 'chest', label: 'Peti emas', label_en: 'Gold Chest', amount: 200 },
-  // 8 Reward
-  { x: 0, y: 10, kind: 'reward', label: 'Mentol', label_en: 'Bulb' }, { x: 10, y: 0, kind: 'reward', label: 'Mentol', label_en: 'Bulb' },
-  { x: 0, y: -10, kind: 'reward', label: 'Mentol', label_en: 'Bulb' }, { x: -10, y: 0, kind: 'reward', label: 'Mentol', label_en: 'Bulb' },
-  { x: 4, y: -2, kind: 'reward', label: 'Mentol', label_en: 'Bulb' }, { x: -2, y: 4, kind: 'reward', label: 'Mentol', label_en: 'Bulb' },
-  { x: 7, y: 5, kind: 'reward', label: 'Mentol', label_en: 'Bulb' }, { x: -7, y: -5, kind: 'reward', label: 'Mentol', label_en: 'Bulb' },
-  // 8 Penalty (Bom)
-  { x: 4, y: 4, kind: 'penalty', label: 'Bom', label_en: 'Bomb' }, { x: -4, y: -6, kind: 'penalty', label: 'Bom', label_en: 'Bomb' },
-  { x: 6, y: -6, kind: 'penalty', label: 'Bom', label_en: 'Bomb' }, { x: -6, y: 4, kind: 'penalty', label: 'Bom', label_en: 'Bomb' },
-  { x: 0, y: 8, kind: 'penalty', label: 'Bom', label_en: 'Bomb' }, { x: 0, y: -8, kind: 'penalty', label: 'Bom', label_en: 'Bomb' },
-  { x: 8, y: 0, kind: 'penalty', label: 'Bom', label_en: 'Bomb' }, { x: -8, y: 0, kind: 'penalty', label: 'Bom', label_en: 'Bomb' },
+  // Beg Duit (Money Bags "RM" on physical board)
+  { x: -3, y: 11, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+  { x: 9, y: 11, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+  { x: -2, y: 8, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+  { x: 5, y: 6, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+  { x: -7, y: 3, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+  { x: 7, y: 2, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+  { x: -4, y: -2, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+  { x: 7, y: -3, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+  { x: 12, y: -3, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+  { x: -13, y: -4, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+  { x: 12, y: -5, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+  { x: -4, y: -6, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+  { x: 6, y: -7, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+  { x: -7, y: -11, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+  { x: -2, y: -12, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+  { x: 7, y: -12, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+  { x: 12, y: -12, kind: 'money', label: 'Beg Duit RM', label_en: 'Money Bag RM', amount: 50 },
+
+  // Berlian (Diamonds on physical board)
+  { x: -6, y: 5, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
+  { x: -1, y: 4, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
+  { x: 4, y: 4, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
+  { x: 11, y: 4, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
+  { x: 12, y: 10, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
+  { x: -1, y: -4, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
+  { x: 3, y: -4, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
+  { x: -7, y: -7, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
+  { x: 4, y: -7, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
+  { x: 10, y: -7, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
+  { x: 12, y: -9, kind: 'diamond', label: 'Berlian', label_en: 'Diamond', amount: 100 },
+
+  // Peti Emas (Gold Chests on physical board)
+  { x: -12, y: 11, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
+  { x: 7, y: 8, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
+  { x: -8, y: 6, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
+  { x: 11, y: 6, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
+  { x: -9, y: -2, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
+  { x: 6, y: -1, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
+  { x: -5, y: -4, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
+  { x: 5, y: -7, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
+  { x: -12, y: -8, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
+  { x: 13, y: -8, kind: 'chest', label: 'Peti Emas', label_en: 'Gold Chest', amount: 200 },
+
+  // Checkpoints / Titik Sasaran (Green circles with dark center on physical board)
+  { x: 1, y: 6, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
+  { x: -6, y: 7, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
+  { x: 11, y: 9, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
+  { x: -10, y: 8, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
+  { x: -11, y: 4, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
+  { x: -10, y: -2, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
+  { x: 8, y: -2, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
+  { x: -4, y: -4, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
+  { x: 8, y: -8, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
+  { x: -10, y: -9, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
+  { x: 8, y: -12, kind: 'reward', label: 'Kad Ganjaran', label_en: 'Reward Card' },
+
+  // Zon Bahaya Bukit Kristal (Volcano radiation perimeter)
+  { x: -2, y: 2, kind: 'penalty', label: 'Zon Bahaya', label_en: 'Hazard Zone' },
+  { x: 2, y: 2, kind: 'penalty', label: 'Zon Bahaya', label_en: 'Hazard Zone' },
+  { x: -2, y: -2, kind: 'penalty', label: 'Zon Bahaya', label_en: 'Hazard Zone' },
+  { x: 2, y: -2, kind: 'penalty', label: 'Zon Bahaya', label_en: 'Hazard Zone' },
 ];
 
 const RRG_COLORS = [
@@ -2549,7 +2592,7 @@ const getRrgItemAt = (point) => {
     .filter(({ item, distance }) => distance <= getRrgItemRadius(item))
     .sort((a, b) => a.distance - b.distance)[0]?.item || null;
 };
-const isRrgSafeZone = (point) => Math.abs(point.x) >= 15 || Math.abs(point.y) >= 15;
+const isRrgSafeZone = (point) => Math.abs(point.x) >= 14 || Math.abs(point.y) >= 14;
 
 const playRrgSound = (kind) => {
   if (typeof window === 'undefined') return;
@@ -3852,43 +3895,17 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
 
     const ctx = canvas.getContext('2d');
     const mmCtx = miniMap.getContext('2d');
-    const GRID_MIN = -15;
-    const GRID_MAX = 15;
-    const GRID_SIZE = GRID_MAX - GRID_MIN + 1;
-    const CELL = 75;
-    const MAP_W = GRID_SIZE * CELL;
-    const MAP_H = GRID_SIZE * CELL;
-    const HAZARD_RADIUS = 3.5;
-
-    const islandPoly = [
-      [-12,14],[-8,14.5],[-3,14.5],[0,13],[4,14],[8,13.5],[10,12],
-      [12,10],[13,8],[14,5],[14.5,2],[14,0],[14.5,-3],[13,-6],
-      [12,-9],[11,-11],[9,-13],[6,-14],[3,-14.5],[0,-14],[-3,-14.5],
-      [-6,-14],[-9,-13],[-11,-11],[-13,-8],[-14,-5],[-14.5,-2],
-      [-14,2],[-14.5,5],[-14,8],[-13,11],[-12,14],
-    ];
-
-    const rng = (seed) => {
-      let value = seed;
-      return () => {
-        value = (value * 16807) % 2147483647;
-        return (value - 1) / 2147483646;
-      };
-    };
-    const rand = rng(77);
-
-    const isOnIsland = (gx, gy) => {
-      let inside = false;
-      for (let i = 0, j = islandPoly.length - 1; i < islandPoly.length; j = i++) {
-        const xi = islandPoly[i][0];
-        const yi = islandPoly[i][1];
-        const xj = islandPoly[j][0];
-        const yj = islandPoly[j][1];
-        if (((yi > gy) !== (yj > gy)) && (gx < ((xj - xi) * (gy - yi)) / (yj - yi) + xi)) inside = !inside;
-      }
-      return inside;
-    };
-    const gridToPixel = (gx, gy) => ({ px: (gx - GRID_MIN) * CELL + CELL / 2, py: (GRID_MAX - gy) * CELL + CELL / 2 });
+    const BOARD_W = 2758;
+    const BOARD_H = 2758;
+    const BOARD_CX = 1376.0;
+    const BOARD_CY = 1376.0;
+    const CELL = 86.5;
+    const MAP_W = BOARD_W;
+    const MAP_H = BOARD_H;
+    const gridToPixel = (gx, gy) => ({
+      px: BOARD_CX + gx * CELL,
+      py: BOARD_CY - gy * CELL,
+    });
     const screenToGrid = (clientX, clientY, game) => {
       const rect = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
@@ -3897,311 +3914,21 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       const mapX = (sx - canvas.width / 2) / (game.zoom * dpr) + game.camX;
       const mapY = (sy - canvas.height / 2) / (game.zoom * dpr) + game.camY;
       return {
-        x: clampBoard(Math.round(((mapX - CELL / 2) / CELL) + GRID_MIN)),
-        y: clampBoard(Math.round(GRID_MAX - ((mapY - CELL / 2) / CELL))),
+        x: clampBoard(Math.round((mapX - BOARD_CX) / CELL)),
+        y: clampBoard(Math.round((BOARD_CY - mapY) / CELL)),
       };
     };
 
-    const trees = [];
-    for (let i = 0; i < 54; i++) {
-      const gx = rand() * 28 - 14;
-      const gy = rand() * 28 - 14;
-      if (isOnIsland(gx, gy) && Math.sqrt(gx * gx + gy * gy) > HAZARD_RADIUS + 0.8) {
-        trees.push({
-          x: gx,
-          y: gy,
-          size: 0.34 + rand() * 0.42,
-          type: rand() > 0.5 ? 'palm' : 'tree',
-          phase: rand() * Math.PI * 2,
-          lean: -0.08 + rand() * 0.16,
-        });
-      }
-    }
-
-    const boats = [];
-    for (let i = 0; i < 12; i++) {
-      const baseAngle = (i / 12) * Math.PI * 2;
-      // Add a bit of random offset to the angle so they don't look perfectly rigid
-      const angle = baseAngle + (-0.1 + rand() * 0.2);
-      
-      let radius = 12 + rand() * 3;
-      let bx = Math.cos(angle) * radius;
-      let by = Math.sin(angle) * radius;
-      
-      // Push the boat outwards until it is safely off the island (in the water)
-      while (isOnIsland(bx, by)) {
-        radius += 1.5;
-        bx = Math.cos(angle) * radius;
-        by = Math.sin(angle) * radius;
-      }
-      
-      boats.push({
-        x: bx,
-        y: by,
-        type: rand() > 0.5 ? 'speedboat' : 'sailboat',
-        phase: rand() * Math.PI * 2,
-        scale: 0.82 + rand() * 0.34,
-        heading: angle + Math.PI / 2,
-      });
-    }
-
-    const landmarks = [
-      { x: 0, y: -1, type: 'crystal', label: 'Bukit Kristal', label_ms: 'Bukit Kristal', label_en: 'Crystal Hill', size: 1.45 },
-      { x: -8, y: 5, type: 'farm', label: 'Kebun', label_ms: 'Kebun', label_en: 'Farm', size: 1.05 },
-      { x: 6, y: 3, type: 'factory', label: 'Kilang', label_ms: 'Kilang', label_en: 'Factory', size: 1.05 },
-      { x: -5, y: -6, type: 'waterfall', label: 'Air Terjun', label_ms: 'Air Terjun', label_en: 'Waterfall', size: 1.12 },
-      { x: 8, y: -4, type: 'clinic', label: 'Klinik', label_ms: 'Klinik', label_en: 'Clinic', size: 1 },
-      { x: 5, y: -7, type: 'village', label: 'Kampung', label_ms: 'Kampung', label_en: 'Village', size: 1.05 },
-      { x: 8, y: 10, type: 'harbor', label: 'Pelabuhan', label_ms: 'Pelabuhan', label_en: 'Harbor', size: 1.02 },
-      { x: 14, y: 7, type: 'lighthouse', label: 'Rumah Api', label_ms: 'Rumah Api', label_en: 'Lighthouse', size: 1.05 },
-      { x: 6, y: 8, type: 'bridge', label: 'Jambatan', label_ms: 'Jambatan', label_en: 'Bridge', size: 0.96 },
-      { x: -9, y: 8, type: 'ranch', label: 'Ladang', label_ms: 'Ladang', label_en: 'Ranch', size: 0.98 },
-      { x: 10, y: 0, type: 'market', label: 'Pasar', label_ms: 'Pasar', label_en: 'Market', size: 0.98 },
-    ];
-
-    const paths = [
-      [{ x: 0, y: -1 }, { x: -4, y: 2 }, { x: -8, y: 5 }, { x: -12, y: 12 }],
-      [{ x: 0, y: -1 }, { x: 4, y: 2 }, { x: 8, y: 5 }, { x: 14, y: 7 }],
-      [{ x: 0, y: -1 }, { x: 2, y: -5 }, { x: 5, y: -7 }, { x: 3, y: -14 }],
-      [{ x: 0, y: -1 }, { x: -3, y: -4 }, { x: -5, y: -6 }, { x: -10, y: -12 }],
-    ];
-    const riverPath = [{ x: -4.2, y: -3.6 }, { x: -5, y: -6 }, { x: -6.4, y: -8.2 }, { x: -8.7, y: -10.7 }, { x: -11.2, y: -13 }];
-
-    const sandSpecks = [];
-    for (let i = 0; i < 620; i++) {
-      const gx = rand() * 31 - 15.5;
-      const gy = rand() * 31 - 15.5;
-      if (isOnIsland(gx, gy)) {
-        sandSpecks.push({ x: gx, y: gy, r: 0.018 + rand() * 0.055, alpha: 0.06 + rand() * 0.15, dark: rand() > 0.62 });
-      }
-    }
-
-    const stones = [];
-    for (let i = 0; i < 36; i++) {
-      const gx = rand() * 28 - 14;
-      const gy = rand() * 28 - 14;
-      if (isOnIsland(gx, gy) && Math.sqrt(gx * gx + gy * gy) > HAZARD_RADIUS + 1.1) {
-        stones.push({ x: gx, y: gy, rx: 4 + rand() * 7, ry: 2.5 + rand() * 4, rot: rand() * Math.PI, alpha: 0.12 + rand() * 0.13 });
-      }
-    }
-
     const textureSources = {
+      officialBoard: '/rrg-board-official.webp',
       water: '/assets/rrgs/textures/air_new.jpg',
-      sand: '/assets/rrgs/textures/pasir.png',
-      buildings: '/assets/rrgs/textures/bangunan.png',
-      cloud: '/assets/rrgs/textures/cloud.jpg',
-      proBomb: '/assets/rrgs/textures/simple_bomb.jpg',
-      proChest: '/assets/rrgs/textures/simple_chest.jpg',
-      stylizedSpeedboat: '/assets/rrgs/textures/stylized_speedboat.jpg',
-      stylizedSailboat: '/assets/rrgs/textures/stylized_sailboat.jpg',
-    };
-    const landmarkAssetPath = (name) => `/assets/rrgs/landmarks/${name}.png?v=transparent-cut-2`;
-    const landmarkAssetSources = {
-      crystal: landmarkAssetPath('crystal'),
-      farm: landmarkAssetPath('farm'),
-      factory: landmarkAssetPath('factory'),
-      waterfall: landmarkAssetPath('waterfall'),
-      clinic: landmarkAssetPath('clinic'),
-      village: landmarkAssetPath('village'),
-      harbor: landmarkAssetPath('harbor'),
-      lighthouse: landmarkAssetPath('lighthouse'),
-      bridge: landmarkAssetPath('bridge'),
-      ranch: landmarkAssetPath('ranch'),
-      market: landmarkAssetPath('market'),
     };
     const textures = Object.fromEntries(Object.entries(textureSources).map(([key, src]) => {
       const image = new Image();
       image.src = src;
-      if (key === 'cloud') {
-        image.onload = () => {
-          const c = document.createElement('canvas');
-          c.width = image.width;
-          c.height = image.height;
-          const ctx = c.getContext('2d');
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0, 0, c.width, c.height);
-          ctx.globalCompositeOperation = 'difference';
-          ctx.drawImage(image, 0, 0);
-          textures.cloudShadow = c;
-        };
-      } else if (key === 'proBomb' || key === 'proChest' || key === 'stylizedSpeedboat' || key === 'stylizedSailboat') {
-        image.onload = () => {
-          const c = document.createElement('canvas');
-          c.width = image.width;
-          c.height = image.height;
-          const ctx = c.getContext('2d');
-          ctx.drawImage(image, 0, 0);
-          const imgData = ctx.getImageData(0, 0, c.width, c.height);
-          const data = imgData.data;
-          for (let i = 0; i < data.length; i += 4) {
-             const r = data[i], g = data[i+1], b = data[i+2];
-             const distanceToGreen = Math.abs(r - 0) + Math.abs(g - 255) + Math.abs(b - 0);
-             if (distanceToGreen < 150) {
-                data[i+3] = 0;
-             } else if (g > r + 30 && g > b + 30) {
-                data[i+3] = Math.max(0, 255 - (g - Math.max(r, b)) * 2);
-                data[i+1] = Math.min(r, b);
-             }
-          }
-          ctx.putImageData(imgData, 0, 0);
-          textures[`${key}Transparent`] = c;
-        };
-      }
       return [key, image];
     }));
-    const landmarkImages = Object.fromEntries(Object.entries(landmarkAssetSources).map(([key, src]) => {
-      const image = new Image();
-      image.src = src;
-      return [key, image];
-    }));
-    const landmarkRenderCache = new WeakMap();
     const isTextureReady = (image) => image?.complete && image.naturalWidth > 0;
-    const makeRoadTexture = () => {
-      const roadCanvas = document.createElement('canvas');
-      roadCanvas.width = 192;
-      roadCanvas.height = 192;
-      const roadCtx = roadCanvas.getContext('2d');
-      const base = roadCtx.createLinearGradient(0, 0, 192, 192);
-      base.addColorStop(0, '#b7824b');
-      base.addColorStop(0.46, '#c99558');
-      base.addColorStop(1, '#a96f3d');
-      roadCtx.fillStyle = base;
-      roadCtx.fillRect(0, 0, 192, 192);
-
-      for (let i = 0; i < 900; i++) {
-        const x = (Math.sin(i * 12.9898) * 43758.5453) % 1;
-        const y = (Math.sin(i * 78.233) * 24634.6345) % 1;
-        const px = Math.abs(x) * 192;
-        const py = Math.abs(y) * 192;
-        const tone = 95 + Math.floor(Math.abs(Math.sin(i * 4.37)) * 105);
-        const alpha = 0.035 + Math.abs(Math.cos(i * 2.91)) * 0.055;
-        roadCtx.fillStyle = `rgba(${tone + 42}, ${Math.max(72, tone - 12)}, ${Math.max(38, tone - 42)}, ${alpha})`;
-        roadCtx.fillRect(px, py, 1.1, 1.1);
-      }
-
-      for (let i = 0; i < 54; i++) {
-        const px = Math.abs((Math.sin(i * 31.41) * 1000) % 1) * 192;
-        const py = Math.abs((Math.cos(i * 18.77) * 1000) % 1) * 192;
-        const r = 1.4 + Math.abs(Math.sin(i * 6.21)) * 2.8;
-        roadCtx.fillStyle = i % 3 === 0 ? 'rgba(84, 52, 26, 0.12)' : 'rgba(255, 232, 178, 0.11)';
-        roadCtx.beginPath();
-        roadCtx.ellipse(px, py, r * 1.8, r, Math.sin(i) * Math.PI, 0, Math.PI * 2);
-        roadCtx.fill();
-      }
-
-      return roadCanvas;
-    };
-    const roadTexture = makeRoadTexture();
-    const LANDMARK_DRAW_BASE = 94;
-    const landmarkAssetMeta = {
-      crystal: { drawScale: 1.28, shadowScale: 1.14, labelFactor: 0.36, crop: { left: 0.09, right: 0.09, top: 0.08, bottom: 0.18 }, fadeStart: 0.64 },
-      farm: { drawScale: 1.08, shadowScale: 1.02, labelFactor: 0.33, crop: { left: 0.1, right: 0.1, top: 0.08, bottom: 0.22 }, fadeStart: 0.62 },
-      factory: { drawScale: 1.14, shadowScale: 1.12, labelFactor: 0.35, crop: { left: 0.09, right: 0.09, top: 0.07, bottom: 0.2 }, fadeStart: 0.58, fadeMid: 0.8, maskOuter: 0.58 },
-      waterfall: { drawScale: 1.12, shadowScale: 1.08, labelFactor: 0.35, crop: { left: 0.08, right: 0.08, top: 0.07, bottom: 0.18 }, fadeStart: 0.61, maskOuter: 0.56 },
-      clinic: { drawScale: 1.02, shadowScale: 1.0, labelFactor: 0.33, crop: { left: 0.1, right: 0.1, top: 0.08, bottom: 0.21 }, fadeStart: 0.6 },
-      village: { drawScale: 1.18, shadowScale: 1.12, labelFactor: 0.36, crop: { left: 0.09, right: 0.09, top: 0.07, bottom: 0.22 }, fadeStart: 0.6, maskOuter: 0.58 },
-      harbor: { drawScale: 1.16, shadowScale: 1.16, labelFactor: 0.35, crop: { left: 0.08, right: 0.08, top: 0.07, bottom: 0.2 }, fadeStart: 0.56, fadeMid: 0.78, maskOuter: 0.62 },
-      lighthouse: { drawScale: 1.08, shadowScale: 0.98, labelFactor: 0.35, crop: { left: 0.1, right: 0.1, top: 0.05, bottom: 0.18 }, fadeStart: 0.62 },
-      bridge: { drawScale: 1.18, shadowScale: 1.2, labelFactor: 0.31, crop: { left: 0.07, right: 0.07, top: 0.08, bottom: 0.18 }, fadeStart: 0.55, fadeMid: 0.76, maskOuter: 0.64 },
-      ranch: { drawScale: 1.1, shadowScale: 1.04, labelFactor: 0.34, crop: { left: 0.1, right: 0.1, top: 0.08, bottom: 0.22 }, fadeStart: 0.61 },
-      market: { drawScale: 1.08, shadowScale: 1.06, labelFactor: 0.34, crop: { left: 0.1, right: 0.1, top: 0.07, bottom: 0.2 }, fadeStart: 0.6 },
-    };
-    const landmarkAnimationMeta = {
-      crystal: { speed: 1.28, float: 0.85, sway: 0.012, breath: 0.018, shadow: 0.08 },
-      farm: { speed: 0.9, float: 0.2, sway: 0.006, breath: 0.006, shadow: 0.025 },
-      factory: { speed: 0.82, float: 0.12, sway: 0.004, breath: 0.004, shake: 0.28, shadow: 0.035 },
-      waterfall: { speed: 1.18, float: 0.18, sway: 0.004, breath: 0.008, shadow: 0.04 },
-      clinic: { speed: 0.95, float: 0.16, sway: 0.004, breath: 0.006, shadow: 0.025 },
-      village: { speed: 0.86, float: 0.2, sway: 0.006, breath: 0.007, shadow: 0.03 },
-      harbor: { speed: 1.08, float: 0.38, sway: 0.01, breath: 0.01, shadow: 0.045 },
-      lighthouse: { speed: 0.92, float: 0.16, sway: 0.007, breath: 0.006, shadow: 0.026 },
-      bridge: { speed: 0.74, float: 0.1, sway: 0.002, breath: 0.004, shadow: 0.02 },
-      ranch: { speed: 0.9, float: 0.2, sway: 0.006, breath: 0.006, shadow: 0.025 },
-      market: { speed: 1.0, float: 0.18, sway: 0.006, breath: 0.008, shadow: 0.03 },
-    };
-    const getStablePhase = (landmark) => {
-      const raw = Math.sin(landmark.x * 12.9898 + landmark.y * 78.233 + landmark.label.length * 9.17) * 43758.5453;
-      return Math.abs(raw % 1) * Math.PI * 2;
-    };
-    const getLandmarkMotion = (landmark) => {
-      const meta = landmarkAnimationMeta[landmark.type] || {};
-      const phase = getStablePhase(landmark);
-      const t = game.time * (meta.speed || 1) + phase;
-      const fineT = game.time * ((meta.speed || 1) * 1.7) + phase * 0.67;
-      const shake = meta.shake
-        ? Math.sin(game.time * 17 + phase) * meta.shake + Math.sin(game.time * 23 + phase * 0.5) * meta.shake * 0.45
-        : 0;
-
-      return {
-        phase,
-        x: shake,
-        floatY: Math.sin(t) * (meta.float || 0),
-        sway: Math.sin(t * 0.72) * (meta.sway || 0),
-        scaleX: 1 + Math.sin(fineT) * (meta.breath || 0),
-        scaleY: 1 - Math.sin(fineT) * (meta.breath || 0) * 0.55,
-        shadowPulse: Math.sin(t + Math.PI / 3) * (meta.shadow || 0),
-      };
-    };
-    const getProcessedLandmarkImage = (landmarkType) => {
-      const image = landmarkImages[landmarkType];
-      if (!isTextureReady(image)) return null;
-      const cached = landmarkRenderCache.get(image);
-      if (cached) return cached;
-
-      const meta = landmarkAssetMeta[landmarkType] || {};
-      const crop = meta.crop || {};
-      const width = image.naturalWidth || image.width;
-      const height = image.naturalHeight || image.height;
-      const sx = Math.round(width * (crop.left || 0));
-      const sy = Math.round(height * (crop.top || 0));
-      const sw = Math.max(1, width - sx - Math.round(width * (crop.right || 0)));
-      const sh = Math.max(1, height - sy - Math.round(height * (crop.bottom || 0)));
-
-      const canvas = document.createElement('canvas');
-      canvas.width = sw;
-      canvas.height = sh;
-      const renderCtx = canvas.getContext('2d');
-      renderCtx.drawImage(image, sx, sy, sw, sh, 0, 0, sw, sh);
-
-      renderCtx.globalCompositeOperation = 'destination-in';
-
-      const radial = renderCtx.createRadialGradient(
-        sw * 0.5,
-        sh * 0.45,
-        Math.min(sw, sh) * 0.18,
-        sw * 0.5,
-        sh * 0.5,
-        Math.max(sw, sh) * (meta.maskOuter || 0.56),
-      );
-      radial.addColorStop(0, 'rgba(0,0,0,1)');
-      radial.addColorStop(0.68, 'rgba(0,0,0,1)');
-      radial.addColorStop(1, 'rgba(0,0,0,0)');
-      renderCtx.fillStyle = radial;
-      renderCtx.fillRect(0, 0, sw, sh);
-
-      const bottomFade = renderCtx.createLinearGradient(0, 0, 0, sh);
-      bottomFade.addColorStop(0, 'rgba(0,0,0,1)');
-      bottomFade.addColorStop(meta.fadeStart || 0.6, 'rgba(0,0,0,1)');
-      bottomFade.addColorStop(meta.fadeMid || 0.82, 'rgba(0,0,0,0.5)');
-      bottomFade.addColorStop(1, 'rgba(0,0,0,0)');
-      renderCtx.fillStyle = bottomFade;
-      renderCtx.fillRect(0, 0, sw, sh);
-
-      renderCtx.globalCompositeOperation = 'source-over';
-      const processed = { canvas, width: sw, height: sh };
-      landmarkRenderCache.set(image, processed);
-      return processed;
-    };
-    const buildingSpriteMap = {
-      farm: { sx: 4, sy: 40, sw: 68, sh: 68, dw: 70, dh: 70 },
-      ranch: { sx: 80, sy: 40, sw: 68, sh: 68, dw: 70, dh: 70 },
-      village: { sx: 154, sy: 40, sw: 68, sh: 68, dw: 72, dh: 72 },
-      factory: { sx: 6, sy: 640, sw: 78, sh: 72, dw: 82, dh: 76 },
-      clinic: { sx: 632, sy: 178, sw: 74, sh: 70, dw: 78, dh: 74 },
-      market: { sx: 716, sy: 178, sw: 74, sh: 70, dw: 78, dh: 74 },
-      harbor: { sx: 632, sy: 1190, sw: 84, sh: 70, dw: 88, dh: 72 },
-      lighthouse: { sx: 462, sy: 438, sw: 72, sh: 86, dw: 76, dh: 88 },
-    };
 
     let savedState = null;
     try {
@@ -4217,6 +3944,8 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       console.warn("Failed to load saved game", e);
     }
 
+    const initialZoom = Math.min(0.85, Math.max(0.45, (window.innerWidth || 1200) / 2600));
+
     const game = {
       canvas,
       ctx,
@@ -4225,7 +3954,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       camY: 0,
       camTargetX: 0,
       camTargetY: 0,
-      zoom: 1,
+      zoom: initialZoom,
       dragStartX: 0,
       dragStartY: 0,
       camStartX: 0,
@@ -4268,42 +3997,80 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     };
     resize();
 
+    const activePointers = new Map();
+    let pinchStartDist = 0;
+    let pinchStartZoom = 1;
+
     const onPointerDown = (event) => {
-      game.isDragging = true;
-      game.dragStartX = event.clientX;
-      game.dragStartY = event.clientY;
-      game.camStartX = game.camX;
-      game.camStartY = game.camY;
-      game.camTargetX = game.camX;
-      game.camTargetY = game.camY;
-      game.dragDistance = 0;
-    };
-    const onPointerMove = (event) => {
-      if (!game.isDragging) return;
-      const dx = event.clientX - game.dragStartX;
-      const dy = event.clientY - game.dragStartY;
-      game.dragDistance = Math.max(game.dragDistance, Math.abs(dx) + Math.abs(dy));
-      game.camX = game.camStartX - dx / game.zoom;
-      game.camY = game.camStartY - dy / game.zoom;
-      game.camTargetX = game.camX;
-      game.camTargetY = game.camY;
-    };
-    const onPointerUp = (event) => {
-      if (!game.isDragging) return;
-      game.isDragging = false;
-      if (game.dragDistance < 6 && game.card && !game.gameOver && !game.animating) {
-        game.selected = screenToGrid(event.clientX, event.clientY, game);
-        game.message = lang === 'en'
-          ? `Selected coordinate: (${game.selected.x}, ${game.selected.y}). Press Check Answer.`
-          : `Pilihan koordinat: (${game.selected.x}, ${game.selected.y}). Tekan Semak Jawapan.`;
-        syncHud(game);
+      activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      if (activePointers.size === 1) {
+        game.isDragging = true;
+        game.dragStartX = event.clientX;
+        game.dragStartY = event.clientY;
+        game.camStartX = game.camX;
+        game.camStartY = game.camY;
+        game.camTargetX = game.camX;
+        game.camTargetY = game.camY;
+        game.dragDistance = 0;
+      } else if (activePointers.size === 2) {
+        game.isDragging = false;
+        const pts = Array.from(activePointers.values());
+        pinchStartDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        pinchStartZoom = game.zoom;
       }
     };
+
+    const onPointerMove = (event) => {
+      if (!activePointers.has(event.pointerId)) return;
+      activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+      if (activePointers.size === 2 && pinchStartDist > 0) {
+        const pts = Array.from(activePointers.values());
+        const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        const scale = dist / pinchStartDist;
+        game.zoom = Math.max(0.25, Math.min(2.5, pinchStartZoom * scale));
+      } else if (game.isDragging && activePointers.size === 1) {
+        const dx = event.clientX - game.dragStartX;
+        const dy = event.clientY - game.dragStartY;
+        game.dragDistance = Math.max(game.dragDistance, Math.abs(dx) + Math.abs(dy));
+        game.camX = game.camStartX - dx / game.zoom;
+        game.camY = game.camStartY - dy / game.zoom;
+        game.camTargetX = game.camX;
+        game.camTargetY = game.camY;
+      }
+    };
+
+    const onPointerUp = (event) => {
+      const wasDragging = game.isDragging;
+      const dragDist = game.dragDistance;
+      activePointers.delete(event.pointerId);
+
+      if (activePointers.size === 0) {
+        game.isDragging = false;
+        if (wasDragging && dragDist < 8 && game.card && !game.gameOver && !game.animating) {
+          game.selected = screenToGrid(event.clientX, event.clientY, game);
+          game.message = lang === 'en'
+            ? `Selected coordinate: (${game.selected.x}, ${game.selected.y}). Press Check Answer.`
+            : `Pilihan koordinat: (${game.selected.x}, ${game.selected.y}). Tekan Semak Jawapan.`;
+          syncHud(game);
+        }
+      } else if (activePointers.size === 1) {
+        const remaining = Array.from(activePointers.values())[0];
+        game.isDragging = true;
+        game.dragStartX = remaining.x;
+        game.dragStartY = remaining.y;
+        game.camStartX = game.camX;
+        game.camStartY = game.camY;
+        game.dragDistance = 20;
+      }
+    };
+
     const onWheel = (event) => {
       const delta = event.deltaY > 0 ? 0.9 : 1.1;
-      game.zoom = Math.max(0.34, Math.min(3, game.zoom * delta));
+      game.zoom = Math.max(0.25, Math.min(2.5, game.zoom * delta));
       event.preventDefault();
     };
+
     const onKeyDown = (event) => {
       if (!game.card || !game.selected || game.animating) return;
       if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') game.selected.y = clampBoard(game.selected.y + 1);
@@ -4316,22 +4083,11 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
 
     window.addEventListener('resize', resize);
     window.addEventListener('keydown', onKeyDown);
-    canvas.addEventListener('mousedown', onPointerDown);
-    canvas.addEventListener('mousemove', onPointerMove);
-    window.addEventListener('mouseup', onPointerUp);
-    canvas.addEventListener('mouseleave', onPointerUp);
+    canvas.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+    canvas.addEventListener('pointercancel', onPointerUp);
     canvas.addEventListener('wheel', onWheel, { passive: false });
-
-    const makeIslandPath = (context) => {
-      context.beginPath();
-      const first = gridToPixel(islandPoly[0][0], islandPoly[0][1]);
-      context.moveTo(first.px, first.py);
-      for (let i = 1; i < islandPoly.length; i++) {
-        const point = gridToPixel(islandPoly[i][0], islandPoly[i][1]);
-        context.lineTo(point.px, point.py);
-      }
-      context.closePath();
-    };
 
     const drawRoundRect = (context, x, y, w, h, r) => {
       context.beginPath();
@@ -4359,977 +4115,6 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       }
       ctx.restore();
       return true;
-    };
-
-    const drawSmoothPath = (points) => {
-      const pixels = points.map((point) => gridToPixel(point.x, point.y));
-      drawSmoothPixelPath(pixels);
-      return pixels;
-    };
-
-    const drawSmoothPixelPath = (pixels) => {
-      ctx.beginPath();
-      ctx.moveTo(pixels[0].px, pixels[0].py);
-      for (let index = 0; index < pixels.length - 1; index++) {
-        const p0 = pixels[Math.max(0, index - 1)];
-        const p1 = pixels[index];
-        const p2 = pixels[index + 1];
-        const p3 = pixels[Math.min(pixels.length - 1, index + 2)];
-        const cp1x = p1.px + (p2.px - p0.px) / 6;
-        const cp1y = p1.py + (p2.py - p0.py) / 6;
-        const cp2x = p2.px - (p3.px - p1.px) / 6;
-        const cp2y = p2.py - (p3.py - p1.py) / 6;
-        ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.px, p2.py);
-      }
-    };
-
-    const getOffsetRoadPixels = (points, offset) => points.map((point, index) => {
-      const current = gridToPixel(point.x, point.y);
-      const prev = gridToPixel(points[Math.max(0, index - 1)].x, points[Math.max(0, index - 1)].y);
-      const next = gridToPixel(points[Math.min(points.length - 1, index + 1)].x, points[Math.min(points.length - 1, index + 1)].y);
-      const angle = Math.atan2(next.py - prev.py, next.px - prev.px);
-      return {
-        px: current.px + Math.cos(angle + Math.PI / 2) * offset,
-        py: current.py + Math.sin(angle + Math.PI / 2) * offset,
-      };
-    });
-
-    const drawOffsetRoadPath = (points, offset) => {
-      drawSmoothPixelPath(getOffsetRoadPixels(points, offset));
-    };
-
-    const sampleRoadPixels = (points, spacing = 0.24) => {
-      const samples = [];
-      for (let index = 0; index < points.length - 1; index++) {
-        const from = points[index];
-        const to = points[index + 1];
-        const distance = Math.hypot(to.x - from.x, to.y - from.y);
-        const steps = Math.max(2, Math.ceil(distance / spacing));
-        const fromPixel = gridToPixel(from.x, from.y);
-        const toPixel = gridToPixel(to.x, to.y);
-        const angle = Math.atan2(toPixel.py - fromPixel.py, toPixel.px - fromPixel.px);
-        for (let step = 0; step < steps; step++) {
-          const t = step / steps;
-          const point = gridToPixel(from.x + (to.x - from.x) * t, from.y + (to.y - from.y) * t);
-          samples.push({
-            px: point.px,
-            py: point.py,
-            angle,
-            seed: (index + 1) * 47 + step * 13,
-          });
-        }
-      }
-      const last = gridToPixel(points.at(-1).x, points.at(-1).y);
-      const beforeLast = gridToPixel(points.at(-2).x, points.at(-2).y);
-      samples.push({
-        px: last.px,
-        py: last.py,
-        angle: Math.atan2(last.py - beforeLast.py, last.px - beforeLast.px),
-        seed: points.length * 71,
-      });
-      return samples;
-    };
-
-    const drawRoadPath = (points, width = 20) => {
-      if (points.length < 2) return;
-      ctx.save();
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      makeIslandPath(ctx);
-      ctx.clip();
-
-      const roadPattern = ctx.createPattern(roadTexture, 'repeat');
-
-      ctx.globalCompositeOperation = 'multiply';
-      ctx.filter = 'blur(4px)';
-      ctx.strokeStyle = 'rgba(75, 46, 24, 0.18)';
-      ctx.lineWidth = width + 48;
-      drawSmoothPath(points);
-      ctx.stroke();
-      ctx.filter = 'blur(2px)';
-      ctx.strokeStyle = 'rgba(155, 104, 54, 0.2)';
-      ctx.lineWidth = width + 34;
-      drawSmoothPath(points);
-      ctx.stroke();
-      ctx.filter = 'none';
-
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.globalAlpha = 0.32;
-      ctx.strokeStyle = 'rgba(246, 216, 160, 0.72)';
-      ctx.lineWidth = width + 24;
-      drawSmoothPath(points);
-      ctx.stroke();
-
-      ctx.globalCompositeOperation = 'multiply';
-      ctx.globalAlpha = 0.78;
-      ctx.strokeStyle = roadPattern || 'rgba(183, 122, 64, 0.72)';
-      ctx.lineWidth = width + 8;
-      drawSmoothPath(points);
-      ctx.stroke();
-      ctx.globalAlpha = 1;
-
-      ctx.strokeStyle = 'rgba(104, 63, 32, 0.32)';
-      ctx.lineWidth = width * 0.72;
-      drawSmoothPath(points);
-      ctx.stroke();
-      ctx.globalCompositeOperation = 'source-over';
-
-      [-width * 0.23, width * 0.23].forEach((offset, trackIndex) => {
-        ctx.strokeStyle = trackIndex === 0 ? 'rgba(62, 39, 21, 0.27)' : 'rgba(78, 48, 25, 0.24)';
-        ctx.lineWidth = 4.4;
-        drawOffsetRoadPath(points, offset);
-        ctx.stroke();
-        ctx.strokeStyle = 'rgba(255, 236, 190, 0.12)';
-        ctx.lineWidth = 1.5;
-        drawOffsetRoadPath(points, offset + (offset < 0 ? 2 : -2));
-        ctx.stroke();
-      });
-
-      ctx.strokeStyle = 'rgba(255, 231, 181, 0.12)';
-      ctx.lineWidth = Math.max(4, width * 0.26);
-      drawSmoothPath(points);
-      ctx.stroke();
-
-      const samples = sampleRoadPixels(points);
-      samples.forEach((sample, index) => {
-        const wobble = Math.sin(sample.seed * 12.9898) * 0.5 + Math.cos(sample.seed * 7.233) * 0.5;
-        const normal = sample.angle + Math.PI / 2;
-        const side = index % 2 === 0 ? -1 : 1;
-        const edgeOffset = side * (width * 0.54 + wobble * 4.8);
-        const x = sample.px + Math.cos(normal) * edgeOffset;
-        const y = sample.py + Math.sin(normal) * edgeOffset;
-        const radius = 1.8 + Math.abs(wobble) * 1.5;
-        ctx.globalAlpha = 0.1 + Math.abs(wobble) * 0.1;
-        ctx.fillStyle = side < 0 ? '#604025' : '#f4d79a';
-        ctx.beginPath();
-        ctx.ellipse(x, y, radius * 2.2, radius, sample.angle, 0, Math.PI * 2);
-        ctx.fill();
-
-        if (index % 3 === 0) {
-          const centerOffset = Math.sin(sample.seed * 1.71) * width * 0.25;
-          ctx.globalAlpha = 0.08;
-          ctx.fillStyle = '#4f321b';
-          ctx.beginPath();
-          ctx.ellipse(
-            sample.px + Math.cos(normal) * centerOffset,
-            sample.py + Math.sin(normal) * centerOffset,
-            2.2 + Math.abs(wobble) * 1.4,
-            0.9 + Math.abs(wobble),
-            sample.angle,
-            0,
-            Math.PI * 2
-          );
-          ctx.fill();
-        }
-
-        if (index % 6 === 0) {
-          [-width * 0.23, width * 0.23].forEach((trackOffset, trackSide) => {
-            const treadPhase = Math.sin(sample.seed * 0.83 + trackSide) * 1.8;
-            const tx = sample.px + Math.cos(normal) * (trackOffset + treadPhase);
-            const ty = sample.py + Math.sin(normal) * (trackOffset + treadPhase);
-            const treadAngle = sample.angle + (trackSide === 0 ? 0.72 : -0.72);
-            ctx.globalAlpha = 0.13;
-            ctx.strokeStyle = '#3f2716';
-            ctx.lineWidth = 1.6;
-            ctx.beginPath();
-            ctx.moveTo(tx - Math.cos(treadAngle) * 3.8, ty - Math.sin(treadAngle) * 3.8);
-            ctx.lineTo(tx + Math.cos(treadAngle) * 3.8, ty + Math.sin(treadAngle) * 3.8);
-            ctx.stroke();
-          });
-        }
-
-        if (index % 13 === 0) {
-          const dustPhase = (game.time * 0.18 + Math.abs(Math.sin(sample.seed)) * 0.7) % 1;
-          const dustSide = Math.sin(sample.seed * 2.37) > 0 ? 1 : -1;
-          const dustOffset = dustSide * (width * 0.68 + dustPhase * 14);
-          ctx.globalAlpha = (1 - dustPhase) * 0.12;
-          ctx.fillStyle = '#ead3a5';
-          ctx.beginPath();
-          ctx.ellipse(
-            sample.px + Math.cos(normal) * dustOffset + Math.cos(sample.angle) * dustPhase * 12,
-            sample.py + Math.sin(normal) * dustOffset + Math.sin(sample.angle) * dustPhase * 12,
-            4 + dustPhase * 9,
-            1.6 + dustPhase * 4,
-            sample.angle + Math.sin(sample.seed) * 0.35,
-            0,
-            Math.PI * 2
-          );
-          ctx.fill();
-        }
-      });
-      ctx.globalAlpha = 1;
-      ctx.restore();
-    };
-
-    const drawRealisticRiverPath = (points, width = 34) => {
-      if (points.length < 2) return;
-      ctx.save();
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      makeIslandPath(ctx);
-      ctx.clip(); 
-
-      // 1. River Bank (Darker deep edge for depth)
-      ctx.strokeStyle = '#0369a1';
-      ctx.lineWidth = width + 4;
-      drawSmoothPath(points);
-      ctx.stroke();
-
-      // 2. Base Stylized Water (Vibrant Cyan-Blue)
-      const baseGrad = ctx.createLinearGradient(0, -20, 20, 20);
-      baseGrad.addColorStop(0, '#38bdf8');   
-      baseGrad.addColorStop(1, '#0284c7');   
-      ctx.strokeStyle = baseGrad;
-      ctx.lineWidth = width;
-      drawSmoothPath(points);
-      ctx.stroke();
-
-      // 3. Stylized Foam Edges (White rim that hugs the shore)
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-      ctx.lineWidth = width * 0.85; 
-      drawSmoothPath(points);
-      ctx.stroke();
-
-      // Inner water body to hide the center of the foam, leaving only the edges
-      ctx.strokeStyle = baseGrad;
-      ctx.lineWidth = width * 0.7; 
-      drawSmoothPath(points);
-      ctx.stroke();
-
-      // 4. Ultra-Smooth Game Engine Flow (Scrolling UV Texture)
-      // By translating a repeating pattern matrix, we get continuous fluid motion!
-      ctx.save();
-      if (textures.water) {
-        ctx.globalCompositeOperation = 'overlay'; // Blend with the cyan base
-        const pattern = ctx.createPattern(textures.water, 'repeat');
-        const matrix = new DOMMatrix();
-        // The river flows diagonally from top-left to bottom-right (in grid), which is left-down in pixels!
-        matrix.translateSelf(-game.time * 28, game.time * 35);
-        matrix.scaleSelf(0.35, 0.35); // Scale down the texture for finer caustics
-        pattern.setTransform(matrix);
-        
-        ctx.strokeStyle = pattern;
-        ctx.lineWidth = width - 4; // Inside the foam edges
-        ctx.globalAlpha = 0.85;
-        drawSmoothPath(points);
-        ctx.stroke();
-
-        // Add a second, slower layer of water texture in the opposite direction for parallax depth!
-        ctx.globalCompositeOperation = 'screen';
-        const pattern2 = ctx.createPattern(textures.water, 'repeat');
-        const matrix2 = new DOMMatrix();
-        matrix2.translateSelf(-game.time * 12, game.time * 15);
-        matrix2.scaleSelf(0.5, 0.5); 
-        pattern2.setTransform(matrix2);
-        
-        ctx.strokeStyle = pattern2;
-        ctx.lineWidth = width - 8;
-        ctx.globalAlpha = 0.4;
-        drawSmoothPath(points);
-        ctx.stroke();
-      }
-      ctx.restore();
-
-      // 5. Ambient Gloss/Shine (Figma-style soft overlay for the surface)
-      ctx.save();
-      ctx.globalCompositeOperation = 'screen';
-      ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
-      ctx.shadowBlur = 15;
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
-      ctx.lineWidth = 4;
-      ctx.setLineDash([5, 120]);
-      ctx.lineDashOffset = -game.time * 15;
-      drawSmoothPath(points);
-      ctx.stroke();
-      ctx.restore();
-
-      ctx.restore(); 
-    };
-
-    const drawWaterfallUltraOverlay = () => {
-      const waterfall = landmarks.find((landmark) => landmark.type === 'waterfall');
-      if (!waterfall) return;
-      const pos = gridToPixel(waterfall.x, waterfall.y);
-      ctx.save();
-      ctx.translate(pos.px, pos.py);
-
-      // 1. Splash pool glow & mist base
-      ctx.globalCompositeOperation = 'screen';
-      const pool = ctx.createRadialGradient(0, 20, 5, 0, 20, 58);
-      pool.addColorStop(0, 'rgba(224,242,254,0.62)');
-      pool.addColorStop(0.38, 'rgba(14,165,233,0.32)');
-      pool.addColorStop(1, 'rgba(14,165,233,0)');
-      ctx.fillStyle = pool;
-      ctx.beginPath();
-      ctx.ellipse(0, 22, 62, 25, -0.08, 0, Math.PI * 2);
-      ctx.fill();
-
-      // 2. Base Splash concentric expanding ripples
-      for (let i = 0; i < 3; i++) {
-        const ripplePhase = ((game.time * 0.8 + i * 0.33) % 1 + 1) % 1;
-        const rx = Math.max(0, ripplePhase * 68);
-        const ry = Math.max(0, ripplePhase * 27);
-        ctx.strokeStyle = `rgba(224, 242, 254, ${(1 - ripplePhase) * 0.45})`;
-        ctx.lineWidth = 1.6;
-        ctx.beginPath();
-        ctx.ellipse(0, 22, rx, ry, 0, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-
-      // 3. Background curtain flow representation (semi-transparent solid vertical gradient block)
-      ctx.globalCompositeOperation = 'source-over';
-      const curtainGrad = ctx.createLinearGradient(0, -48, 0, 22);
-      curtainGrad.addColorStop(0, 'rgba(56, 189, 248, 0.12)');
-      curtainGrad.addColorStop(0.25, 'rgba(56, 189, 248, 0.58)');
-      curtainGrad.addColorStop(0.85, 'rgba(14, 165, 233, 0.65)');
-      curtainGrad.addColorStop(1, 'rgba(224, 242, 254, 0.88)');
-      ctx.fillStyle = curtainGrad;
-      ctx.beginPath();
-      ctx.moveTo(-16, -46);
-      ctx.lineTo(16, -46);
-      ctx.lineTo(24, 22);
-      ctx.lineTo(-24, 22);
-      ctx.closePath();
-      ctx.fill();
-
-      // 4. Detailed flowing streams (cascading water threads)
-      const numStreams = 15;
-      for (let i = 0; i < numStreams; i++) {
-        const speed = 2.8 + (i % 3) * 0.6;
-        const phase = (game.time * speed + i * 0.17) % 1;
-        
-        const xTop = -14 + i * 2.0;
-        const xBottom = -21 + i * 3.0;
-        const x = xTop + (xBottom - xTop) * phase;
-        const y = -46 + phase * 68;
-        
-        const len = 16 + (i % 4) * 6;
-        const streamGrad = ctx.createLinearGradient(0, y - len/2, 0, y + len/2);
-        streamGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-        streamGrad.addColorStop(0.48, 'rgba(255, 255, 255, 0.85)');
-        streamGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-        
-        ctx.strokeStyle = streamGrad;
-        ctx.lineWidth = 1.4 + (i % 3) * 0.5;
-        ctx.beginPath();
-        ctx.moveTo(x, y - len/2);
-        const wave = Math.sin(game.time * 8 + i) * 1.5;
-        ctx.quadraticCurveTo(x + wave, y, x, y + len/2);
-        ctx.stroke();
-      }
-
-      // 5. Bubbling Foam at the waterfall base impact zone
-      const numFoams = 20;
-      for (let i = 0; i < numFoams; i++) {
-        const speed = 1.1 + (i % 2) * 0.4;
-        const phase = (game.time * speed + i * 0.13) % 1;
-        const angle = i * 2.399; // golden angle distribution
-        
-        const dist = phase * (18 + (i % 3) * 5);
-        const x = Math.cos(angle) * dist + Math.sin(game.time * 2 + i) * 1.6;
-        const y = 22 + Math.sin(angle) * dist * 0.35 - phase * 5;
-        
-        const size = (3.5 + (i % 3) * 1.8) * (1 - phase * 0.35);
-        ctx.fillStyle = `rgba(255, 255, 255, ${(1 - phase) * 0.76})`;
-        ctx.beginPath();
-        ctx.arc(x, y, size, 0, Math.PI * 2);
-        ctx.fill();
-        
-        if (size > 3.2) {
-          ctx.fillStyle = `rgba(224, 242, 254, ${(1 - phase) * 0.45})`;
-          ctx.beginPath();
-          ctx.arc(x - size*0.18, y - size*0.18, size * 0.36, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-
-      // 6. High-velocity splash droplets shooting up and falling back down
-      const numDroplets = 12;
-      for (let i = 0; i < numDroplets; i++) {
-        const speed = 1.9 + (i % 3) * 0.7;
-        const phase = (game.time * speed + i * 0.23) % 1;
-        
-        const angle = -Math.PI/2 + (i - numDroplets/2) * 0.12; 
-        const v0 = 24 + (i % 3) * 7; 
-        const t = phase * 0.88;
-        
-        const x = Math.cos(angle) * v0 * t;
-        const y = 18 + Math.sin(angle) * v0 * t + 0.5 * 88 * t * t;
-        
-        const size = Math.max(0.7, (1.8 - phase * 1.4));
-        ctx.fillStyle = `rgba(255, 255, 255, ${(1 - phase) * 0.88})`;
-        ctx.beginPath();
-        ctx.arc(x, y, size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // 7. Soft rising mist clouds
-      const numMists = 10;
-      for (let i = 0; i < numMists; i++) {
-        const speed = 0.42 + (i % 2) * 0.18;
-        const phase = (game.time * speed + i * 0.19) % 1;
-        
-        const x = -16 + i * 3.2 + Math.sin(game.time * 1.3 + i) * 5;
-        const y = 20 - phase * 52;
-        
-        const size = 14 + phase * 26;
-        const opacity = (1 - phase) * 0.15;
-        
-        const mistGrad = ctx.createRadialGradient(x, y, 0, x, y, size);
-        mistGrad.addColorStop(0, `rgba(224, 242, 254, ${opacity})`);
-        mistGrad.addColorStop(0.45, `rgba(240, 249, 255, ${opacity * 0.48})`);
-        mistGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-        
-        ctx.fillStyle = mistGrad;
-        ctx.beginPath();
-        ctx.arc(x, y, size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      ctx.globalAlpha = 1;
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.restore();
-    };
-
-    const drawPalm = (tree, time) => {
-      const pos = gridToPixel(tree.x, tree.y);
-      const s = 0.82 + tree.size;
-      
-      const gust = Math.sin(time * 0.7 + tree.phase) * Math.sin(time * 1.3 + tree.phase * 0.8);
-      const sway = tree.lean + gust * 0.18;
-      
-      const stretch = 1 + Math.sin(time * 2.1 + tree.phase) * 0.03;
-      
-      ctx.save();
-      ctx.translate(pos.px, pos.py);
-      
-      ctx.fillStyle = 'rgba(55, 38, 18, 0.2)';
-      ctx.beginPath();
-      ctx.ellipse(0, 14 * s, 16 * s * (2 - stretch), 5 * s, sway * 0.4, 0, Math.PI * 2);
-      ctx.fill();
-      
-      ctx.rotate(sway * 0.55);
-      ctx.scale(1, stretch);
-      
-      ctx.lineCap = 'round';
-      const trunk = ctx.createLinearGradient(-4 * s, 11 * s, 5 * s, -19 * s);
-      trunk.addColorStop(0, '#78350f');
-      trunk.addColorStop(0.5, '#92400e');
-      trunk.addColorStop(1, '#b45309');
-      ctx.strokeStyle = trunk;
-      ctx.lineWidth = 5 * s;
-      
-      ctx.beginPath();
-      ctx.moveTo(0, 11 * s);
-      ctx.quadraticCurveTo(-4 * s + sway * 15, -4 * s, 3 * s + sway * 25, -18 * s);
-      ctx.stroke();
-      
-      ctx.translate(3 * s + sway * 25, -18 * s);
-      
-      ctx.shadowColor = 'rgba(20, 83, 45, 0.4)';
-      ctx.shadowBlur = 6 * s;
-      ctx.shadowOffsetY = 3 * s;
-      
-      for (let i = 0; i < 6; i++) {
-        const flutter = Math.pow(Math.sin(time * 3.5 + tree.phase + i * 1.2), 2) * 0.15;
-        const angle = -Math.PI / 2 + i * (Math.PI * 2 / 6) + sway * 0.8 + flutter;
-        
-        const leafGrad = ctx.createLinearGradient(0, 0, Math.cos(angle) * 25 * s, Math.sin(angle) * 15 * s);
-        leafGrad.addColorStop(0, '#bef264'); 
-        leafGrad.addColorStop(0.5, '#65a30d'); 
-        leafGrad.addColorStop(1, '#166534'); 
-        ctx.fillStyle = leafGrad;
-        
-        ctx.beginPath();
-        ctx.moveTo(0, 0); 
-        
-        const tipX = Math.cos(angle) * 24 * s * (1 - flutter*0.3);
-        const tipY = Math.sin(angle) * 18 * s * (1 - flutter*0.3);
-        const cpDist = 12 * s;
-        
-        ctx.quadraticCurveTo(Math.cos(angle - 0.4) * cpDist, Math.sin(angle - 0.4) * cpDist, tipX, tipY);
-        ctx.quadraticCurveTo(Math.cos(angle + 0.4) * cpDist, Math.sin(angle + 0.4) * cpDist, 0, 0);
-        ctx.fill();
-      }
-      
-      ctx.shadowColor = 'transparent';
-      ctx.fillStyle = '#451a03';
-      [-3, 4].forEach((x, index) => {
-        ctx.beginPath();
-        ctx.arc((x - 2) * s, (index * 2) * s, 3 * s, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      ctx.restore();
-    };
-
-    const drawCanopyTree = (tree, time) => {
-      const pos = gridToPixel(tree.x, tree.y);
-      const s = 0.8 + tree.size;
-      
-      const gust = Math.sin(time * 0.8 + tree.phase) * Math.cos(time * 0.4 + tree.phase * 0.5);
-      const sway = tree.lean + gust * 0.15;
-      
-      const breathe = Math.sin(time * 2.2 + tree.phase) * Math.sin(time * 1.1 + tree.phase);
-      const scaleX = 1 - breathe * 0.025;
-      const scaleY = 1 + breathe * 0.035;
-      
-      ctx.save();
-      ctx.translate(pos.px, pos.py);
-      
-      ctx.fillStyle = 'rgba(55, 38, 18, 0.22)';
-      ctx.beginPath();
-      ctx.ellipse(0, 13 * s, 14 * s * scaleX, 5 * s, sway * 0.25, 0, Math.PI * 2);
-      ctx.fill();
-      
-      ctx.scale(scaleX, scaleY);
-      ctx.rotate(sway * 0.1);
-      
-      const trunk = ctx.createLinearGradient(-4 * s, 0, 4 * s, 17 * s);
-      trunk.addColorStop(0, '#78350f'); 
-      trunk.addColorStop(1, '#451a03');
-      ctx.fillStyle = trunk;
-      
-      ctx.beginPath();
-      ctx.moveTo(-2 * s, 0);
-      ctx.lineTo(2 * s, 0);
-      ctx.lineTo(4 * s, 16 * s);
-      ctx.lineTo(-4 * s, 16 * s);
-      ctx.fill();
-      
-      ctx.beginPath();
-      const clusters = [[-9, -8, 12], [4, -12, 14], [12, -4, 11], [-1, 0, 15], [-14, 1, 9]];
-      clusters.forEach(([x, y, r]) => {
-        const clusterBob = Math.sin(time * 3 + tree.phase + x * 0.5) * 0.6;
-        ctx.moveTo((x + sway * 15 + r) * s, (y + clusterBob) * s);
-        ctx.arc((x + sway * 15) * s, (y + clusterBob) * s, r * s, 0, Math.PI * 2);
-      });
-      
-      ctx.shadowColor = 'rgba(20, 83, 45, 0.4)';
-      ctx.shadowBlur = 8 * s;
-      ctx.shadowOffsetY = 4 * s;
-      
-      const canopy = ctx.createLinearGradient(-15 * s, -25 * s, 15 * s, 10 * s);
-      canopy.addColorStop(0, '#4ade80');
-      canopy.addColorStop(0.5, '#22c55e');
-      canopy.addColorStop(1, '#14532d');
-      ctx.fillStyle = canopy;
-      ctx.fill();
-      
-      ctx.shadowColor = 'transparent';
-      
-      ctx.save();
-      ctx.clip(); 
-      
-      ctx.globalCompositeOperation = 'screen';
-      ctx.globalAlpha = 0.3 + gust * 0.1;
-      
-      const highlightGrad = ctx.createLinearGradient(-10 * s, -25 * s, 10 * s, -5 * s);
-      highlightGrad.addColorStop(0, '#ffffff');
-      highlightGrad.addColorStop(1, 'rgba(255,255,255,0)');
-      ctx.fillStyle = highlightGrad;
-      
-      ctx.beginPath();
-      ctx.ellipse(-3 * s + sway * 8 * s, -12 * s, 18 * s, 10 * s, 0, 0, Math.PI * 2);
-      ctx.fill();
-      
-      ctx.restore(); 
-      ctx.restore();
-    };
-
-    const drawBoatShape = (boat) => {
-      const driftX = Math.cos(game.time * 0.22 + boat.phase) * 0.22;
-      const driftY = Math.sin(game.time * 0.18 + boat.phase * 0.8) * 0.16;
-      const pos = gridToPixel(boat.x + driftX, boat.y + driftY);
-      const bob = Math.sin(game.time * 1.9 + boat.phase) * 2.4;
-      const roll = Math.sin(game.time * 1.05 + boat.phase) * 0.055;
-      
-      ctx.save();
-      ctx.translate(pos.px, pos.py + bob);
-      ctx.rotate(boat.heading + roll);
-      ctx.scale(boat.scale, boat.scale);
-
-      // --- Beautiful Figma-style Flowing Wake (Water trails) ---
-      ctx.save();
-      ctx.globalCompositeOperation = 'screen';
-      ctx.globalAlpha = 0.35 + Math.sin(game.time * 2.2 + boat.phase) * 0.15;
-      ctx.lineCap = 'round';
-      
-      [-1, 1].forEach((side) => {
-        // Main thick foam trail
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        ctx.moveTo(-12, side * 6);
-        ctx.quadraticCurveTo(-30, side * (10 + Math.sin(game.time * 3 + boat.phase) * 3), -55, side * 16);
-        ctx.stroke();
-
-        // Secondary thin water ripple (glassy)
-        ctx.strokeStyle = 'rgba(186, 230, 253, 0.5)';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.moveTo(-5, side * 9);
-        ctx.quadraticCurveTo(-25, side * (16 + Math.cos(game.time * 2 + boat.phase) * 4), -45, side * 22);
-        ctx.stroke();
-      });
-      ctx.restore();
-
-      // --- Drop Shadow for floating 3D effect ---
-      ctx.shadowColor = 'rgba(2, 44, 34, 0.4)';
-      ctx.shadowBlur = 12;
-      ctx.shadowOffsetY = 6;
-      ctx.shadowOffsetX = -2;
-
-      // Ensure boats face right (positive X) natively so the wake appears behind them properly
-      // Adjust orientation based on the generated AI assets (the AI assets point left, so we flip them to point right)
-      ctx.scale(-1, 1);
-
-      if (boat.type === 'speedboat' && textures.stylizedSpeedboatTransparent) {
-        ctx.drawImage(textures.stylizedSpeedboatTransparent, -45, -45, 90, 90);
-      } else if (boat.type !== 'speedboat' && textures.stylizedSailboatTransparent) {
-        ctx.drawImage(textures.stylizedSailboatTransparent, -50, -50, 100, 100);
-      } else {
-        // Fallback simple shapes if textures fail to load
-        ctx.fillStyle = '#f8fafc';
-        ctx.beginPath();
-        ctx.ellipse(0, 0, 20, 10, 0, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
-    };
-
-    const drawLandmarkAmbientEffects = (landmark, motion, metrics = {}) => {
-      const phase01 = motion.phase / (Math.PI * 2);
-      const t = game.time + motion.phase;
-      ctx.save();
-      ctx.translate(motion.x, motion.floatY - 5);
-
-      if (landmark.type === 'crystal') {
-        ctx.globalCompositeOperation = 'screen';
-        const glow = ctx.createRadialGradient(0, -38, 6, 0, -38, 70);
-        glow.addColorStop(0, `rgba(248,113,113,${0.3 + Math.sin(t * 1.7) * 0.1})`);
-        glow.addColorStop(0.38, 'rgba(244,114,182,0.16)');
-        glow.addColorStop(1, 'rgba(244,114,182,0)');
-        ctx.fillStyle = glow;
-        ctx.fillRect(-76, -108, 152, 128);
-        for (let i = 0; i < 4; i++) {
-          const glint = (game.time * 0.22 + i * 0.23 + phase01) % 1;
-          const x = -30 + glint * 60;
-          const y = -64 + Math.sin(t + i) * 16;
-          ctx.globalAlpha = (1 - Math.abs(glint - 0.5) * 2) * 0.42;
-          ctx.strokeStyle = '#fff7ed';
-          ctx.lineWidth = 1.4;
-          ctx.beginPath();
-          ctx.moveTo(x - 6, y);
-          ctx.lineTo(x + 6, y);
-          ctx.moveTo(x, y - 6);
-          ctx.lineTo(x, y + 6);
-          ctx.stroke();
-        }
-      } else if (landmark.type === 'factory') {
-        ctx.globalCompositeOperation = 'screen';
-        for (let i = 0; i < 6; i++) {
-          const puff = (game.time * 0.18 + i * 0.17 + phase01) % 1;
-          const x = 18 + Math.sin(t * 1.3 + i) * 7 + puff * 12;
-          const y = -54 - puff * 58;
-          ctx.globalAlpha = (1 - puff) * 0.24;
-          ctx.fillStyle = '#e2e8f0';
-          ctx.beginPath();
-          ctx.ellipse(x, y, 7 + puff * 16, 5 + puff * 11, Math.sin(t + i) * 0.45, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      } else if (landmark.type === 'waterfall') {
-        ctx.globalCompositeOperation = 'screen';
-        for (let i = 0; i < 6; i++) {
-          const fall = (game.time * 3.2 + i * 0.18 + phase01) % 1;
-          const x = -18 + i * 7 + Math.sin(t * 2.3 + i) * 2.4;
-          const y = -48 + fall * 66;
-          const grad = ctx.createLinearGradient(x, y - 20, x, y + 24);
-          grad.addColorStop(0, 'rgba(224,242,254,0)');
-          grad.addColorStop(0.5, 'rgba(224,242,254,0.62)');
-          grad.addColorStop(1, 'rgba(255,255,255,0)');
-          ctx.globalAlpha = 0.72;
-          ctx.strokeStyle = grad;
-          ctx.lineWidth = 1.6 + (i % 3);
-          ctx.beginPath();
-          ctx.moveTo(x, y - 20);
-          ctx.quadraticCurveTo(x + Math.sin(t + i) * 4, y, x + 1.5, y + 25);
-          ctx.stroke();
-        }
-      } else if (landmark.type === 'lighthouse') {
-        ctx.globalCompositeOperation = 'screen';
-        const sweep = Math.sin(game.time * 1.25 + motion.phase);
-        ctx.save();
-        ctx.translate(2, -70);
-        ctx.rotate(-0.06 + sweep * 0.46);
-        const beam = ctx.createLinearGradient(0, 0, 110, 0);
-        beam.addColorStop(0, 'rgba(254,240,138,0.42)');
-        beam.addColorStop(0.55, 'rgba(254,240,138,0.16)');
-        beam.addColorStop(1, 'rgba(254,240,138,0)');
-        ctx.fillStyle = beam;
-        ctx.globalAlpha = 0.7;
-        ctx.beginPath();
-        ctx.moveTo(0, -6);
-        ctx.lineTo(112, -28);
-        ctx.lineTo(112, 22);
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
-        ctx.globalAlpha = 0.48 + Math.sin(t * 3.2) * 0.16;
-        ctx.fillStyle = '#fde047';
-        ctx.beginPath();
-        ctx.arc(2, -70, 9, 0, Math.PI * 2);
-        ctx.fill();
-      } else if (landmark.type === 'harbor') {
-        ctx.globalCompositeOperation = 'screen';
-        for (let i = 0; i < 4; i++) {
-          const ripple = (game.time * 0.34 + i * 0.23 + phase01) % 1;
-          ctx.globalAlpha = (1 - ripple) * 0.22;
-          ctx.strokeStyle = '#dffbff';
-          ctx.lineWidth = 1.8;
-          ctx.beginPath();
-          ctx.ellipse(0, 21, 26 + ripple * 42, 8 + ripple * 12, Math.sin(t) * 0.12, 0, Math.PI * 2);
-          ctx.stroke();
-        }
-      } else if (landmark.type === 'bridge') {
-        const glint = (game.time * 0.2 + phase01) % 1;
-        ctx.globalCompositeOperation = 'screen';
-        ctx.globalAlpha = 0.32;
-        ctx.strokeStyle = '#fff7ed';
-        ctx.lineWidth = 2.2;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(-34 + glint * 58, -5 + Math.sin(glint * Math.PI) * -8);
-        ctx.lineTo(-22 + glint * 58, -9 + Math.sin(glint * Math.PI) * -10);
-        ctx.stroke();
-      } else if (landmark.type === 'market') {
-        ctx.globalCompositeOperation = 'source-over';
-        ['#ef4444', '#f8fafc', '#facc15'].forEach((color, index) => {
-          const x = -18 + index * 18;
-          const flutter = Math.sin(t * 2.4 + index) * 2.4;
-          ctx.fillStyle = color;
-          ctx.beginPath();
-          ctx.moveTo(x - 5, -34);
-          ctx.lineTo(x + 5, -34);
-          ctx.lineTo(x + flutter, -25);
-          ctx.closePath();
-          ctx.fill();
-        });
-      } else if (landmark.type === 'clinic') {
-        ctx.globalCompositeOperation = 'screen';
-        ctx.globalAlpha = 0.18 + Math.max(0, Math.sin(t * 2.1)) * 0.18;
-        const glow = ctx.createRadialGradient(0, -18, 4, 0, -18, 34);
-        glow.addColorStop(0, 'rgba(248,113,113,0.55)');
-        glow.addColorStop(1, 'rgba(248,113,113,0)');
-        ctx.fillStyle = glow;
-        ctx.fillRect(-42, -54, 84, 62);
-      } else if (landmark.type === 'farm' || landmark.type === 'ranch' || landmark.type === 'village') {
-        ctx.globalCompositeOperation = 'screen';
-        for (let i = 0; i < 3; i++) {
-          const dust = (game.time * 0.12 + i * 0.31 + phase01) % 1;
-          ctx.globalAlpha = (1 - dust) * 0.12;
-          ctx.fillStyle = '#fef3c7';
-          ctx.beginPath();
-          ctx.ellipse(
-            -24 + i * 24 + Math.sin(t + i) * 7,
-            16 - dust * 18,
-            5 + dust * 8,
-            2 + dust * 4,
-            Math.sin(t + i) * 0.35,
-            0,
-            Math.PI * 2
-          );
-          ctx.fill();
-        }
-      }
-
-      if (metrics.drawHeight > 0 && landmark.type !== 'waterfall') {
-        ctx.globalCompositeOperation = 'screen';
-        ctx.globalAlpha = 0.08 + Math.sin(t * 1.1) * 0.025;
-        const light = ctx.createLinearGradient(-metrics.sizePx * 0.45, -metrics.drawHeight + 28, metrics.sizePx * 0.22, 20);
-        light.addColorStop(0, '#ffffff');
-        light.addColorStop(1, 'rgba(255,255,255,0)');
-        ctx.fillStyle = light;
-        ctx.fillRect(-metrics.sizePx / 2, -metrics.drawHeight + 24, metrics.sizePx, metrics.drawHeight);
-      }
-      ctx.globalAlpha = 1;
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.restore();
-    };
-
-    const drawBuildingSprite = (landmark, motion = getLandmarkMotion(landmark)) => {
-      const sprite = buildingSpriteMap[landmark.type];
-      const image = textures.buildings;
-      if (!sprite || !isTextureReady(image)) return false;
-      ctx.save();
-      ctx.translate(motion.x, motion.floatY - 6);
-      ctx.rotate(motion.sway);
-      ctx.scale(motion.scaleX, motion.scaleY);
-      ctx.shadowColor = 'rgba(15,23,42,0.28)';
-      ctx.shadowBlur = 10;
-      ctx.shadowOffsetY = 9;
-      ctx.drawImage(image, sprite.sx, sprite.sy, sprite.sw, sprite.sh, -sprite.dw / 2, -sprite.dh + 18, sprite.dw, sprite.dh);
-      ctx.restore();
-
-      drawLandmarkAmbientEffects(landmark, motion, { sizePx: sprite.dw, drawHeight: sprite.dh });
-      return true;
-    };
-
-    const drawGeneratedLandmarkAsset = (landmark, motion) => {
-      const processedImage = getProcessedLandmarkImage(landmark.type);
-      if (!processedImage) return null;
-      const meta = landmarkAssetMeta[landmark.type] || {};
-      const sizePx = LANDMARK_DRAW_BASE * (meta.drawScale || 1);
-      const drawHeight = sizePx * (processedImage.height / processedImage.width);
-      ctx.save();
-      ctx.translate(motion.x, motion.floatY - 5);
-      ctx.rotate(motion.sway);
-      ctx.scale(motion.scaleX, motion.scaleY);
-      ctx.shadowColor = 'rgba(15,23,42,0.24)';
-      ctx.shadowBlur = 16;
-      ctx.shadowOffsetY = 10;
-      ctx.drawImage(processedImage.canvas, -sizePx / 2, -drawHeight + 24, sizePx, drawHeight);
-      ctx.restore();
-      drawLandmarkAmbientEffects(landmark, motion, { sizePx, drawHeight });
-      return {
-        sizePx: Math.max(sizePx, drawHeight),
-        labelOffset: Math.max(30, drawHeight * landmark.size * (meta.labelFactor || 0.34)),
-      };
-    };
-
-    const drawLandmark = (landmark) => {
-      const lmLabel = (langRef.current === 'en' ? landmark.label_en : landmark.label_ms) || landmark.label;
-      const pos = gridToPixel(landmark.x, landmark.y);
-      const s = landmark.size;
-      const assetMeta = landmarkAssetMeta[landmark.type] || {};
-      const motion = getLandmarkMotion(landmark);
-      ctx.save();
-      ctx.translate(pos.px, pos.py);
-      ctx.scale(s, s);
-      ctx.fillStyle = 'rgba(0,0,0,0.18)';
-      ctx.beginPath();
-      ctx.ellipse(
-        motion.x * 0.24,
-        20 + Math.max(0, motion.floatY * 0.28),
-        27 * (assetMeta.shadowScale || 1) * (1 + motion.shadowPulse),
-        7 * Math.max(1, (assetMeta.shadowScale || 1) * 0.9) * (1 - motion.shadowPulse * 0.35),
-        0,
-        0,
-        Math.PI * 2
-      );
-      ctx.fill();
-
-      const generatedMetrics = drawGeneratedLandmarkAsset(landmark, motion);
-      if (generatedMetrics) {
-        ctx.restore();
-        ctx.save();
-        ctx.font = 'bold 10px Inter';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        const labelY = pos.py + generatedMetrics.labelOffset;
-        ctx.lineJoin = 'round';
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = 'rgba(15,23,42,0.34)';
-        ctx.fillStyle = 'rgba(248,250,252,0.98)';
-        ctx.shadowColor = 'rgba(15,23,42,0.28)';
-        ctx.shadowBlur = 6;
-        ctx.shadowOffsetY = 2;
-        ctx.strokeText(lmLabel, pos.px, labelY);
-        ctx.fillText(lmLabel, pos.px, labelY);
-        ctx.restore();
-        return;
-      }
-
-      if (drawBuildingSprite(landmark, motion)) {
-        ctx.restore();
-        ctx.save();
-        ctx.fillStyle = 'rgba(255,255,255,0.86)';
-        ctx.strokeStyle = 'rgba(15,23,42,0.16)';
-        ctx.lineWidth = 3;
-        ctx.font = 'bold 10px Inter';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        const labelY = pos.py + 34 * landmark.size;
-        const textWidth = ctx.measureText(lmLabel).width + 12;
-        drawRoundRect(ctx, pos.px - textWidth / 2, labelY - 8, textWidth, 16, 5);
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = '#334155';
-        ctx.fillText(lmLabel, pos.px, labelY);
-        ctx.restore();
-        return;
-      }
-
-      if (landmark.type === 'crystal') {
-        ctx.fillStyle = '#51465e';
-        ctx.beginPath(); ctx.moveTo(-34, 18); ctx.lineTo(-10, -24); ctx.lineTo(11, 18); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = '#6b5b7a';
-        ctx.beginPath(); ctx.moveTo(-7, 18); ctx.lineTo(20, -33); ctx.lineTo(40, 18); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = '#f43f5e';
-        ctx.beginPath(); ctx.moveTo(-9, 11); ctx.lineTo(0, -33); ctx.lineTo(12, 11); ctx.closePath(); ctx.fill();
-        ctx.strokeStyle = 'rgba(248,113,113,0.7)'; ctx.lineWidth = 2; ctx.stroke();
-      } else if (landmark.type === 'farm' || landmark.type === 'ranch') {
-        ctx.fillStyle = '#9a3412';
-        drawRoundRect(ctx, -22, -4, 44, 25, 4); ctx.fill();
-        ctx.fillStyle = '#dc2626';
-        ctx.beginPath(); ctx.moveTo(-27, -4); ctx.lineTo(0, -27); ctx.lineTo(27, -4); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = '#fff7ed'; ctx.fillRect(-8, 4, 16, 17);
-        ctx.strokeStyle = '#166534'; ctx.lineWidth = 3;
-        [-34, -26, 28, 36].forEach((x) => { ctx.beginPath(); ctx.moveTo(x, 16); ctx.lineTo(x + 9, 7); ctx.stroke(); });
-      } else if (landmark.type === 'factory') {
-        ctx.fillStyle = '#64748b'; drawRoundRect(ctx, -28, -3, 56, 27, 4); ctx.fill();
-        ctx.fillStyle = '#475569'; ctx.fillRect(12, -28, 10, 25);
-        ctx.fillStyle = 'rgba(203,213,225,0.55)';
-        ctx.beginPath(); ctx.arc(19, -34, 8 + Math.sin(game.time * 2) * 2, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#bae6fd'; ctx.fillRect(-20, 5, 10, 8); ctx.fillRect(-4, 5, 10, 8); ctx.fillRect(12, 5, 10, 8);
-      } else if (landmark.type === 'waterfall') {
-        ctx.fillStyle = '#475569';
-        ctx.beginPath(); ctx.moveTo(-25, 20); ctx.lineTo(-11, -18); ctx.lineTo(17, -20); ctx.lineTo(28, 20); ctx.closePath(); ctx.fill();
-        const grad = ctx.createLinearGradient(0, -19, 0, 24);
-        grad.addColorStop(0, '#e0f2fe'); grad.addColorStop(0.5, '#38bdf8'); grad.addColorStop(1, '#0ea5e9');
-        ctx.fillStyle = grad; drawRoundRect(ctx, -7, -18, 16, 42, 8); ctx.fill();
-      } else if (landmark.type === 'clinic') {
-        ctx.fillStyle = '#f8fafc'; drawRoundRect(ctx, -24, -15, 48, 35, 5); ctx.fill();
-        ctx.fillStyle = '#ef4444'; ctx.fillRect(-4, -8, 8, 22); ctx.fillRect(-13, 1, 26, 8);
-        ctx.fillStyle = '#0f172a'; ctx.fillRect(-16, 7, 8, 13); ctx.fillRect(8, 7, 8, 13);
-      } else if (landmark.type === 'village') {
-        [-18, 0, 18].forEach((x, index) => {
-          ctx.fillStyle = index === 1 ? '#d97706' : '#a16207'; drawRoundRect(ctx, x - 11, -1, 22, 21, 4); ctx.fill();
-          ctx.fillStyle = '#854d0e'; ctx.beginPath(); ctx.moveTo(x - 14, -1); ctx.lineTo(x, -17); ctx.lineTo(x + 14, -1); ctx.closePath(); ctx.fill();
-        });
-      } else if (landmark.type === 'harbor') {
-        ctx.strokeStyle = '#7c2d12'; ctx.lineWidth = 6; ctx.lineCap = 'round';
-        ctx.beginPath(); ctx.moveTo(-30, 8); ctx.lineTo(23, 8); ctx.moveTo(-18, -8); ctx.lineTo(-18, 18); ctx.moveTo(6, -8); ctx.lineTo(6, 18); ctx.stroke();
-        ctx.fillStyle = '#f8fafc'; ctx.beginPath(); ctx.moveTo(12, -19); ctx.lineTo(12, 4); ctx.lineTo(30, 3); ctx.closePath(); ctx.fill();
-      } else if (landmark.type === 'lighthouse') {
-        ctx.fillStyle = '#f8fafc'; ctx.beginPath(); ctx.moveTo(-12, 20); ctx.lineTo(-7, -24); ctx.lineTo(7, -24); ctx.lineTo(12, 20); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = '#ef4444'; ctx.fillRect(-10, -8, 20, 7); ctx.fillRect(-8, 7, 16, 7);
-        ctx.fillStyle = '#fde047'; ctx.beginPath(); ctx.arc(0, -30, 8, 0, Math.PI * 2); ctx.fill();
-      } else if (landmark.type === 'bridge') {
-        ctx.strokeStyle = '#7c2d12'; ctx.lineWidth = 7; ctx.lineCap = 'round';
-        ctx.beginPath(); ctx.moveTo(-31, 5); ctx.quadraticCurveTo(0, -18, 31, 5); ctx.stroke();
-        ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-30, -2); ctx.quadraticCurveTo(0, -25, 30, -2); ctx.stroke();
-      } else if (landmark.type === 'market') {
-        ctx.fillStyle = '#fef3c7'; drawRoundRect(ctx, -24, -5, 48, 27, 4); ctx.fill();
-        ctx.fillStyle = '#ef4444'; ctx.fillRect(-27, -18, 54, 9);
-        ctx.fillStyle = '#ffffff'; [-18, 0, 18].forEach((x) => ctx.fillRect(x - 5, -18, 10, 9));
-      }
-      ctx.restore();
-
-      ctx.save();
-      ctx.fillStyle = 'rgba(255,255,255,0.86)';
-      ctx.strokeStyle = 'rgba(15,23,42,0.16)';
-      ctx.lineWidth = 3;
-      ctx.font = 'bold 10px Inter';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      const labelY = pos.py + 34 * landmark.size;
-      const textWidth = ctx.measureText(lmLabel).width + 12;
-      drawRoundRect(ctx, pos.px - textWidth / 2, labelY - 8, textWidth, 16, 5);
-      ctx.fill();
-      ctx.stroke();
-      ctx.fillStyle = '#334155';
-      ctx.fillText(lmLabel, pos.px, labelY);
-      ctx.restore();
     };
 
     const makeTokenPath = (context, shape, size) => {
@@ -5415,39 +4200,18 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
 
     const drawItem = (item, time) => {
       const pos = gridToPixel(item.x, item.y);
-      const bob = Math.sin(time * 3 + item.x) * 4;
-      const icon = item.kind === 'money' ? '💰' : item.kind === 'diamond' ? '💎' : item.kind === 'chest' ? '🎁' : item.kind === 'reward' ? '💡' : '💣';
-      const color = item.kind === 'penalty' ? '#ef4444' : item.kind === 'reward' ? '#fde047' : item.kind === 'diamond' ? '#c084fc' : '#facc15';
-      const zoneRadius = getRrgItemRadius(item);
-      // Removed visual zone radius drawing to keep the map clean
-      // Draw Beautiful Custom Vectors instead of Emojis
-      ctx.globalAlpha = 1;
-      ctx.save();
-      ctx.translate(pos.px, pos.py + bob);
+      const pulse = 1 + Math.sin(time * 3.5 + item.x * 2) * 0.14;
+      const alpha = 0.45 + Math.sin(time * 3 + item.y) * 0.25;
+      const color = item.kind === 'penalty' ? 'rgba(239, 68, 68,' : item.kind === 'reward' ? 'rgba(234, 179, 8,' : item.kind === 'diamond' ? 'rgba(168, 85, 247,' : item.kind === 'chest' ? 'rgba(249, 115, 22,' : 'rgba(234, 179, 8,';
 
-      if (item.kind === 'penalty' || icon === '💣') {
-        // --- PRO BOMB ---
-        if (textures.proBombTransparent) {
-           ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-           ctx.shadowBlur = 10;
-           ctx.drawImage(textures.proBombTransparent, -28, -32, 56, 56);
-        } else {
-           ctx.font = '32px serif';
-           ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-           ctx.fillText('💣', 0, 0);
-        }
-      } else {
-        // --- PRO CHEST (For all rewards) ---
-        if (textures.proChestTransparent) {
-           ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-           ctx.shadowBlur = 10;
-           ctx.drawImage(textures.proChestTransparent, -32, -32, 64, 64);
-        } else {
-           ctx.font = '32px serif';
-           ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-           ctx.fillText('🎁', 0, 0);
-        }
-      }
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(pos.px, pos.py, 18 * pulse, 0, Math.PI * 2);
+      ctx.strokeStyle = `${color} ${alpha})`;
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([4, 4]);
+      ctx.lineDashOffset = time * 12;
+      ctx.stroke();
       ctx.restore();
     };
 
@@ -5736,49 +4500,39 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
 
     const drawMinimap = () => {
       const mW = miniMap.width;
-      mmCtx.clearRect(0, 0, mW, miniMap.height);
-      const miniOcean = mmCtx.createLinearGradient(0, 0, mW, miniMap.height);
-      miniOcean.addColorStop(0, '#075985');
-      miniOcean.addColorStop(0.55, '#0891b2');
-      miniOcean.addColorStop(1, '#0e7490');
-      mmCtx.fillStyle = miniOcean;
-      mmCtx.fillRect(0, 0, mW, miniMap.height);
+      const mH = miniMap.height;
+      mmCtx.clearRect(0, 0, mW, mH);
       const scale = mW / MAP_W;
-      mmCtx.fillStyle = '#d8b26f';
-      mmCtx.beginPath();
-      const first = gridToPixel(islandPoly[0][0], islandPoly[0][1]);
-      mmCtx.moveTo(first.px * scale, first.py * scale);
-      for (let i = 1; i < islandPoly.length; i++) {
-        const point = gridToPixel(islandPoly[i][0], islandPoly[i][1]);
-        mmCtx.lineTo(point.px * scale, point.py * scale);
+      
+      if (textures.officialBoard && textures.officialBoard.complete && textures.officialBoard.naturalWidth > 0) {
+        mmCtx.drawImage(textures.officialBoard, 0, 0, mW, mH);
+      } else {
+        const miniOcean = mmCtx.createLinearGradient(0, 0, mW, mH);
+        miniOcean.addColorStop(0, '#075985');
+        miniOcean.addColorStop(0.55, '#0891b2');
+        miniOcean.addColorStop(1, '#0e7490');
+        mmCtx.fillStyle = miniOcean;
+        mmCtx.fillRect(0, 0, mW, mH);
       }
-      mmCtx.closePath();
-      mmCtx.fill();
-      const hazard = gridToPixel(0, -1);
-      mmCtx.fillStyle = 'rgba(244,67,54,0.5)';
-      mmCtx.beginPath();
-      mmCtx.arc(hazard.px * scale, hazard.py * scale, HAZARD_RADIUS * CELL * scale, 0, Math.PI * 2);
-      mmCtx.fill();
-      RRG_ITEMS.filter(item => getRrgItemRadius(item) > 0).forEach((item) => {
-        const itemPos = gridToPixel(item.x, item.y);
-        mmCtx.fillStyle = item.kind === 'reward' ? 'rgba(250, 204, 21, 0.42)' : 'rgba(239, 68, 68, 0.38)';
-        mmCtx.beginPath();
-        mmCtx.arc(itemPos.px * scale, itemPos.py * scale, getRrgItemRadius(item) * CELL * scale, 0, Math.PI * 2);
-        mmCtx.fill();
-      });
+
       game.players.forEach((player) => {
         const pos = gridToPixel(player.x, player.y);
         mmCtx.fillStyle = player.finished ? '#22c55e' : player.color;
         mmCtx.beginPath();
-        mmCtx.arc(pos.px * scale, pos.py * scale, 3, 0, Math.PI * 2);
+        mmCtx.arc(pos.px * scale, pos.py * scale, 4.5, 0, Math.PI * 2);
         mmCtx.fill();
+        mmCtx.strokeStyle = '#ffffff';
+        mmCtx.lineWidth = 1.2;
+        mmCtx.stroke();
       });
-      const viewportW = canvas.width / ((window.devicePixelRatio || 1) * game.zoom) * scale;
-      const viewportH = canvas.height / ((window.devicePixelRatio || 1) * game.zoom) * scale;
-      const viewportX = (game.camX - (canvas.width / ((window.devicePixelRatio || 1) * game.zoom)) / 2) * scale;
-      const viewportY = (game.camY - (canvas.height / ((window.devicePixelRatio || 1) * game.zoom)) / 2) * scale;
-      mmCtx.strokeStyle = 'rgba(255,255,255,0.72)';
-      mmCtx.lineWidth = 1;
+
+      const dpr = window.devicePixelRatio || 1;
+      const viewportW = (canvas.width / (dpr * game.zoom)) * scale;
+      const viewportH = (canvas.height / (dpr * game.zoom)) * scale;
+      const viewportX = (game.camX - (canvas.width / (dpr * game.zoom)) / 2) * scale;
+      const viewportY = (game.camY - (canvas.height / (dpr * game.zoom)) / 2) * scale;
+      mmCtx.strokeStyle = '#facc15';
+      mmCtx.lineWidth = 1.8;
       mmCtx.strokeRect(viewportX, viewportY, viewportW, viewportH);
     };
 
@@ -5816,310 +4570,41 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       const drawW = worldVW + 400;
       const drawH = worldVH + 400;
 
-      // Simple Parallax Water Animation
+      // Deep ocean background outside board
       const oceanGrad = ctx.createLinearGradient(drawX, drawY, drawX + drawW, drawY + drawH);
-      oceanGrad.addColorStop(0, '#075985');
-      oceanGrad.addColorStop(0.45, '#0891b2');
+      oceanGrad.addColorStop(0, '#0369a1');
+      oceanGrad.addColorStop(0.5, '#0891b2');
       oceanGrad.addColorStop(1, '#0f766e');
       ctx.fillStyle = oceanGrad;
       ctx.fillRect(drawX, drawY, drawW, drawH);
 
-      // Layer 1: Base moving water
-      drawTiledImage(
-        textures.water,
-        drawX, drawY, drawW, drawH,
-        420, 280,
-        game.time * 22,
-        Math.sin(game.time * 0.7) * 24,
-        0.8
-      );
-
-      ctx.save();
-      // Layer 2: Intersecting moving water to create moving ripples (caustics effect)
-      ctx.globalCompositeOperation = 'screen';
-      drawTiledImage(
-        textures.water,
-        drawX, drawY, drawW, drawH,
-        420, 280,
-        -game.time * 15, 
-        game.time * 10 + Math.cos(game.time * 0.5) * 20, 
-        0.35 
-      );
-      ctx.restore();
-
-      ctx.save();
-      ctx.globalAlpha = 0.25;
-      const oceanTint = ctx.createLinearGradient(drawX, drawY, drawX + drawW, drawY + drawH);
-      oceanTint.addColorStop(0, '#075985');
-      oceanTint.addColorStop(0.55, '#0891b2');
-      oceanTint.addColorStop(1, '#0f766e');
-      ctx.fillStyle = oceanTint;
-      ctx.fillRect(drawX, drawY, drawW, drawH);
-      ctx.restore();
-      // Specular Sunlight Sparkles on Ocean
-      ctx.save();
-      ctx.globalCompositeOperation = 'screen';
-      for (let i = 0; i < 28; i++) {
-        const sx = ((i * 193 + game.time * 6) % (MAP_W + 480)) - 240;
-        const sy = ((i * 127 + game.time * 4) % (MAP_H + 480)) - 240;
-        if (!isOnIsland(sx / CELL, sy / CELL)) {
-          const pulse = 0.32 + Math.sin(game.time * 2.4 + i) * 0.32;
-          const size = 1.0 + (i % 2) * 0.8;
-          ctx.fillStyle = `rgba(224, 242, 254, ${pulse * 0.72})`;
-          ctx.beginPath();
-          ctx.arc(sx, sy, size, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-      ctx.restore();
-
-      for (let i = 0; i < 46; i++) {
-        const wx = ((i * 137 + game.time * 42) % (MAP_W + 480)) - 240;
-        const wy = ((i * 211 + game.time * 34) % (MAP_H + 480)) - 240;
-        
-        // Smoothly fade waves out near the boundaries of the water grid to prevent clipping pop
-        const distFromEdgeX = Math.min(wx - (-240), (MAP_W + 240) - wx);
-        const distFromEdgeY = Math.min(wy - (-240), (MAP_H + 240) - wy);
-        const fade = Math.min(1, Math.max(0, distFromEdgeX / 80)) * Math.min(1, Math.max(0, distFromEdgeY / 80));
-        
-        ctx.strokeStyle = `rgba(255,255,255,${(0.06 + (i % 4) * 0.014) * fade})`;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.ellipse(wx, wy, 30 + Math.sin(game.time + i) * 10, 7, Math.sin(i) * 0.2, 0, Math.PI * 1.45);
-        ctx.stroke();
+      // Layer 1: Gentle moving ocean caustics
+      if (textures.water) {
+        drawTiledImage(
+          textures.water,
+          drawX, drawY, drawW, drawH,
+          420, 280,
+          game.time * 16,
+          Math.sin(game.time * 0.7) * 18,
+          0.38
+        );
       }
 
-      ctx.save();
-      ctx.shadowColor = 'rgba(3, 7, 18, 0.3)';
-      ctx.shadowBlur = 24;
-      ctx.shadowOffsetY = 18;
-      makeIslandPath(ctx);
-      ctx.fillStyle = '#b68c54';
-      ctx.fill();
-      ctx.restore();
-
-      makeIslandPath(ctx);
-      const sandGrad = ctx.createLinearGradient(0, 0, MAP_W, MAP_H);
-      sandGrad.addColorStop(0, '#efd79a');
-      sandGrad.addColorStop(0.45, '#d8b26f');
-      sandGrad.addColorStop(1, '#c89555');
-      ctx.fillStyle = sandGrad;
-      ctx.fill();
-
-      ctx.save();
-      makeIslandPath(ctx);
-      ctx.clip();
-      drawTiledImage(textures.sand, -80, -80, MAP_W + 160, MAP_H + 160, 360, 200, Math.sin(game.time * 0.18) * 4, 0, 0.86);
-      ctx.globalAlpha = 0.28;
-      ctx.fillStyle = sandGrad;
-      ctx.fillRect(-80, -80, MAP_W + 160, MAP_H + 160);
-      ctx.globalAlpha = 1;
-      sandSpecks.forEach((speck) => {
-        const pos = gridToPixel(speck.x, speck.y);
-        ctx.globalAlpha = speck.alpha * 0.68;
-        ctx.fillStyle = speck.dark ? '#7c4f2d' : '#fff7d6';
-        ctx.beginPath();
-        ctx.arc(pos.px, pos.py, speck.r * CELL, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      ctx.globalAlpha = 1;
-
-      paths.forEach((pathPoints) => drawRoadPath(pathPoints, 24));
-      drawRealisticRiverPath(riverPath, 34);
-
-      stones.forEach((stone) => {
-        const pos = gridToPixel(stone.x, stone.y);
-        ctx.globalAlpha = stone.alpha;
-        ctx.fillStyle = '#475569';
-        ctx.beginPath();
-        ctx.ellipse(pos.px, pos.py, stone.rx, stone.ry, stone.rot, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      ctx.globalAlpha = 1;
-      ctx.restore();
-
-      // --- ULTRA-REALISTIC DYNAMIC CLOUD SHADOWS (Land & Water) ---
-      ctx.save();
-      ctx.globalCompositeOperation = 'multiply';
-      ctx.globalAlpha = 0.45; // Increase alpha slightly because mask might be soft
-      const numClouds = 6;
-      for (let i = 0; i < numClouds; i++) {
-        const speedX = 9 + (i % 2) * 4;
-        const speedY = 5 + (i % 3) * 2;
-        const cx = ((game.time * speedX + i * 260) % (MAP_W + 1200)) - 600;
-        const cy = ((game.time * speedY + i * 190) % (MAP_H + 1200)) - 600;
-        
-        const cWidth = 140 + (i % 3) * 50;
-        const cHeight = 140 + (i % 3) * 50;
-
-        if (textures.cloudShadow) {
-          // Draw the perfect shadow mask slightly offset
-          ctx.drawImage(textures.cloudShadow, cx + 25, cy + 30, cWidth, cHeight);
-        } else {
-          // Fallback while loading
-          ctx.globalAlpha = 0.14;
-          ctx.fillStyle = '#0f172a';
-          ctx.beginPath();
-          ctx.ellipse(cx + cWidth/2 + 25, cy + cHeight/2 + 30, cWidth/2.5, cHeight/3.5, 0.2, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.globalAlpha = 0.45;
-        }
-      }
-      ctx.restore();
-
-      makeIslandPath(ctx);
-      ctx.strokeStyle = '#f9e6b4';
-      ctx.lineWidth = 18;
-      ctx.stroke();
-      makeIslandPath(ctx);
-      ctx.strokeStyle = '#d6a86b';
-      ctx.lineWidth = 7;
-      ctx.globalAlpha = 0.65;
-      ctx.stroke();
-      
-      // Outer Shore Foam Wave (Double Wave effect)
-      makeIslandPath(ctx);
-      ctx.strokeStyle = `rgba(224,242,254,${0.22 + Math.sin(game.time * 1.8) * 0.08})`;
-      ctx.lineWidth = 8;
-      ctx.setLineDash([12, 24]);
-      ctx.lineDashOffset = -game.time * 18;
-      ctx.stroke();
-      ctx.setLineDash([]);
-      
-      // Inner Shore Foam Wave
-      makeIslandPath(ctx);
-      ctx.strokeStyle = `rgba(236,254,255,${0.42 + Math.sin(game.time * 2.2) * 0.12})`;
-      ctx.lineWidth = 5;
-      ctx.setLineDash([18, 16]);
-      ctx.lineDashOffset = -game.time * 32;
-      ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.globalAlpha = 1;
-
-      const hazard = gridToPixel(0, -1);
-      const hzGrad = ctx.createRadialGradient(hazard.px, hazard.py, 0, hazard.px, hazard.py, HAZARD_RADIUS * CELL);
-      hzGrad.addColorStop(0, 'rgba(244,67,54,0.72)');
-      hzGrad.addColorStop(0.62, 'rgba(244,67,54,0.28)');
-      hzGrad.addColorStop(1, 'rgba(244,67,54,0)');
-      ctx.fillStyle = hzGrad;
-      ctx.beginPath();
-      ctx.arc(hazard.px, hazard.py, HAZARD_RADIUS * CELL, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = `rgba(244,67,54,${0.5 + Math.sin(game.time * 3) * 0.3})`;
-      ctx.lineWidth = 3;
-      ctx.setLineDash([10, 10]);
-      ctx.lineDashOffset = game.time * 30;
-      ctx.beginPath();
-      ctx.arc(hazard.px, hazard.py, HAZARD_RADIUS * CELL, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      
-      // --- DYNAMIC ACTIVE VOLCANO ERUPTION EFFECTS ---
-      ctx.save();
-      // 1. Lava glowing core (bubbling red/orange) at the peak of Bukit Kristal (0, -1)
-      ctx.globalCompositeOperation = 'screen';
-      const lavaGrad = ctx.createRadialGradient(hazard.px, hazard.py - 12, 0, hazard.px, hazard.py - 12, 14 + Math.sin(game.time * 4) * 3);
-      lavaGrad.addColorStop(0, '#fef08a'); 
-      lavaGrad.addColorStop(0.35, '#f97316'); 
-      lavaGrad.addColorStop(0.85, '#dc2626'); 
-      lavaGrad.addColorStop(1, 'rgba(220,38,38,0)');
-      ctx.fillStyle = lavaGrad;
-      ctx.beginPath();
-      ctx.arc(hazard.px, hazard.py - 12, 18, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // 2. Rising Volcano Smoke Puffs (drifting North-East)
-      ctx.globalCompositeOperation = 'source-over';
-      const numSmoke = 10;
-      for (let i = 0; i < numSmoke; i++) {
-        const speed = 0.46 + (i % 2) * 0.18;
-        const phase = (game.time * speed + i * 0.19) % 1;
-        const sx = hazard.px + phase * 38 + Math.sin(game.time * 1.6 + i) * 4;
-        const sy = (hazard.py - 12) - phase * 68;
-        
-        const size = 5 + phase * 20;
-        const opacity = (1 - phase) * 0.36;
-        
-        const smokeGrad = ctx.createRadialGradient(sx, sy, 0, sx, sy, size);
-        smokeGrad.addColorStop(0, `rgba(51, 65, 85, ${opacity})`);
-        smokeGrad.addColorStop(0.65, `rgba(30, 41, 59, ${opacity * 0.58})`);
-        smokeGrad.addColorStop(1, 'rgba(15, 23, 42, 0)');
-        
-        ctx.fillStyle = smokeGrad;
-        ctx.beginPath();
-        ctx.arc(sx, sy, size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      
-      // 3. Glowing lava embers/sparks shooting up
-      ctx.globalCompositeOperation = 'screen';
-      const numEmbers = 12;
-      for (let i = 0; i < numEmbers; i++) {
-        const speed = 1.3 + (i % 3) * 0.5;
-        const phase = (game.time * speed + i * 0.23) % 1;
-        
-        const angle = -Math.PI/2 + (i - numEmbers/2) * 0.16; 
-        const v0 = 16 + (i % 3) * 6;
-        const t = phase * 0.92;
-        
-        const sx = hazard.px + Math.cos(angle) * v0 * t + phase * 18; 
-        const sy = (hazard.py - 12) + Math.sin(angle) * v0 * t - phase * 22; 
-        
-        const size = Math.max(0.6, 2.0 - phase * 1.8);
-        ctx.fillStyle = i % 2 === 0 ? `rgba(251, 146, 60, ${1 - phase})` : `rgba(239, 68, 68, ${1 - phase})`;
-        ctx.beginPath();
-        ctx.arc(sx, sy, size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
-
-      ctx.strokeStyle = 'rgba(0,0,0,0.08)';
-      ctx.lineWidth = 1;
-      for (let i = GRID_MIN; i <= GRID_MAX; i++) {
-        const v1 = gridToPixel(i, GRID_MAX);
-        const v2 = gridToPixel(i, GRID_MIN);
-        ctx.beginPath(); ctx.moveTo(v1.px, v1.py - CELL / 2); ctx.lineTo(v2.px, v2.py + CELL / 2); ctx.stroke();
-        const h1 = gridToPixel(GRID_MIN, i);
-        const h2 = gridToPixel(GRID_MAX, i);
-        ctx.beginPath(); ctx.moveTo(h1.px - CELL / 2, h1.py); ctx.lineTo(h2.px + CELL / 2, h2.py); ctx.stroke();
-      }
-      ctx.strokeStyle = 'rgba(0,0,0,0.32)';
-      ctx.lineWidth = 2;
-      const ax1 = gridToPixel(0, GRID_MAX);
-      const ax2 = gridToPixel(0, GRID_MIN);
-      ctx.beginPath(); ctx.moveTo(ax1.px, ax1.py - CELL / 2); ctx.lineTo(ax2.px, ax2.py + CELL / 2); ctx.stroke();
-      const ay1 = gridToPixel(GRID_MIN, 0);
-      const ay2 = gridToPixel(GRID_MAX, 0);
-      ctx.beginPath(); ctx.moveTo(ay1.px - CELL / 2, ay1.py); ctx.lineTo(ay2.px + CELL / 2, ay2.py); ctx.stroke();
-
-      ctx.fillStyle = 'rgba(0,0,0,0.38)';
-      ctx.font = '10px Inter';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      for (let i = GRID_MIN; i <= GRID_MAX; i++) {
-        if (i === 0) continue;
-        const px = gridToPixel(i, 0);
-        ctx.fillText(i, px.px, px.py + 14);
-        const py = gridToPixel(0, i);
-        ctx.fillText(i, py.px - 14, py.py);
+      // Draw Official Physical Board Game Artwork
+      if (textures.officialBoard && textures.officialBoard.complete && textures.officialBoard.naturalWidth > 0) {
+        ctx.save();
+        ctx.shadowColor = 'rgba(3, 7, 18, 0.45)';
+        ctx.shadowBlur = 36;
+        ctx.shadowOffsetY = 16;
+        ctx.drawImage(textures.officialBoard, 0, 0, MAP_W, MAP_H);
+        ctx.restore();
+      } else {
+        // Fallback ground while loading
+        ctx.fillStyle = '#efd79a';
+        ctx.fillRect(0, 0, MAP_W, MAP_H);
       }
 
-      [
-        ...boats.map((boat) => ({ kind: 'boat', sortY: gridToPixel(boat.x, boat.y).py + 6, value: boat })),
-        ...trees.map((tree) => ({ kind: 'tree', sortY: gridToPixel(tree.x, tree.y).py + 15 * (0.8 + tree.size), value: tree })),
-        ...landmarks.map((landmark) => ({ kind: 'landmark', sortY: gridToPixel(landmark.x, landmark.y).py + 24 * landmark.size, value: landmark })),
-      ]
-        .sort((a, b) => a.sortY - b.sortY)
-        .forEach((entry) => {
-          if (entry.kind === 'boat') drawBoatShape(entry.value);
-          else if (entry.kind === 'tree') {
-            if (entry.value.type === 'palm') drawPalm(entry.value, game.time);
-            else drawCanopyTree(entry.value, game.time);
-          } else {
-            drawLandmark(entry.value);
-          }
-        });
-      drawWaterfallUltraOverlay();
+      // Draw interactive item pulses on the board
       RRG_ITEMS.forEach((item) => drawItem(item, game.time));
       drawActiveTransformGuide();
       drawMotionTransformGuides();
@@ -6521,10 +5006,10 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       if (game.raf) window.cancelAnimationFrame(game.raf);
       window.removeEventListener('resize', resize);
       window.removeEventListener('keydown', onKeyDown);
-      canvas.removeEventListener('mousedown', onPointerDown);
-      canvas.removeEventListener('mousemove', onPointerMove);
-      window.removeEventListener('mouseup', onPointerUp);
-      canvas.removeEventListener('mouseleave', onPointerUp);
+      canvas.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+      canvas.removeEventListener('pointercancel', onPointerUp);
       canvas.removeEventListener('wheel', onWheel);
     };
   }, [resetTrigger, getAxisSegmentDuration, getSegmentDuration, makePlayers, showPopup, submitAnswer, syncHud]);

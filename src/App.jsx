@@ -340,36 +340,49 @@ const PutaranStepper = ({ lang }) => {
             </pattern>
             <rect width="100" height="100" fill="url(#gridR)" />
 
-            <polygon points="20,20 40,20 20,40" fill="rgba(59, 130, 246, 0.4)" stroke="#1e40af" strokeWidth="1" />
+            <polygon points="20,20 40,20 20,40" fill="rgba(59, 130, 246, 0.4)" stroke="#1e40af" strokeWidth="1.2" />
             <circle cx="40" cy="20" r="2" fill="#1e40af" />
-            <text x="35" y="17" fontSize="6" fill="#1e40af" fontWeight="bold">A</text>
+            <text x="42" y="18" fontSize="6" fill="#1e40af" fontWeight="bold">A</text>
+            <circle cx="20" cy="20" r="1.5" fill="#1e40af" />
+            <text x="13" y="18" fontSize="5" fill="#1e40af" fontWeight="bold">B</text>
+            <circle cx="20" cy="40" r="1.5" fill="#1e40af" />
+            <text x="13" y="44" fontSize="5" fill="#1e40af" fontWeight="bold">C</text>
 
             {step >= 1 && (
               <g>
                 <circle cx="40" cy="60" r="3" fill="#000" />
-                <text x="43" y="65" fontSize="4" fontWeight="bold">{lang === 'en' ? 'Center' : 'Pusat'}</text>
-                <line x1="40" y1="20" x2="40" y2="60" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="3,2" />
+                <text x="43" y="66" fontSize="4.5" fontWeight="bold">{lang === 'en' ? 'Center' : 'Pusat'}</text>
+                <line x1="40" y1="20" x2="40" y2="60" stroke="#f59e0b" strokeWidth="1.8" strokeDasharray="3,2" />
               </g>
             )}
             {step >= 2 && (
               <g>
-                <path d="M 40 30 A 30 30 0 0 1 70 60" fill="none" stroke="#8b5cf6" strokeWidth="1.5" markerEnd="url(#arrowArc)" />
-                <text x="50" y="45" fontSize="4" fill="#7c3aed" fontWeight="bold">90°</text>
-                <rect x="40" y="55" width="5" height="5" fill="none" stroke="#8b5cf6" strokeWidth="0.5" />
+                <path d="M 40 30 A 30 30 0 0 1 70 60" fill="none" stroke="#8b5cf6" strokeWidth="1.8" markerEnd="url(#arrowArc)" />
+                <text x="50" y="45" fontSize="4.5" fill="#7c3aed" fontWeight="bold">90°</text>
+                <rect x="40" y="55" width="5" height="5" fill="none" stroke="#8b5cf6" strokeWidth="0.8" />
               </g>
             )}
             {step >= 3 && (
               <g>
-                <line x1="40" y1="60" x2="80" y2="60" stroke="#ef4444" strokeWidth="1.5" strokeDasharray="3,2" />
-                <circle cx="80" cy="60" r="2" fill="#b91c1c" />
-                <text x="82" y="58" fontSize="6" fill="#b91c1c" fontWeight="bold">A'</text>
+                <line x1="40" y1="60" x2="80" y2="60" stroke="#ef4444" strokeWidth="1.8" strokeDasharray="3,2" />
+                <circle cx="80" cy="60" r="2.5" fill="#b91c1c" />
+                <text x="83" y="65" fontSize="6" fill="#b91c1c" fontWeight="bold">A'</text>
               </g>
             )}
             {step >= 4 && (
               <g>
-                <polygon points="80,60 80,80 60,80" fill="rgba(239, 68, 68, 0.4)" stroke="#b91c1c" strokeWidth="1" strokeDasharray="2,1" />
-                <line x1="20" y1="20" x2="40" y2="60" stroke="#94a3b8" strokeWidth="0.5" strokeDasharray="1,2" />
-                <line x1="40" y1="60" x2="80" y2="80" stroke="#94a3b8" strokeWidth="0.5" strokeDasharray="1,2" />
+                {/* Garisan panduan putaran 90° tepat untuk bucu B(20,20) ke B'(80,40) */}
+                <line x1="20" y1="20" x2="40" y2="60" stroke="#94a3b8" strokeWidth="0.8" strokeDasharray="2,2" />
+                <line x1="40" y1="60" x2="80" y2="40" stroke="#94a3b8" strokeWidth="0.8" strokeDasharray="2,2" />
+
+                {/* Imej Segi Tiga Tepat Hasil Putaran 90° Ikut Jam: A'(80,60), B'(80,40), C'(60,40) */}
+                <polygon points="80,60 80,40 60,40" fill="rgba(239, 68, 68, 0.4)" stroke="#b91c1c" strokeWidth="1.2" strokeDasharray="2,1" />
+
+                {/* Bucu-bucu Imej */}
+                <circle cx="80" cy="40" r="1.5" fill="#b91c1c" />
+                <text x="83" y="38" fontSize="5" fill="#b91c1c" fontWeight="bold">B'</text>
+                <circle cx="60" cy="40" r="1.5" fill="#b91c1c" />
+                <text x="54" y="38" fontSize="5" fill="#b91c1c" fontWeight="bold">C'</text>
               </g>
             )}
             <defs>

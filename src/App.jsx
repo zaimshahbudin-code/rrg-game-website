@@ -467,15 +467,51 @@ const SectionNota = ({ lang }) => {
               <rect width="100" height="100" fill="url(#grid)" />
               <defs>
                 <linearGradient id="gradKereta" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor={layoutTheme.svg.secondary} /><stop offset="100%" stopColor={layoutTheme.svg.primary} /></linearGradient>
-                <marker id="arrowT" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto"><polygon points="0,0 4,2 0,4" fill={layoutTheme.svg.accent} /></marker>
+                <marker id="arrowRightT" markerWidth="5" markerHeight="5" refX="3" refY="2.5" orient="auto"><polygon points="0,0.5 4,2.5 0,4.5" fill={layoutTheme.svg.accent} /></marker>
+                <marker id="arrowUpT" markerWidth="5" markerHeight="5" refX="3" refY="2.5" orient="auto"><polygon points="0,0.5 4,2.5 0,4.5" fill={layoutTheme.svg.secondary} /></marker>
               </defs>
-              <path d="M 30 60 L 65 30" fill="none" stroke={layoutTheme.svg.accent} strokeWidth="2" strokeDasharray="4,4" markerEnd="url(#arrowT)" />
-              <g transform="translate(35, -30)" opacity="0.3">
+
+              {/* Garisan Panduan Translasi: Kanan dahulu, kemudian Atas */}
+              <path d="M 25 60 L 61 60" fill="none" stroke={layoutTheme.svg.accent} strokeWidth="1.8" strokeDasharray="3,2" markerEnd="url(#arrowRightT)" />
+              <path d="M 65 60 L 65 34" fill="none" stroke={layoutTheme.svg.secondary} strokeWidth="1.8" strokeDasharray="3,2" markerEnd="url(#arrowUpT)" />
+              <circle cx="65" cy="60" r="1.2" fill={layoutTheme.svg.accent} />
+              <path d="M 61 60 L 61 56 L 65 56" fill="none" stroke="#94a3b8" strokeWidth="0.7" />
+
+              {/* Label Langkah Translasi */}
+              <text x="44" y="66" fontSize="4.5" fontWeight="bold" fill={layoutTheme.svg.accentDark || '#d97706'} textAnchor="middle">
+                {lang === 'en' ? '+4 Right' : '+4 Kanan'}
+              </text>
+              <text x="68" y="48" fontSize="4.5" fontWeight="bold" fill={layoutTheme.svg.secondaryDark || '#4338ca'} textAnchor="start">
+                {lang === 'en' ? '+3 Up' : '+3 Atas'}
+              </text>
+
+              {/* Label Objek & Imej */}
+              <text x="25" y="41" fontSize="4.5" fontWeight="bold" fill={layoutTheme.svg.primaryDark || '#1e40af'} textAnchor="middle">
+                {lang === 'en' ? 'Object' : 'Objek'}
+              </text>
+              <text x="65" y="11" fontSize="4.5" fontWeight="bold" fill={layoutTheme.svg.dangerDark || '#b91c1c'} textAnchor="middle">
+                {lang === 'en' ? 'Image' : 'Imej'}
+              </text>
+
+              {/* Siluet Imej Sasaran */}
+              <g transform="translate(40, -30)" opacity="0.35">
                 <path d="M 15 65 L 15 55 L 20 55 L 25 45 L 35 45 L 40 55 L 45 55 L 45 65 Z" fill={layoutTheme.svg.danger} stroke={layoutTheme.svg.dangerDark} strokeDasharray="2,2"/>
                 <circle cx="20" cy="65" r="4" fill={layoutTheme.svg.danger} /><circle cx="40" cy="65" r="4" fill={layoutTheme.svg.danger} />
+                <polygon points="25,55 27,48 33,48 35,55" fill={layoutTheme.svg.danger} opacity="0.4" />
               </g>
+
+              {/* Animasi Objek: Bergerak ke Kanan (dx=+40), kemudian Naik ke Atas (dy=-30) */}
               <g>
-                <animateTransform attributeName="transform" type="translate" values="0 0; 0 0; 35 -30; 35 -30; 0 0" keyTimes="0; 0.2; 0.5; 0.7; 1" dur="8s" repeatCount="indefinite" calcMode="spline" keySplines="0 0 1 1; 0.5 0 0.7 1; 0 0 1 1; 0.5 0 0.7 1"/>
+                <animateTransform
+                  attributeName="transform"
+                  type="translate"
+                  values="0 0; 0 0; 40 0; 40 0; 40 -30; 40 -30; 0 0"
+                  keyTimes="0; 0.12; 0.40; 0.48; 0.76; 0.88; 1"
+                  dur="7.5s"
+                  repeatCount="indefinite"
+                  calcMode="spline"
+                  keySplines="0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1"
+                />
                 <path d="M 15 65 L 15 55 L 20 55 L 25 45 L 35 45 L 40 55 L 45 55 L 45 65 Z" fill="url(#gradKereta)" stroke={layoutTheme.svg.primaryDark} strokeWidth="1"/>
                 <circle cx="20" cy="65" r="4" fill={layoutTheme.svg.contrast} /><circle cx="40" cy="65" r="4" fill={layoutTheme.svg.contrast} />
                 <polygon points="25,55 27,48 33,48 35,55" fill={layoutTheme.svg.light} />

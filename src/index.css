@@ -2006,8 +2006,8 @@ body {
 
 @media (max-width: 1024px) {
   .rrg-canvas-game {
-    height: calc(100dvh - 120px);
-    min-height: 540px;
+    height: min(64vh, 520px);
+    min-height: 400px;
   }
 
   .rrg-card-panel {
@@ -2040,11 +2040,19 @@ body {
   }
 }
 
+.rrg-mobile-mission-pill {
+  position: absolute;
+  top: 50px;
+  left: 8px;
+  z-index: 6;
+  max-width: calc(100% - 16px);
+  pointer-events: auto;
+}
+
 @media (max-width: 640px) {
   .rrg-canvas-game {
-    height: calc(100dvh - 105px);
-    min-height: 480px;
-    max-height: calc(100dvh - 95px);
+    height: min(58vh, 440px);
+    min-height: 360px;
   }
 
   .rrg-hud-left {

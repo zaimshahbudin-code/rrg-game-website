@@ -7403,7 +7403,8 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     : (lang === 'en' ? 'Not rolled' : 'Belum roll');
 
   return (
-    <div className="rrg-canvas-game">
+    <div className="rrg-game-wrapper w-full">
+      <div className="rrg-canvas-game">
       <canvas ref={canvasRef} className="rrg-game-canvas" aria-label="Running Rangers Game digital canvas" />
       <div className="rrg-game-hud">
         <div className="rrg-hud-left">
@@ -7434,7 +7435,30 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
         <button type="button" onClick={handleCenterPlayer} title={lang === 'en' ? 'Focus Current Player' : 'Fokus Pemain Semasa'}>🎯</button>
         <button type="button" onClick={handleFitIsland} title={lang === 'en' ? 'View Whole Island' : 'Lihat Seluruh Pulau'}>🏝️</button>
       </div>
-      <div className={`rrg-card-panel ${cardCollapsed ? 'collapsed' : ''}`}>
+
+      {/* Pill Misi Ringkas untuk Mobile (Tidak mengganggu layar pulau) */}
+      <div className="rrg-mobile-mission-pill lg:hidden">
+        {hud.card ? (
+          <button
+            type="button"
+            onClick={() => {
+              document.getElementById('rrg-mobile-details-section')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="flex items-center gap-1.5 px-3 py-1 bg-slate-900/90 border border-blue-400/50 rounded-full text-xs text-white shadow-lg backdrop-blur-sm active:scale-95 transition"
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="font-extrabold text-amber-300">{getRrgCardTitle(hud.card, lang)}</span>
+            <span className="text-[10px] text-blue-200 underline font-semibold ml-1">{lang === 'en' ? 'View Card ▼' : 'Lihat Kad ▼'}</span>
+          </button>
+        ) : (
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-900/80 border border-white/10 rounded-full text-xs text-slate-300 backdrop-blur-sm">
+            <span>🎲</span>
+            <span>{lang === 'en' ? 'Roll color dice to draw card' : 'Roll dadu warna untuk cabut kad'}</span>
+          </div>
+        )}
+      </div>
+
+      <div className={`rrg-card-panel hidden lg:block ${cardCollapsed ? 'collapsed' : ''}`}>
         <div className="flex items-center justify-between gap-2">
           <div className="rrg-card-title">{lang === 'en' ? 'Transformation Card' : 'Kad Transformasi'}</div>
           <button
@@ -7529,7 +7553,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
           </>
         )}
       </div>
-      <div className="rrg-deck-rack" aria-label={lang === 'en' ? 'RRGs Card Decks' : 'Deck kad RRGs'}>
+      <div className="rrg-deck-rack hidden lg:flex" aria-label={lang === 'en' ? 'RRGs Card Decks' : 'Deck kad RRGs'}>
         {[
           { deck: 'merah', label: lang === 'en' ? 'Translation' : 'Translasi' },
           { deck: 'hijau', label: lang === 'en' ? 'Reflection' : 'Pantulan' },
@@ -7616,6 +7640,175 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
           </div>
         </div>
       )}
+      </div>
+
+      {/* SEKSYEN KAD & MAKLUMAT MOBILE (Boleh skrol ke bawah pada telefon tanpa mengganggu pulau) */}
+      <div id="rrg-mobile-details-section" className="lg:hidden mt-3 space-y-3 px-1">
+        {/* Bar Navigasi Pantas Mobile */}
+        <div className="flex items-center justify-between bg-slate-900/95 text-white px-3.5 py-2.5 rounded-xl border border-slate-700 shadow-md backdrop-blur-sm">
+          <div className="flex items-center gap-2">
+            <span className="text-base">🎴</span>
+            <div>
+              <h4 className="text-xs font-black text-amber-300 uppercase tracking-wide leading-tight">
+                {lang === 'en' ? 'Mission Card & Game Details' : 'Kad Misi & Maklumat Permainan'}
+              </h4>
+              <p className="text-[10px] text-slate-400">
+                {lang === 'en' ? 'Card details & decks' : 'Maklumat kad transformasi & deck'}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex items-center gap-1 text-[11px] font-bold bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg shadow transition"
+          >
+            <span>▲ {lang === 'en' ? 'Back to Map' : 'Kembali ke Peta'}</span>
+          </button>
+        </div>
+
+        {/* Kad Transformasi Penuh (Sama seperti paparan desktop) */}
+        <div className="bg-slate-900/95 text-white p-4 rounded-xl border border-blue-500/30 shadow-xl backdrop-blur-md">
+          <div className="flex items-center justify-between gap-2 border-b border-slate-700/80 pb-2.5">
+            <div className="text-xs uppercase tracking-wider font-extrabold text-blue-300">
+              {lang === 'en' ? 'Transformation Card' : 'Kad Transformasi'}
+            </div>
+            <div className={`rrg-card-dice ${hud.diceRolling ? 'rolling' : ''}`}>{diceLabel}</div>
+          </div>
+
+          <div className="mt-3">
+            <h3 className="text-base font-extrabold text-white">
+              {hud.card ? getRrgCardTitle(hud.card, lang) : (lang === 'en' ? 'Roll color dice to draw card' : 'Roll dadu warna untuk cabut kad')}
+            </h3>
+            <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+              {hud.card ? getRrgCardText(hud.card, lang) : hud.message}
+            </p>
+
+            {hud.card && (
+              <div className="mt-3 flex flex-col items-center">
+                <RRGCardVisual
+                  card={hud.card}
+                  lang={lang}
+                  className="rrg-current-card-img"
+                  onClick={() => setZoomedCard(hud.card)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setZoomedCard(hud.card)}
+                  className="mt-1 text-xs text-blue-300 hover:text-white underline font-semibold flex items-center gap-1"
+                >
+                  🔍 {lang === 'en' ? 'Click card to enlarge' : 'Klik kad untuk besarkan'}
+                </button>
+              </div>
+            )}
+
+            {/* Poligon / Penanda 2D */}
+            {(() => {
+              const activePoly = getPlayerObjectPolygon(activePlayer, hud.currentPlayer, lang);
+              const targetPoly = getTransformedPolygon(activePoly, hud.card, lang);
+              if (!activePoly) return null;
+              return (
+                <div className="mt-3 p-3 rounded-lg bg-slate-950/80 border border-blue-400/40 text-xs">
+                  <p className="font-extrabold text-blue-300 uppercase tracking-wide text-[11px]">
+                    📐 {lang === 'en' ? '2D Marker' : 'Penanda 2D'}: <span className="text-white font-bold">{activePoly.name}</span>
+                  </p>
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {activePoly.vertices.map(v => (
+                      <span key={v.label} className="px-2 py-1 rounded bg-slate-800 text-blue-200 text-xs font-mono font-bold border border-slate-700">
+                        {v.label}({v.x},{v.y})
+                      </span>
+                    ))}
+                  </div>
+
+                  {hud.solutionPreview && targetPoly && (
+                    <div className="mt-3 pt-2.5 border-t border-slate-700/80">
+                      <p className="font-extrabold text-amber-300 uppercase tracking-wide text-[11px]">
+                        {lang === 'en' ? 'Transformed Image (Solution):' : 'Imej Transformasi (Penyelesaian):'}
+                      </p>
+                      <div className="space-y-1 mt-2 max-h-36 overflow-y-auto pr-1">
+                        {activePoly.vertices.map((v, i) => {
+                          const tv = targetPoly.vertices[i];
+                          return (
+                            <div key={v.label} className="flex items-center justify-between font-mono text-xs bg-slate-800/90 px-2 py-1 rounded border border-slate-700">
+                              <span className="text-slate-300">{v.label}({v.x},{v.y})</span>
+                              <span className="text-amber-400 font-bold">➔</span>
+                              <span className="text-blue-300 font-bold">{tv.label}({tv.x},{tv.y})</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {!hud.solutionPreview && hud.card && (
+                    <div className="mt-2.5 pt-2 border-t border-slate-700/80 text-xs text-slate-300">
+                      {hud.selected ? (
+                        <p className="text-emerald-400 font-bold">
+                          📍 {lang === 'en' ? 'Target A\' selected at' : 'Sasaran A\' dipilih pada'} ({hud.selected.x}, {hud.selected.y}). {lang === 'en' ? 'Press Check Answer.' : 'Tekan Semak.'}
+                        </p>
+                      ) : (
+                        <p className="text-amber-300/90">
+                          👆 {lang === 'en' ? 'Click on Cartesian grid above to place Image A\', then check answer.' : 'Klik pada satah Cartes di atas untuk letakkan Imej A\', kemudian tekan Semak.'}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+
+            {!hud.card && hud.lastActionCard && (
+              <div className="mt-3 p-2.5 rounded-lg bg-slate-800/80 border border-slate-700 flex items-center justify-between cursor-pointer" onClick={() => setZoomedCard(hud.lastActionCard)}>
+                <span className="text-xs text-slate-300">{lang === 'en' ? 'Last item card:' : 'Kad item terakhir:'}</span>
+                <RRGCardVisual card={hud.lastActionCard} lang={lang} isThumbnail />
+              </div>
+            )}
+            {hud.selected && <div className="mt-2 text-xs font-bold text-cyan-300 bg-cyan-950/60 p-2 rounded border border-cyan-800">{lang === 'en' ? 'Selection' : 'Pilihan'}: ({hud.selected.x}, {hud.selected.y})</div>}
+            {hud.hintLevel > 0 && <div className="mt-2 text-xs font-bold text-amber-300 bg-amber-950/60 p-2 rounded border border-amber-800">Hint {hud.hintLevel}: {hud.message}</div>}
+          </div>
+        </div>
+
+        {/* Deck Kad RRGs (Dipaparkan cantik secara mendatar) */}
+        <div className="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 text-white">
+          <div className="text-xs font-extrabold uppercase tracking-wide text-slate-300 mb-2.5 flex items-center gap-1.5">
+            <span>📚</span> {lang === 'en' ? 'Card Decks' : 'Deck Kad RRGs'}
+          </div>
+          <div className="grid grid-cols-5 gap-2 overflow-x-auto pb-1">
+            {[
+              { deck: 'merah', label: lang === 'en' ? 'Translation' : 'Translasi' },
+              { deck: 'hijau', label: lang === 'en' ? 'Reflection' : 'Pantulan' },
+              { deck: 'biru', label: lang === 'en' ? 'Rotation' : 'Putaran' },
+              { deck: 'kuning', label: lang === 'en' ? 'Reward' : 'Ganjaran' },
+              { deck: 'hitam', label: lang === 'en' ? 'Penalty' : 'Denda' },
+            ].map(item => (
+              <div key={item.deck} className={`rrg-deck-stack rrg-deck-${item.deck} flex flex-col items-center text-center`}>
+                <img src={RRG_CARD_IMAGE(item.deck, 1)} alt={`Deck ${item.label}`} className="w-12 h-16 object-contain rounded-md shadow-md" />
+                <span className="text-[10px] font-bold mt-1 text-slate-200 block truncate w-full">{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Panduan Kawalan Skrin Sentuh */}
+        <div className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-white text-xs space-y-1.5">
+          <p className="font-extrabold text-blue-300 text-xs">🎮 {lang === 'en' ? 'Touch Controls' : 'Kawalan Sentuhan'}:</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 text-slate-300 text-[11px]">
+            <div>👆 <b>{lang === 'en' ? '1 Finger Tap' : '1 Jari Sentuh'}</b>: {lang === 'en' ? 'Select coordinate' : 'Pilih koordinat'}</div>
+            <div>✋ <b>{lang === 'en' ? '1 Finger Drag' : '1 Jari Seret'}</b>: {lang === 'en' ? 'Pan island map' : 'Gerak peta pulau'}</div>
+            <div>🤏 <b>{lang === 'en' ? '2 Fingers Pinch' : '2 Jari Cubit'}</b>: {lang === 'en' ? 'Zoom in / out' : 'Zum masuk / keluar'}</div>
+          </div>
+        </div>
+
+        {/* Butang Navigasi Balik ke Atas */}
+        <div className="pt-1 pb-4 flex justify-center">
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg transition"
+          >
+            <span>▲ {lang === 'en' ? 'Back to Island Map' : 'Kembali ke Peta Pulau'}</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
@@ -8109,7 +8302,7 @@ export default function App() {
   }
 
   return (
-    <div className={`apple-page bg-slate-50 text-slate-800 font-sans relative scroll-smooth ${activeTab === 'rrgs' ? 'pb-0 h-screen overflow-hidden' : 'pb-12 min-h-screen'}`}>
+    <div className={`apple-page bg-slate-50 text-slate-800 font-sans relative scroll-smooth ${activeTab === 'rrgs' ? 'pb-8 lg:pb-0 min-h-screen lg:h-screen lg:overflow-hidden' : 'pb-12 min-h-screen'}`}>
       
       {/* HEADER & NAVIGASI STICKY */}
       <header className="sticky top-0 z-50 bg-blue-700 text-white shadow-lg">

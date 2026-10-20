@@ -3673,6 +3673,8 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
   }, [lang]);
 
   const [playerCount, setPlayerCount] = useState(6);
+  const [cardCollapsed, setCardCollapsed] = useState(false);
+  const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
   const [hud, setHud] = useState({
     currentPlayer: 0,
     players: [],
@@ -3863,6 +3865,33 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       game.camY = game.camTargetY;
     }
   };
+
+  const handleZoomIn = useCallback(() => {
+    const game = gameRef.current;
+    if (!game) return;
+    game.zoom = Math.min(3, game.zoom * 1.25);
+  }, []);
+
+  const handleZoomOut = useCallback(() => {
+    const game = gameRef.current;
+    if (!game) return;
+    game.zoom = Math.max(0.34, game.zoom / 1.25);
+  }, []);
+
+  const handleCenterPlayer = useCallback(() => {
+    const game = gameRef.current;
+    if (!game) return;
+    const player = game.players[game.currentPlayer] || game.players[0];
+    if (player) centerOnPlayer(game, player, false);
+  }, []);
+
+  const handleFitIsland = useCallback(() => {
+    const game = gameRef.current;
+    if (!game) return;
+    game.camTargetX = 0;
+    game.camTargetY = 0;
+    game.zoom = 0.52;
+  }, []);
 
   const kickCamera = useCallback((game, strength = 12, duration = 380) => {
     if (!game) return;
@@ -4849,6 +4878,66 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       syncHud(game);
     };
 
+    // Multi-touch & touch support for mobile & tablet
+    let initialPinchDistance = null;
+    let initialZoom = 1;
+
+    const getTouchDistance = (t1, t2) => Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+
+    const onTouchStart = (event) => {
+      if (event.touches.length === 1) {
+        const touch = event.touches[0];
+        game.isDragging = true;
+        game.dragStartX = touch.clientX;
+        game.dragStartY = touch.clientY;
+        game.camStartX = game.camX;
+        game.camStartY = game.camY;
+        game.camTargetX = game.camX;
+        game.camTargetY = game.camY;
+        game.dragDistance = 0;
+        initialPinchDistance = null;
+      } else if (event.touches.length === 2) {
+        game.isDragging = false;
+        initialPinchDistance = getTouchDistance(event.touches[0], event.touches[1]);
+        initialZoom = game.zoom;
+      }
+    };
+
+    const onTouchMove = (event) => {
+      if (event.touches.length === 1 && game.isDragging) {
+        const touch = event.touches[0];
+        const dx = touch.clientX - game.dragStartX;
+        const dy = touch.clientY - game.dragStartY;
+        game.dragDistance = Math.max(game.dragDistance, Math.abs(dx) + Math.abs(dy));
+        game.camX = game.camStartX - dx / game.zoom;
+        game.camY = game.camStartY - dy / game.zoom;
+        game.camTargetX = game.camX;
+        game.camTargetY = game.camY;
+      } else if (event.touches.length === 2 && initialPinchDistance) {
+        const currentDist = getTouchDistance(event.touches[0], event.touches[1]);
+        const scale = currentDist / initialPinchDistance;
+        game.zoom = Math.max(0.34, Math.min(3, initialZoom * scale));
+      }
+      if (event.cancelable) event.preventDefault();
+    };
+
+    const onTouchEnd = (event) => {
+      if (game.isDragging && event.changedTouches.length > 0) {
+        game.isDragging = false;
+        const touch = event.changedTouches[0];
+        if (game.dragDistance < 12 && game.card && !game.gameOver && !game.animating) {
+          game.selected = screenToGrid(touch.clientX, touch.clientY, game);
+          game.message = langRef.current === 'en'
+            ? `Selected coordinate: (${game.selected.x}, ${game.selected.y}). Press Check Answer.`
+            : `Pilihan koordinat: (${game.selected.x}, ${game.selected.y}). Tekan Semak Jawapan.`;
+          syncHud(game);
+        }
+      }
+      if (event.touches.length < 2) {
+        initialPinchDistance = null;
+      }
+    };
+
     window.addEventListener('resize', resize);
     window.addEventListener('keydown', onKeyDown);
     canvas.addEventListener('mousedown', onPointerDown);
@@ -4856,6 +4945,11 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     window.addEventListener('mouseup', onPointerUp);
     canvas.addEventListener('mouseleave', onMouseLeave);
     canvas.addEventListener('wheel', onWheel, { passive: false });
+
+    canvas.addEventListener('touchstart', onTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+    canvas.addEventListener('touchend', onTouchEnd, { passive: false });
+    canvas.addEventListener('touchcancel', onTouchEnd, { passive: false });
 
     const makeIslandPath = (context) => {
       context.beginPath();
@@ -7281,6 +7375,10 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       window.removeEventListener('mouseup', onPointerUp);
       canvas.removeEventListener('mouseleave', onMouseLeave);
       canvas.removeEventListener('wheel', onWheel);
+      canvas.removeEventListener('touchstart', onTouchStart);
+      canvas.removeEventListener('touchmove', onTouchMove);
+      canvas.removeEventListener('touchend', onTouchEnd);
+      canvas.removeEventListener('touchcancel', onTouchEnd);
     };
   }, [resetTrigger, getAxisSegmentDuration, getSegmentDuration, makePlayers, showPopup, submitAnswer, syncHud]);
 
@@ -7330,85 +7428,106 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
         {hud.players.map((player, index) => <span key={player.id} className={`rrg-turn-dot ${hud.currentPlayer === index ? 'active' : ''}`} style={{ background: player.finished ? '#22c55e' : player.color, color: player.color }} />)}
         <b>{hud.gameOver ? (lang === 'en' ? 'Game Over' : 'Game tamat') : `${activePlayerDisplayName || (lang === 'en' ? 'Player' : 'Pemain')} ${lang === 'en' ? 'is playing' : 'sedang bermain'}`}</b>
       </div>
-      <div className="rrg-card-panel">
-        <div className="rrg-card-title">{lang === 'en' ? 'Transformation Card' : 'Kad Transformasi'}</div>
-        <div className={`rrg-card-dice ${hud.diceRolling ? 'rolling' : ''}`}>{diceLabel}</div>
-        <h3>{hud.card ? getRrgCardTitle(hud.card, lang) : (lang === 'en' ? 'Roll color dice' : 'Roll dadu warna')}</h3>
-        <p>{hud.card ? getRrgCardText(hud.card, lang) : hud.message}</p>
-        {hud.card && (
-          <div className="mt-2">
-            <RRGCardVisual
-              card={hud.card}
-              lang={lang}
-              className="rrg-current-card-img"
-              onClick={() => setZoomedCard(hud.card)}
-            />
-            <button
-              type="button"
-              onClick={() => setZoomedCard(hud.card)}
-              className="mt-1 text-[11px] text-blue-300 hover:text-white underline font-semibold flex items-center gap-1 transition"
-            >
-              🔍 {lang === 'en' ? 'Click card to enlarge' : 'Klik kad untuk besarkan'}
-            </button>
-          </div>
-        )}
-        
-        {(() => {
-          const activePoly = getPlayerObjectPolygon(activePlayer, hud.currentPlayer, lang);
-          const targetPoly = getTransformedPolygon(activePoly, hud.card, lang);
-          if (!activePoly) return null;
-          return (
-            <div className="mt-3 p-2.5 rounded-lg bg-slate-900/90 text-white border border-blue-400/40 text-xs">
-              <p className="font-extrabold text-blue-300 uppercase tracking-wide text-[10px]">📐 {lang === 'en' ? '2D Marker' : 'Penanda 2D'}: <span className="text-white font-bold">{activePoly.name}</span></p>
-              <div className="flex flex-wrap gap-1 mt-1.5">
-                {activePoly.vertices.map(v => (
-                  <span key={v.label} className="px-1.5 py-0.5 rounded bg-slate-800 text-blue-200 text-[10px] font-mono font-bold border border-slate-700">
-                    {v.label}({v.x},{v.y})
-                  </span>
-                ))}
+      <div className="rrg-zoom-toolbar" aria-label={lang === 'en' ? 'Map Navigation Controls' : 'Kawalan Navigasi Peta'}>
+        <button type="button" onClick={handleZoomIn} title={lang === 'en' ? 'Zoom In' : 'Zum Masuk'}>➕</button>
+        <button type="button" onClick={handleZoomOut} title={lang === 'en' ? 'Zoom Out' : 'Zum Keluar'}>➖</button>
+        <button type="button" onClick={handleCenterPlayer} title={lang === 'en' ? 'Focus Current Player' : 'Fokus Pemain Semasa'}>🎯</button>
+        <button type="button" onClick={handleFitIsland} title={lang === 'en' ? 'View Whole Island' : 'Lihat Seluruh Pulau'}>🏝️</button>
+      </div>
+      <div className={`rrg-card-panel ${cardCollapsed ? 'collapsed' : ''}`}>
+        <div className="flex items-center justify-between gap-2">
+          <div className="rrg-card-title">{lang === 'en' ? 'Transformation Card' : 'Kad Transformasi'}</div>
+          <button
+            type="button"
+            onClick={() => setCardCollapsed(prev => !prev)}
+            className="text-[11px] bg-slate-800/80 hover:bg-slate-700 text-blue-300 hover:text-white px-2 py-0.5 rounded border border-slate-600 transition flex items-center gap-1 shrink-0"
+            title={cardCollapsed ? (lang === 'en' ? 'Expand card panel' : 'Buka panel kad') : (lang === 'en' ? 'Collapse panel' : 'Kecilkan panel')}
+          >
+            <span>{cardCollapsed ? (lang === 'en' ? 'Expand' : 'Buka') : (lang === 'en' ? 'Hide' : 'Tutup')}</span>
+            <span className="text-[10px]">{cardCollapsed ? '▼' : '▲'}</span>
+          </button>
+        </div>
+        {!cardCollapsed && (
+          <>
+            <div className={`rrg-card-dice ${hud.diceRolling ? 'rolling' : ''}`}>{diceLabel}</div>
+            <h3>{hud.card ? getRrgCardTitle(hud.card, lang) : (lang === 'en' ? 'Roll color dice' : 'Roll dadu warna')}</h3>
+            <p>{hud.card ? getRrgCardText(hud.card, lang) : hud.message}</p>
+            {hud.card && (
+              <div className="mt-2">
+                <RRGCardVisual
+                  card={hud.card}
+                  lang={lang}
+                  className="rrg-current-card-img"
+                  onClick={() => setZoomedCard(hud.card)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setZoomedCard(hud.card)}
+                  className="mt-1 text-[11px] text-blue-300 hover:text-white underline font-semibold flex items-center gap-1 transition"
+                >
+                  🔍 {lang === 'en' ? 'Click card to enlarge' : 'Klik kad untuk besarkan'}
+                </button>
               </div>
-              {hud.solutionPreview && targetPoly && (
-                <div className="mt-2 pt-2 border-t border-slate-700/80">
-                  <p className="font-extrabold text-amber-300 uppercase tracking-wide text-[10px]">{lang === 'en' ? 'Transformed Image (Solution):' : 'Imej Transformasi (Penyelesaian):'}</p>
-                  <div className="space-y-1 mt-1 max-h-28 overflow-y-auto pr-1">
-                    {activePoly.vertices.map((v, i) => {
-                      const tv = targetPoly.vertices[i];
-                      return (
-                        <div key={v.label} className="flex items-center justify-between font-mono text-[10px] bg-slate-800/90 px-1.5 py-0.5 rounded border border-slate-700">
-                          <span className="text-slate-300">{v.label}({v.x},{v.y})</span>
-                          <span className="text-amber-400">➔</span>
-                          <span className="text-blue-300 font-bold">{tv.label}({tv.x},{tv.y})</span>
-                        </div>
-                      );
-                    })}
+            )}
+            
+            {(() => {
+              const activePoly = getPlayerObjectPolygon(activePlayer, hud.currentPlayer, lang);
+              const targetPoly = getTransformedPolygon(activePoly, hud.card, lang);
+              if (!activePoly) return null;
+              return (
+                <div className="mt-3 p-2.5 rounded-lg bg-slate-900/90 text-white border border-blue-400/40 text-xs">
+                  <p className="font-extrabold text-blue-300 uppercase tracking-wide text-[10px]">📐 {lang === 'en' ? '2D Marker' : 'Penanda 2D'}: <span className="text-white font-bold">{activePoly.name}</span></p>
+                  <div className="flex flex-wrap gap-1 mt-1.5">
+                    {activePoly.vertices.map(v => (
+                      <span key={v.label} className="px-1.5 py-0.5 rounded bg-slate-800 text-blue-200 text-[10px] font-mono font-bold border border-slate-700">
+                        {v.label}({v.x},{v.y})
+                      </span>
+                    ))}
                   </div>
-                </div>
-              )}
-              {!hud.solutionPreview && hud.card && (
-                <div className="mt-2 pt-2 border-t border-slate-700/80 text-[10px] text-slate-300">
-                  {hud.selected ? (
-                    <p className="text-emerald-400 font-bold">
-                      📍 {lang === 'en' ? 'Target A\' selected at' : 'Sasaran A\' dipilih pada'} ({hud.selected.x}, {hud.selected.y}). {lang === 'en' ? 'Press Check Answer.' : 'Tekan Semak.'}
-                    </p>
-                  ) : (
-                    <p className="text-amber-300/90">
-                      👆 {lang === 'en' ? 'Click on Cartesian grid to place Image A\', then check answer.' : 'Klik pada satah Cartes untuk letakkan Imej A\', kemudian tekan Semak.'}
-                    </p>
+                  {hud.solutionPreview && targetPoly && (
+                    <div className="mt-2 pt-2 border-t border-slate-700/80">
+                      <p className="font-extrabold text-amber-300 uppercase tracking-wide text-[10px]">{lang === 'en' ? 'Transformed Image (Solution):' : 'Imej Transformasi (Penyelesaian):'}</p>
+                      <div className="space-y-1 mt-1 max-h-28 overflow-y-auto pr-1">
+                        {activePoly.vertices.map((v, i) => {
+                          const tv = targetPoly.vertices[i];
+                          return (
+                            <div key={v.label} className="flex items-center justify-between font-mono text-[10px] bg-slate-800/90 px-1.5 py-0.5 rounded border border-slate-700">
+                              <span className="text-slate-300">{v.label}({v.x},{v.y})</span>
+                              <span className="text-amber-400">➔</span>
+                              <span className="text-blue-300 font-bold">{tv.label}({tv.x},{tv.y})</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                  {!hud.solutionPreview && hud.card && (
+                    <div className="mt-2 pt-2 border-t border-slate-700/80 text-[10px] text-slate-300">
+                      {hud.selected ? (
+                        <p className="text-emerald-400 font-bold">
+                          📍 {lang === 'en' ? 'Target A\' selected at' : 'Sasaran A\' dipilih pada'} ({hud.selected.x}, {hud.selected.y}). {lang === 'en' ? 'Press Check Answer.' : 'Tekan Semak.'}
+                        </p>
+                      ) : (
+                        <p className="text-amber-300/90">
+                          👆 {lang === 'en' ? 'Click on Cartesian grid to place Image A\', then check answer.' : 'Klik pada satah Cartes untuk letakkan Imej A\', kemudian tekan Semak.'}
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
-              )}
-            </div>
-          );
-        })()}
+              );
+            })()}
 
-        {!hud.card && hud.lastActionCard && (
-          <div className="rrg-last-card cursor-pointer" onClick={() => setZoomedCard(hud.lastActionCard)}>
-            <span>{lang === 'en' ? 'Last item card' : 'Kad item terakhir'}</span>
-            <RRGCardVisual card={hud.lastActionCard} lang={lang} isThumbnail />
-          </div>
+            {!hud.card && hud.lastActionCard && (
+              <div className="rrg-last-card cursor-pointer" onClick={() => setZoomedCard(hud.lastActionCard)}>
+                <span>{lang === 'en' ? 'Last item card' : 'Kad item terakhir'}</span>
+                <RRGCardVisual card={hud.lastActionCard} lang={lang} isThumbnail />
+              </div>
+            )}
+            {hud.selected && <div className="rrg-selected-coord">{lang === 'en' ? 'Selection' : 'Pilihan'}: ({hud.selected.x}, {hud.selected.y})</div>}
+            {hud.hintLevel > 0 && <div className="rrg-selected-coord hint">Hint {hud.hintLevel}: {hud.message}</div>}
+          </>
         )}
-        {hud.selected && <div className="rrg-selected-coord">{lang === 'en' ? 'Selection' : 'Pilihan'}: ({hud.selected.x}, {hud.selected.y})</div>}
-        {hud.hintLevel > 0 && <div className="rrg-selected-coord hint">Hint {hud.hintLevel}: {hud.message}</div>}
       </div>
       <div className="rrg-deck-rack" aria-label={lang === 'en' ? 'RRGs Card Decks' : 'Deck kad RRGs'}>
         {[
@@ -7437,13 +7556,21 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       </div>
       <div className="rrg-minimap"><canvas ref={miniMapRef} width="140" height="140" /></div>
       <div className="rrg-controls-hint">
-        <span><kbd>Click</kbd> {lang === 'en' ? 'Select coord' : 'Pilih koordinat'}</span>
-        <span><kbd>WASD</kbd> {lang === 'en' ? 'Adjust selection' : 'Laras pilihan'}</span>
-        <span><kbd>Enter</kbd> {lang === 'en' ? 'Check' : 'Semak'}</span>
-        <span><kbd>{lang === 'en' ? 'White' : 'Putih'}</kbd> {lang === 'en' ? 'Object' : 'Objek'}</span>
-        <span><kbd>{lang === 'en' ? 'Blue' : 'Biru'}</kbd> {lang === 'en' ? 'Image' : 'Imej'}</span>
-        <span><kbd>Scroll</kbd> Zoom</span>
-        <span><kbd>Drag</kbd> Pan</span>
+        {isTouchDevice ? (
+          <>
+            <span><kbd>👆 Sentuh</kbd> {lang === 'en' ? 'Select coord' : 'Pilih koordinat'}</span>
+            <span><kbd>✋ Seret</kbd> {lang === 'en' ? 'Pan island' : 'Gerak pulau'}</span>
+            <span><kbd>🤏 Cubit</kbd> {lang === 'en' ? 'Pinch zoom' : 'Cubit zum'}</span>
+          </>
+        ) : (
+          <>
+            <span><kbd>Click</kbd> {lang === 'en' ? 'Select coord' : 'Pilih koordinat'}</span>
+            <span><kbd>WASD</kbd> {lang === 'en' ? 'Adjust selection' : 'Laras pilihan'}</span>
+            <span><kbd>Enter</kbd> {lang === 'en' ? 'Check' : 'Semak'}</span>
+            <span><kbd>Scroll</kbd> Zoom</span>
+            <span><kbd>Drag</kbd> Pan</span>
+          </>
+        )}
       </div>
       {hud.popup && (
         <div className="rrg-message-popup show">
@@ -7986,69 +8113,85 @@ export default function App() {
       
       {/* HEADER & NAVIGASI STICKY */}
       <header className="sticky top-0 z-50 bg-blue-700 text-white shadow-lg">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-4 flex flex-col md:flex-row justify-between items-center gap-2.5 sm:gap-4">
           <div className="flex items-center justify-between w-full md:w-auto">
-            <div className="flex items-center gap-3">
-              <img src="/assets/logo.png" alt="Logo" className="h-12 w-auto object-contain drop-shadow-lg scale-125 ml-2 mr-1" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <img src="/assets/logo.png" alt="Logo" className="h-9 sm:h-12 w-auto object-contain drop-shadow-lg scale-110 sm:scale-125 ml-1 sm:ml-2 mr-1" />
               <div>
-                <h1 className="text-xl font-bold tracking-tight">{lang === 'en' ? 'Isometric Transformations' : 'Transformasi Isometri'}</h1>
-                <span className="text-blue-200 text-xs tracking-wider uppercase font-semibold">{lang === 'en' ? 'Form 2 Mathematics - Chapter 11' : 'Matematik Tingkatan 2 - Bab 11'}</span>
+                <h1 className="text-base sm:text-xl font-bold tracking-tight leading-tight">{lang === 'en' ? 'Isometric Transformations' : 'Transformasi Isometri'}</h1>
+                <span className="text-blue-200 text-[10px] sm:text-xs tracking-wider uppercase font-semibold block">{lang === 'en' ? 'Form 2 Mathematics - Chapter 11' : 'Matematik Tingkatan 2 - Bab 11'}</span>
               </div>
             </div>
-            {/* Butang Dwibahasa untuk paparan peranti kecil (Mobile) */}
-            <div className="md:hidden flex bg-blue-900/40 p-1 rounded-full backdrop-blur-sm">
-              <button onClick={() => handleLanguageChange('ms')} className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${lang === 'ms' ? 'bg-white text-blue-800 shadow' : 'text-blue-200 hover:bg-blue-800'}`}>BM</button>
-              <button onClick={() => handleLanguageChange('en')} className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${lang === 'en' ? 'bg-white text-blue-800 shadow' : 'text-blue-200 hover:bg-blue-800'}`}>EN</button>
+            {/* Butang Dwibahasa & Logout untuk paparan peranti kecil (Mobile) */}
+            <div className="md:hidden flex items-center gap-1.5">
+              <div className="flex bg-blue-900/40 p-0.5 rounded-full backdrop-blur-sm">
+                <button onClick={() => handleLanguageChange('ms')} className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition-all ${lang === 'ms' ? 'bg-white text-blue-800 shadow' : 'text-blue-200 hover:bg-blue-800'}`}>BM</button>
+                <button onClick={() => handleLanguageChange('en')} className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition-all ${lang === 'en' ? 'bg-white text-blue-800 shadow' : 'text-blue-200 hover:bg-blue-800'}`}>EN</button>
+              </div>
+              <button 
+                onClick={handleLogout} 
+                title={lang === 'en' ? 'Log Out' : 'Keluar'} 
+                className="p-1.5 rounded-full bg-slate-900/80 text-white hover:bg-slate-800 flex items-center justify-center border border-white/20 shadow-sm"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
           
-          <div className="flex items-center gap-3 w-full md:flex-1 justify-between md:justify-end">
+          <div className="flex items-center gap-2 sm:gap-3 w-full md:flex-1 justify-between md:justify-end">
             <nav className={`grid ${sessionUser.role === 'admin' ? 'grid-cols-5' : 'grid-cols-4'} flex-1 min-w-0 gap-1 bg-blue-800/50 p-1 rounded-full backdrop-blur-sm`}>
               <button 
                 onClick={() => setActiveTab('nota')}
-                className={`w-full justify-center px-2 sm:px-4 md:px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap ${activeTab === 'nota' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
+                className={`w-full justify-center px-1.5 sm:px-3 md:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1 sm:gap-2 whitespace-nowrap ${activeTab === 'nota' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
               >
-                <BookOpen className="w-4 h-4 shrink-0"/> {lang === 'en' ? 'Notes' : 'Nota'}
+                <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0"/> {lang === 'en' ? 'Notes' : 'Nota'}
               </button>
               <button 
                 onClick={() => setActiveTab('makmal')}
-                className={`w-full justify-center px-2 sm:px-4 md:px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap ${activeTab === 'makmal' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
+                className={`w-full justify-center px-1.5 sm:px-3 md:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1 sm:gap-2 whitespace-nowrap ${activeTab === 'makmal' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
               >
-                <InfinityIcon className="w-4 h-4 shrink-0"/> {lang === 'en' ? 'Lab' : 'Makmal'}
+                <InfinityIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0"/> {lang === 'en' ? 'Lab' : 'Makmal'}
               </button>
               <button 
                 onClick={() => setActiveTab('kuiz')}
-                className={`w-full justify-center px-2 sm:px-4 md:px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap ${activeTab === 'kuiz' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
+                className={`w-full justify-center px-1.5 sm:px-3 md:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1 sm:gap-2 whitespace-nowrap ${activeTab === 'kuiz' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
               >
-                <Trophy className="w-4 h-4 shrink-0"/> {lang === 'en' ? 'Quiz' : 'Kuiz'}
+                <Trophy className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0"/> {lang === 'en' ? 'Quiz' : 'Kuiz'}
               </button>
               <button 
                 onClick={() => setActiveTab('rrgs')}
-                className={`w-full justify-center px-2 sm:px-4 md:px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap ${activeTab === 'rrgs' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
+                className={`w-full justify-center px-1.5 sm:px-3 md:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1 sm:gap-2 whitespace-nowrap ${activeTab === 'rrgs' ? 'bg-white text-blue-700 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
               >
-                <Shapes className="w-4 h-4 shrink-0"/> RRGs
+                <Shapes className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0"/> RRGs
               </button>
               {sessionUser.role === 'admin' && (
                 <button 
                   onClick={() => setActiveTab('admin')}
-                  className={`w-full justify-center px-2 sm:px-4 md:px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap ${activeTab === 'admin' ? 'bg-amber-100 text-amber-800 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
+                  className={`w-full justify-center px-1.5 sm:px-3 md:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1 sm:gap-2 whitespace-nowrap ${activeTab === 'admin' ? 'bg-amber-100 text-amber-800 shadow-md' : 'text-blue-100 hover:bg-blue-600/50'}`}
                 >
-                  <ShieldCheck className="w-4 h-4 shrink-0"/> Admin
+                  <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0"/> Admin
                 </button>
               )}
             </nav>
 
-            <div className="hidden lg:flex items-center gap-2 text-xs font-bold text-slate-600 bg-white/70 border border-slate-200 px-3 py-2 rounded-lg">
-              <UserRound className="w-4 h-4" /> {sessionUser.name}
-            </div>
-            <button onClick={handleLogout} className="hidden lg:flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-white hover:bg-slate-800">
-              <LogOut className="w-4 h-4" /> {lang === 'en' ? 'Log Out' : 'Keluar'}
-            </button>
-
-            {/* Butang Dwibahasa paparan Desktop */}
-            <div className="hidden md:flex bg-blue-900/40 p-1 rounded-full backdrop-blur-sm ml-2">
-              <button onClick={() => handleLanguageChange('ms')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${lang === 'ms' ? 'bg-white text-blue-800 shadow' : 'text-blue-200 hover:bg-blue-800'}`}>BM</button>
-              <button onClick={() => handleLanguageChange('en')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${lang === 'en' ? 'bg-white text-blue-800 shadow' : 'text-blue-200 hover:bg-blue-800'}`}>EN</button>
+            {/* Desktop & Tablet user info & logout */}
+            <div className="hidden md:flex items-center gap-2">
+              <div className="hidden xl:flex items-center gap-2 text-xs font-bold text-slate-600 bg-white/70 border border-slate-200 px-3 py-2 rounded-lg">
+                <UserRound className="w-4 h-4" /> {sessionUser.name}
+              </div>
+              <button 
+                onClick={handleLogout} 
+                title={lang === 'en' ? 'Log Out' : 'Keluar'}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 transition-colors shadow-sm"
+              >
+                <LogOut className="w-4 h-4" /> 
+                <span className="hidden lg:inline">{lang === 'en' ? 'Log Out' : 'Keluar'}</span>
+              </button>
+              {/* Butang Dwibahasa paparan Desktop/Tablet */}
+              <div className="flex bg-blue-900/40 p-1 rounded-full backdrop-blur-sm ml-1">
+                <button onClick={() => handleLanguageChange('ms')} className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${lang === 'ms' ? 'bg-white text-blue-800 shadow' : 'text-blue-200 hover:bg-blue-800'}`}>BM</button>
+                <button onClick={() => handleLanguageChange('en')} className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${lang === 'en' ? 'bg-white text-blue-800 shadow' : 'text-blue-200 hover:bg-blue-800'}`}>EN</button>
+              </div>
             </div>
           </div>
         </div>

@@ -4711,7 +4711,12 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed && Array.isArray(parsed.players) && parsed.players.length > 0) {
-          savedState = parsed;
+          const validPlayers = parsed.players.every(p => p && typeof p.x === 'number' && Number.isFinite(p.x) && typeof p.y === 'number' && Number.isFinite(p.y));
+          if (validPlayers) {
+            savedState = parsed;
+          } else {
+            localStorage.removeItem(saveKey);
+          }
         }
       }
     } catch (e) {
@@ -4733,7 +4738,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       camStartY: 0,
       dragDistance: 0,
       isDragging: false,
-      currentPlayer: savedState ? savedState.currentPlayer : 0,
+      currentPlayer: savedState ? (savedState.currentPlayer ?? 0) : 0,
       dice: savedState ? savedState.dice : null,
       card: savedState ? savedState.card : null,
       selected: savedState ? savedState.selected : null,
@@ -4743,7 +4748,20 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       animating: false,
       message: savedState ? savedState.message : (lang === 'en' ? 'Mission begins at Crystal Hill. All players receive RM100.' : 'Misi bermula di Bukit Kristal. Semua pemain menerima RM100.'),
       players: (savedState && Array.isArray(savedState.players) && savedState.players.length > 0)
-        ? savedState.players.map(p => ({ ...p, trail: [], motion: null, motionLift: 0, motionTilt: 0, motionStretch: 0, motionTransformRotation: 0, landingPulseAt: 0, drawX: p.x, drawY: p.y }))
+        ? savedState.players.map(p => ({
+            ...p,
+            x: Number.isFinite(p.x) ? p.x : 0,
+            y: Number.isFinite(p.y) ? p.y : 0,
+            trail: [],
+            motion: null,
+            motionLift: 0,
+            motionTilt: 0,
+            motionStretch: 0,
+            motionTransformRotation: 0,
+            landingPulseAt: 0,
+            drawX: Number.isFinite(p.x) ? p.x : 0,
+            drawY: Number.isFinite(p.y) ? p.y : 0
+          }))
         : makePlayers(),
       drawCard: savedState ? savedState.drawCard : null,
       lastActionCard: savedState ? savedState.lastActionCard : null,
@@ -4759,13 +4777,19 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     if (game.players && game.players[0]) {
       centerOnPlayer(game, game.players[0], true);
     }
+    if (!Number.isFinite(game.camX)) game.camX = 0;
+    if (!Number.isFinite(game.camY)) game.camY = 0;
+    if (!Number.isFinite(game.camTargetX)) game.camTargetX = 0;
+    if (!Number.isFinite(game.camTargetY)) game.camTargetY = 0;
     syncHud(game);
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
-      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      const clientW = rect.width || canvas.clientWidth || window.innerWidth || 800;
+      const clientH = rect.height || canvas.clientHeight || (window.innerHeight - 120) || 600;
+      canvas.width = Math.max(300, Math.floor(clientW * dpr));
+      canvas.height = Math.max(400, Math.floor(clientH * dpr));
     };
     resize();
 
@@ -5110,34 +5134,42 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       // 4. Ultra-Smooth Game Engine Flow (Scrolling UV Texture)
       // By translating a repeating pattern matrix, we get continuous fluid motion!
       ctx.save();
-      if (textures.water) {
-        ctx.globalCompositeOperation = 'overlay'; // Blend with the cyan base
-        const pattern = ctx.createPattern(textures.water, 'repeat');
-        const matrix = new DOMMatrix();
-        // The river flows diagonally from top-left to bottom-right (in grid), which is left-down in pixels!
-        matrix.translateSelf(-game.time * 28, game.time * 35);
-        matrix.scaleSelf(0.35, 0.35); // Scale down the texture for finer caustics
-        pattern.setTransform(matrix);
-        
-        ctx.strokeStyle = pattern;
-        ctx.lineWidth = width - 4; // Inside the foam edges
-        ctx.globalAlpha = 0.85;
-        drawSmoothPath(points);
-        ctx.stroke();
+      if (isTextureReady(textures.water)) {
+        try {
+          ctx.globalCompositeOperation = 'overlay'; // Blend with the cyan base
+          const pattern = ctx.createPattern(textures.water, 'repeat');
+          if (pattern) {
+            const matrix = new DOMMatrix();
+            // The river flows diagonally from top-left to bottom-right (in grid), which is left-down in pixels!
+            matrix.translateSelf(-game.time * 28, game.time * 35);
+            matrix.scaleSelf(0.35, 0.35); // Scale down the texture for finer caustics
+            pattern.setTransform(matrix);
+            
+            ctx.strokeStyle = pattern;
+            ctx.lineWidth = width - 4; // Inside the foam edges
+            ctx.globalAlpha = 0.85;
+            drawSmoothPath(points);
+            ctx.stroke();
+          }
 
-        // Add a second, slower layer of water texture in the opposite direction for parallax depth!
-        ctx.globalCompositeOperation = 'screen';
-        const pattern2 = ctx.createPattern(textures.water, 'repeat');
-        const matrix2 = new DOMMatrix();
-        matrix2.translateSelf(-game.time * 12, game.time * 15);
-        matrix2.scaleSelf(0.5, 0.5); 
-        pattern2.setTransform(matrix2);
-        
-        ctx.strokeStyle = pattern2;
-        ctx.lineWidth = width - 8;
-        ctx.globalAlpha = 0.4;
-        drawSmoothPath(points);
-        ctx.stroke();
+          // Add a second, slower layer of water texture in the opposite direction for parallax depth!
+          ctx.globalCompositeOperation = 'screen';
+          const pattern2 = ctx.createPattern(textures.water, 'repeat');
+          if (pattern2) {
+            const matrix2 = new DOMMatrix();
+            matrix2.translateSelf(-game.time * 12, game.time * 15);
+            matrix2.scaleSelf(0.5, 0.5); 
+            pattern2.setTransform(matrix2);
+            
+            ctx.strokeStyle = pattern2;
+            ctx.lineWidth = width - 8;
+            ctx.globalAlpha = 0.4;
+            drawSmoothPath(points);
+            ctx.stroke();
+          }
+        } catch (e) {
+          // Texture decoding fallback
+        }
       }
       ctx.restore();
 
@@ -6321,13 +6353,22 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     };
 
     const draw = (timestamp) => {
-      const dt = Math.min(0.05, (timestamp - game.lastTime) / 1000 || 1 / 60);
-      game.lastTime = timestamp;
-      game.time += dt;
-      const dpr = window.devicePixelRatio || 1;
-      const camEase = game.isDragging ? 0.28 : game.animating ? 0.16 : 0.1;
-      game.camX += (game.camTargetX - game.camX) * camEase;
-      game.camY += (game.camTargetY - game.camY) * camEase;
+      try {
+        if (canvas.width <= 1 || canvas.height <= 1) {
+          resize();
+        }
+        if (!Number.isFinite(game.camX)) game.camX = 0;
+        if (!Number.isFinite(game.camY)) game.camY = 0;
+        if (!Number.isFinite(game.camTargetX)) game.camTargetX = 0;
+        if (!Number.isFinite(game.camTargetY)) game.camTargetY = 0;
+
+        const dt = Math.min(0.05, (timestamp - game.lastTime) / 1000 || 1 / 60);
+        game.lastTime = timestamp;
+        game.time += dt;
+        const dpr = window.devicePixelRatio || 1;
+        const camEase = game.isDragging ? 0.28 : game.animating ? 0.16 : 0.1;
+        game.camX += (game.camTargetX - game.camX) * camEase;
+        game.camY += (game.camTargetY - game.camY) * camEase;
       let cameraOffsetX = 0;
       let cameraOffsetY = 0;
       if (game.cameraKick) {
@@ -7220,7 +7261,10 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.restore();
 
-      drawMinimap();
+        drawMinimap();
+      } catch (err) {
+        console.warn("RRG draw loop error:", err);
+      }
       game.raf = window.requestAnimationFrame(draw);
     };
     game.raf = window.requestAnimationFrame(draw);

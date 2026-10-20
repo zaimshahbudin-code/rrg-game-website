@@ -2326,3 +2326,30 @@ body {
   -webkit-line-clamp: 3;
 }
 
+
+/* Island overview controls remain accessible above the game canvas. */
+.rrg-game-canvas { touch-action: none; }
+.rrg-map-tools {
+  position: absolute; top: 106px; left: 18px; z-index: 24;
+  display: flex; flex-wrap: wrap; gap: 5px; max-width: 290px;
+}
+.rrg-map-tools button {
+  border: 1px solid rgba(220, 244, 231, .35); border-radius: 9px;
+  background: rgba(14, 55, 52, .92); color: #f2f8ec;
+  padding: 8px 11px; font: 600 11px/1.2 system-ui; cursor: pointer;
+  box-shadow: 0 3px 12px #082b3026;
+}
+.rrg-map-tools button:hover { background: #23675b; }
+.rrg-map-tools button:focus-visible { outline: 3px solid #ffe19a; outline-offset: 2px; }
+.rrg-map-tools button[aria-pressed='true'] { color: #ffe19a; }
+@media (max-width: 700px) {
+  .rrg-map-tools { top: 90px; left: 10px; max-width: 220px; gap: 3px; }
+  .rrg-map-tools button { padding: 7px 9px; font-size: 10px; }
+}
+
+.rrg-map-overview .rrg-card-panel, .rrg-map-overview .rrg-deck-rack { display: none; }
+@media (max-width: 900px) {
+  .rrg-map-tools { top: 156px; max-width: calc(100% - 32px); }
+  .rrg-map-tools button { min-height: 32px; }
+  .rrg-canvas-game:not(.rrg-map-overview) .rrg-card-panel { top: 242px; max-height: 240px; overflow-y: auto; }
+}

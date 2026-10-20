@@ -17,6 +17,25 @@ import {
 const TUTORIAL_STEP_IDLE_CLASS = 'bg-slate-100 text-slate-700 hover:bg-slate-200';
 const TUTORIAL_STEP_ACTIVE_GRADIENT_CLASS = 'bg-gradient-to-r from-sky-600 via-cyan-500 to-emerald-500 text-white font-bold shadow-md';
 
+const VectorCol = ({ x, y, className = "", color = "text-purple-700", bg = "bg-purple-50", border = "border-purple-200", showPlus = false }) => {
+  const formatVal = (v) => {
+    if (typeof v === 'number') {
+      return showPlus && v > 0 ? `+${v}` : `${v}`;
+    }
+    return v;
+  };
+  return (
+    <span className={`inline-flex items-center align-middle font-mono px-2 py-0.5 rounded-lg border shadow-sm ${bg} ${border} ${className}`}>
+      <span className="text-xl sm:text-2xl font-light leading-none text-slate-400 select-none -mr-0.5" style={{ transform: 'scaleY(1.35)' }}>(</span>
+      <span className={`flex flex-col items-center justify-center text-center font-bold px-1 ${color}`}>
+        <span className="text-xs sm:text-sm leading-tight">{formatVal(x)}</span>
+        <span className="text-xs sm:text-sm leading-tight">{formatVal(y)}</span>
+      </span>
+      <span className="text-xl sm:text-2xl font-light leading-none text-slate-400 select-none -ml-0.5" style={{ transform: 'scaleY(1.35)' }}>)</span>
+    </span>
+  );
+};
+
 const NOTE_LAYOUT_THEMES = {
   ocean: {
     key: 'ocean',
@@ -1419,20 +1438,26 @@ Example: [{"x":-3,"y":-3}, {"x":3,"y":-3}, {"x":0,"y":4}]`;
 
       explanation.push(
         <div key="desc" className="mb-4">
-          <p className="text-lg font-bold text-slate-800 mb-2">
-            {lang === 'en' ? 'Translation with vector' : 'Translasi dengan vektor'}{' '}
-            <span className="text-purple-600 bg-purple-50 px-2 py-1 rounded font-mono">
-              ( {transParams.dx} , {transParams.dy} )
+          <div className="flex items-center gap-3 mb-3 flex-wrap">
+            <span className="text-lg font-bold text-slate-800">
+              {lang === 'en' ? 'Translation with vector' : 'Translasi dengan vektor'}
             </span>
-          </p>
+            <div className="flex items-center gap-2">
+              <VectorCol x={transParams.dx} y={transParams.dy} color="text-purple-700" bg="bg-purple-50" border="border-purple-200" />
+              <div className="text-[11px] text-slate-500 font-sans leading-tight border-l pl-2 border-slate-200">
+                <span className="block text-purple-700 font-semibold">{lang === 'en' ? 'Top: X-axis movement' : 'Atas: Pergerakan paksi-x'}</span>
+                <span className="block text-pink-700 font-semibold">{lang === 'en' ? 'Bottom: Y-axis movement' : 'Bawah: Pergerakan paksi-y'}</span>
+              </div>
+            </div>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs mb-3">
             <div className="p-2.5 rounded-lg bg-purple-50 border border-purple-200 text-purple-900 flex items-center gap-2">
               <span className="font-bold bg-purple-200 text-purple-800 px-1.5 py-0.5 rounded text-[11px]">1</span>
-              <span><b>{lang === 'en' ? 'Paksi-x (Horizontal):' : 'Paksi-x (Mengufuk):'}</b> {hDir}</span>
+              <span><b>{lang === 'en' ? 'Paksi-x (Atas / Mengufuk):' : 'Paksi-x (Atas / Mengufuk):'}</b> {hDir}</span>
             </div>
             <div className="p-2.5 rounded-lg bg-pink-50 border border-pink-200 text-pink-900 flex items-center gap-2">
               <span className="font-bold bg-pink-200 text-pink-800 px-1.5 py-0.5 rounded text-[11px]">2</span>
-              <span><b>{lang === 'en' ? 'Paksi-y (Vertical):' : 'Paksi-y (Menegak):'}</b> {vDir}</span>
+              <span><b>{lang === 'en' ? 'Paksi-y (Bawah / Menegak):' : 'Paksi-y (Bawah / Menegak):'}</b> {vDir}</span>
             </div>
           </div>
         </div>
@@ -1592,17 +1617,29 @@ Example: [{"x":-3,"y":-3}, {"x":3,"y":-3}, {"x":0,"y":4}]`;
 
           <div className="min-h-[140px]">
             {transType === 'translasi' && (
-              <div className="space-y-5">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3.5 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border border-purple-200 shadow-sm">
+                  <div>
+                    <span className="text-xs font-bold text-purple-900 block flex items-center gap-1.5">
+                      <Move className="w-3.5 h-3.5 text-purple-600" />
+                      {lang === 'en' ? 'Translation Vector' : 'Vektor Translasi'}
+                    </span>
+                    <span className="text-[11px] text-purple-700 block mt-0.5">
+                      {lang === 'en' ? 'Top: X-axis (dx) | Bottom: Y-axis (dy)' : 'Atas: Paksi-x (dx) | Bawah: Paksi-y (dy)'}
+                    </span>
+                  </div>
+                  <VectorCol x={transParams.dx} y={transParams.dy} color="text-purple-700" bg="bg-white" border="border-purple-300" />
+                </div>
                 <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
                   <div className="flex justify-between items-center mb-2">
-                    <label className="text-sm font-semibold text-slate-700">{lang === 'en' ? 'X-axis Movement (dx)' : 'Pergerakan Paksi-x (dx)'}</label>
+                    <label className="text-sm font-semibold text-slate-700">{lang === 'en' ? 'X-axis Movement (dx - Top)' : 'Pergerakan Paksi-x (dx - Atas)'}</label>
                     <input type="number" className="w-16 p-1 border rounded text-center text-sm font-bold text-indigo-700" value={transParams.dx} onChange={e => {setTransParams({...transParams, dx: parseInt(e.target.value)||0}); setProgress(1);}} />
                   </div>
                   <input type="range" className="w-full accent-indigo-600" min="-20" max="20" value={transParams.dx} onChange={e => {setTransParams({...transParams, dx: parseInt(e.target.value)}); setProgress(1);}} />
                 </div>
                 <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
                   <div className="flex justify-between items-center mb-2">
-                    <label className="text-sm font-semibold text-slate-700">{lang === 'en' ? 'Y-axis Movement (dy)' : 'Pergerakan Paksi-y (dy)'}</label>
+                    <label className="text-sm font-semibold text-slate-700">{lang === 'en' ? 'Y-axis Movement (dy - Bottom)' : 'Pergerakan Paksi-y (dy - Bawah)'}</label>
                     <input type="number" className="w-16 p-1 border rounded text-center text-sm font-bold text-indigo-700" value={transParams.dy} onChange={e => {setTransParams({...transParams, dy: parseInt(e.target.value)||0}); setProgress(1);}} />
                   </div>
                   <input type="range" className="w-full accent-indigo-600" min="-20" max="20" value={transParams.dy} onChange={e => {setTransParams({...transParams, dy: parseInt(e.target.value)}); setProgress(1);}} />
@@ -1700,46 +1737,32 @@ Example: [{"x":-3,"y":-3}, {"x":3,"y":-3}, {"x":0,"y":4}]`;
           )}
 
           {isAnimating && transType === 'translasi' && (
-            <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 pointer-events-none transition-all duration-300 max-w-[90%]">
-              {transParams.dx !== 0 && transParams.dy !== 0 ? (
-                progress <= 0.54 ? (
-                  <div className="bg-purple-900/90 backdrop-blur-md text-white px-4 py-2 rounded-full shadow-lg border border-purple-400/50 flex items-center gap-2 text-xs sm:text-sm font-bold animate-pulse">
-                    <span className="w-2.5 h-2.5 rounded-full bg-purple-400 animate-ping" />
-                    <span>
-                      {lang === 'en' 
-                        ? `Step 1: Horizontal Movement (X-axis) ➔ ${transParams.dx > 0 ? `${transParams.dx} units right (+)` : `${Math.abs(transParams.dx)} units left (-)`}`
-                        : `Langkah 1: Gerak Mengufuk (Paksi-x) ➔ ${transParams.dx > 0 ? `${transParams.dx} unit ke kanan (+)` : `${Math.abs(transParams.dx)} unit ke kiri (-)`}`}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="bg-pink-900/90 backdrop-blur-md text-white px-4 py-2 rounded-full shadow-lg border border-pink-400/50 flex items-center gap-2 text-xs sm:text-sm font-bold animate-pulse">
-                    <span className="w-2.5 h-2.5 rounded-full bg-pink-400 animate-ping" />
-                    <span>
-                      {lang === 'en' 
-                        ? `Step 2: Vertical Movement (Y-axis) ➔ ${transParams.dy > 0 ? `${transParams.dy} units up (+)` : `${Math.abs(transParams.dy)} units down (-)`}`
-                        : `Langkah 2: Gerak Menegak (Paksi-y) ➔ ${transParams.dy > 0 ? `${transParams.dy} unit ke atas (+)` : `${Math.abs(transParams.dy)} unit ke bawah (-)`}`}
-                    </span>
-                  </div>
-                )
-              ) : transParams.dx !== 0 ? (
-                <div className="bg-purple-900/90 backdrop-blur-md text-white px-4 py-2 rounded-full shadow-lg border border-purple-400/50 flex items-center gap-2 text-xs sm:text-sm font-bold animate-pulse">
-                  <span className="w-2.5 h-2.5 rounded-full bg-purple-400 animate-ping" />
-                  <span>
-                    {lang === 'en' 
-                      ? `Horizontal Movement (X-axis) ➔ ${transParams.dx > 0 ? `${transParams.dx} units right (+)` : `${Math.abs(transParams.dx)} units left (-)`}`
-                      : `Gerak Mengufuk (Paksi-x) ➔ ${transParams.dx > 0 ? `${transParams.dx} unit ke kanan (+)` : `${Math.abs(transParams.dx)} unit ke kiri (-)`}`}
-                  </span>
-                </div>
-              ) : transParams.dy !== 0 ? (
-                <div className="bg-pink-900/90 backdrop-blur-md text-white px-4 py-2 rounded-full shadow-lg border border-pink-400/50 flex items-center gap-2 text-xs sm:text-sm font-bold animate-pulse">
-                  <span className="w-2.5 h-2.5 rounded-full bg-pink-400 animate-ping" />
-                  <span>
-                    {lang === 'en' 
-                      ? `Vertical Movement (Y-axis) ➔ ${transParams.dy > 0 ? `${transParams.dy} units up (+)` : `${Math.abs(transParams.dy)} units down (-)`}`
-                      : `Gerak Menegak (Paksi-y) ➔ ${transParams.dy > 0 ? `${transParams.dy} unit ke atas (+)` : `${Math.abs(transParams.dy)} unit ke bawah (-)`}`}
-                  </span>
-                </div>
-              ) : null}
+            <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 pointer-events-none transition-all duration-300 max-w-[95%]">
+              <div className="flex items-center gap-2.5 bg-slate-900/90 backdrop-blur-md text-white px-4 py-2 rounded-full shadow-lg border border-slate-700 text-xs sm:text-sm font-bold">
+                <span className="w-2.5 h-2.5 rounded-full bg-purple-400 animate-ping shrink-0" />
+                <VectorCol x={transParams.dx} y={transParams.dy} color="text-white" bg="bg-white/10" border="border-white/20" />
+                <span>
+                  {transParams.dx !== 0 && transParams.dy !== 0 ? (
+                    progress <= 0.54 ? (
+                      lang === 'en' 
+                        ? `Step 1 (Top / X-axis) ➔ ${transParams.dx > 0 ? `${transParams.dx} units right (+)` : `${Math.abs(transParams.dx)} units left (-)`}`
+                        : `Langkah 1 (Atas / Paksi-x) ➔ ${transParams.dx > 0 ? `${transParams.dx} unit ke kanan (+)` : `${Math.abs(transParams.dx)} unit ke kiri (-)`}`
+                    ) : (
+                      lang === 'en' 
+                        ? `Step 2 (Bottom / Y-axis) ➔ ${transParams.dy > 0 ? `${transParams.dy} units up (+)` : `${Math.abs(transParams.dy)} units down (-)`}`
+                        : `Langkah 2 (Bawah / Paksi-y) ➔ ${transParams.dy > 0 ? `${transParams.dy} unit ke atas (+)` : `${Math.abs(transParams.dy)} unit ke bawah (-)`}`
+                    )
+                  ) : transParams.dx !== 0 ? (
+                    lang === 'en' 
+                      ? `X-axis Movement (Top) ➔ ${transParams.dx > 0 ? `${transParams.dx} units right (+)` : `${Math.abs(transParams.dx)} units left (-)`}`
+                      : `Gerak Paksi-x (Atas) ➔ ${transParams.dx > 0 ? `${transParams.dx} unit ke kanan (+)` : `${Math.abs(transParams.dx)} unit ke kiri (-)`}`
+                  ) : transParams.dy !== 0 ? (
+                    lang === 'en' 
+                      ? `Y-axis Movement (Bottom) ➔ ${transParams.dy > 0 ? `${transParams.dy} units up (+)` : `${Math.abs(transParams.dy)} units down (-)`}`
+                      : `Gerak Paksi-y (Bawah) ➔ ${transParams.dy > 0 ? `${transParams.dy} unit ke atas (+)` : `${Math.abs(transParams.dy)} unit ke bawah (-)`}`
+                  ) : null}
+                </span>
+              </div>
             </div>
           )}
 
@@ -2125,9 +2148,21 @@ const SectionKuiz = ({ lang, sessionUser }) => {
 
   const getQuestionText = () => {
     if (q.type === 'translasi') {
-      return lang === 'en'
-        ? `The diagram shows a polygon with vertex ${q.ptLabel}(${q.x}, ${q.y}). If this polygon is translated by vector (${q.dx}, ${q.dy}), what are the coordinates of the image vertex ${q.ptLabel}'?`
-        : `Graf menunjukkan sebuah poligon dengan bucu ${q.ptLabel}(${q.x}, ${q.y}). Jika poligon ini melalui translasi vektor (${q.dx}, ${q.dy}), apakah koordinat bagi imej bucu ${q.ptLabel}'?`;
+      return (
+        <span className="inline-flex items-center gap-2 flex-wrap align-middle">
+          <span>
+            {lang === 'en'
+              ? `The diagram shows a polygon with vertex ${q.ptLabel}(${q.x}, ${q.y}). If this polygon is translated by vector`
+              : `Graf menunjukkan sebuah poligon dengan bucu ${q.ptLabel}(${q.x}, ${q.y}). Jika poligon ini melalui translasi vektor`}
+          </span>
+          <VectorCol x={q.dx} y={q.dy} color="text-indigo-700" bg="bg-indigo-50" border="border-indigo-200" />
+          <span>
+            {lang === 'en'
+              ? `, what are the coordinates of the image vertex ${q.ptLabel}'?`
+              : `, apakah koordinat bagi imej bucu ${q.ptLabel}'?`}
+          </span>
+        </span>
+      );
     } else if (q.type === 'pantulan') {
       const axisEn = q.axis === 'Paksi-x' ? 'X-axis' : q.axis === 'Paksi-y' ? 'Y-axis' : q.axis === 'Garis y=x' ? 'Line y=x' : 'Line y=-x';
       return lang === 'en'
@@ -2143,9 +2178,17 @@ const SectionKuiz = ({ lang, sessionUser }) => {
 
   const getExplanationText = () => {
     if (q.type === 'translasi') {
-      return lang === 'en'
-        ? `Translation: Add the vector values to the original axis. x = ${q.x} + (${q.dx}) = ${q.newX}, y = ${q.y} + (${q.dy}) = ${q.newY}.`
-        : `Translasi: Tambahkan nilai vektor ke paksi asal. x = ${q.x} + (${q.dx}) = ${q.newX}, y = ${q.y} + (${q.dy}) = ${q.newY}.`;
+      return (
+        <span className="inline-flex items-center gap-2 flex-wrap align-middle">
+          <span>{lang === 'en' ? 'Translation with vector' : 'Translasi dengan vektor'}</span>
+          <VectorCol x={q.dx} y={q.dy} color="text-indigo-700" bg="bg-indigo-50" border="border-indigo-200" />
+          <span>
+            {lang === 'en'
+              ? `: Add top (x) and bottom (y) values. x = ${q.x} + (${q.dx}) = ${q.newX}, y = ${q.y} + (${q.dy}) = ${q.newY}.`
+              : `: Tambahkan nilai atas (x) dan nilai bawah (y). x = ${q.x} + (${q.dx}) = ${q.newX}, y = ${q.y} + (${q.dy}) = ${q.newY}.`}
+          </span>
+        </span>
+      );
     } else if (q.type === 'pantulan') {
       const axisEn = q.axis === 'Paksi-x' ? 'X-axis' : q.axis === 'Paksi-y' ? 'Y-axis' : q.axis === 'Garis y=x' ? 'Line y=x' : 'Line y=-x';
       return lang === 'en'

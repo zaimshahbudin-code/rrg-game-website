@@ -7889,26 +7889,35 @@ export default function App() {
       setSessionLoading(false);
       return;
     }
+    let isMounted = true;
+    const fallbackTimer = setTimeout(() => {
+      if (isMounted) setSessionLoading(false);
+    }, 2500);
+
     const unsubscribe = subscribeToAuth(async (user) => {
       if (user) {
         try {
           const userRef = doc(db, 'users', user.uid);
           const userDoc = await getDoc(userRef);
-          if (userDoc.exists()) {
+          if (userDoc.exists() && isMounted) {
             setSessionUser({ ...userDoc.data(), uid: user.uid, isApproved: true });
-          } else {
+          } else if (isMounted) {
             setSessionUser(null);
           }
         } catch (e) {
           console.error("Error fetching user session:", e);
-          setSessionUser(null);
+          if (isMounted) setSessionUser(null);
         }
       } else {
-        setSessionUser(null);
+        if (isMounted) setSessionUser(null);
       }
-    setSessionLoading(false);
+      if (isMounted) setSessionLoading(false);
     });
-    return () => unsubscribe();
+    return () => {
+      isMounted = false;
+      clearTimeout(fallbackTimer);
+      unsubscribe();
+    };
   }, []);
 
   const handleLogout = async () => {

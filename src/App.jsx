@@ -1,4 +1,3 @@
-import { ISLAND_COAST, ISLAND_LANDMARKS, boatPose, drawIslandGround, drawIslandLife, drawIslandLabels } from './islandScene';
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, getDoc, serverTimestamp, setDoc, getDocs, collection, updateDoc, query, where, orderBy, limit } from 'firebase/firestore';
@@ -3139,7 +3138,6 @@ const SectionRRGs = () => {
     score: 100,
     skipTurns: 0,
     extraTurns: 0,
-    fireShieldTurns: 0,
     finished: false,
     finishOrder: null,
   })));
@@ -3666,12 +3664,6 @@ class RRGErrorBoundary extends React.Component {
 const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
   const [resetTrigger, setResetTrigger] = useState(0);
   const [zoomedCard, setZoomedCard] = useState(null);
-  const [mapOnly, setMapOnly] = useState(true);
-  const [ambientPaused, setAmbientPaused] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  const ambientPausedRef = useRef(ambientPaused);
-  useEffect(() => { ambientPausedRef.current = ambientPaused; }, [ambientPaused]);
-  const [viewMode, setViewMode] = useState('3d');
-  const iframeRef = useRef(null);
   const canvasRef = useRef(null);
   const miniMapRef = useRef(null);
   const gameRef = useRef(null);
@@ -3747,7 +3739,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
         const saveData = {
           currentPlayer: game.currentPlayer,
           players: (game.players || []).map(p => ({
-            id: p.id, name: p.name, x: p.x, y: p.y, score: p.score, skipTurns: p.skipTurns, extraTurns: p.extraTurns, fireShieldTurns: p.fireShieldTurns || 0, finished: p.finished, finishOrder: p.finishOrder, color: p.color, ring: p.ring
+            id: p.id, name: p.name, x: p.x, y: p.y, score: p.score, skipTurns: p.skipTurns, extraTurns: p.extraTurns, finished: p.finished, finishOrder: p.finishOrder, color: p.color, ring: p.ring
           })),
           dice: game.dice,
           card: game.card,
@@ -3765,41 +3757,6 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       }
     }
   }, [sessionUser?.uid]);
-
-  const sendPlayersTo3D = useCallback(() => {
-    if (iframeRef.current?.contentWindow) {
-      try {
-        iframeRef.current.contentWindow.postMessage({
-          type: 'UPDATE_PLAYERS',
-          players: hud.players,
-          currentPlayer: hud.currentPlayer,
-        }, '*');
-      } catch (e) {}
-    }
-  }, [hud.players, hud.currentPlayer]);
-
-  useEffect(() => {
-    if (viewMode === '3d') {
-      sendPlayersTo3D();
-    }
-  }, [viewMode, sendPlayersTo3D]);
-
-  useEffect(() => {
-    const handle3DMessage = (event) => {
-      if (event.data?.type === 'RRG_SELECT_COORD') {
-        const { x, y } = event.data;
-        if (typeof x === 'number' && typeof y === 'number') {
-          const game = gameRef.current;
-          if (game) {
-            game.selected = { x, y };
-            syncHud(game);
-          }
-        }
-      }
-    };
-    window.addEventListener('message', handle3DMessage);
-    return () => window.removeEventListener('message', handle3DMessage);
-  }, [syncHud]);
 
   // Synchronize language changes with in-progress game state
   useEffect(() => {
@@ -4329,37 +4286,12 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       note = `${rTitle}: ${applyActionCard(game, player, reward)}`;
     }
     if (item?.kind === 'penalty') {
-      if (player.fireShieldTurns > 0) {
-        player.fireShieldTurns -= 1;
-        effectType = 'coin';
-        note = lang === 'en' ? 'Fire station shield protected you from the bomb.' : 'Perlindungan balai bomba menyelamatkan anda daripada bom.';
-      } else {
-        const penalty = randomFrom(RRG_PENALTY_CARDS);
-        showCardDraw(penalty.deck, penalty);
-        game.lastActionCard = penalty;
-        effectType = 'boom';
-        const pTitle = getRrgCardTitle(penalty, lang);
-        note = `${pTitle}: ${applyActionCard(game, player, penalty)}`;
-      }
-    }
-
-    const landmark = game.landmarks?.find((candidate) => Math.hypot(candidate.x - destination.x, candidate.y - destination.y) < 1.1);
-    if (landmark?.type === 'clinic') {
-      player.score += 75;
-      effectType = 'coin';
-      note = lang === 'en' ? 'Clinic visit: +RM75 health support.' : 'Lawatan klinik: +RM75 bantuan kesihatan.';
-    } else if (landmark?.type === 'market') {
-      player.score += 30;
-      effectType = 'coin';
-      note = lang === 'en' ? 'Market bonus: +RM30 supplies.' : 'Bonus pasar: +RM30 bekalan.';
-    } else if (landmark?.type === 'fire') {
-      player.fireShieldTurns = Math.max(player.fireShieldTurns || 0, 2);
-      effectType = 'coin';
-      note = lang === 'en' ? 'Fire station: shield active for the next 2 hazards.' : 'Balai bomba: perlindungan aktif untuk 2 bahaya seterusnya.';
-    } else if (landmark?.type === 'police') {
-      player.score += 20;
-      effectType = 'coin';
-      note = lang === 'en' ? 'Police station: +RM20 and a safe-route briefing.' : 'Balai polis: +RM20 dan taklimat laluan selamat.';
+      const penalty = randomFrom(RRG_PENALTY_CARDS);
+      showCardDraw(penalty.deck, penalty);
+      game.lastActionCard = penalty;
+      effectType = 'boom';
+      const pTitle = getRrgCardTitle(penalty, lang);
+      note = `${pTitle}: ${applyActionCard(game, player, penalty)}`;
     }
 
     if (isRrgSafeZone(destination) && !player.finished) {
@@ -4430,7 +4362,13 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     const MAP_H = GRID_SIZE * CELL;
     const HAZARD_RADIUS = 3.5;
 
-    const islandPoly = ISLAND_COAST;
+    const islandPoly = [
+      [-12,14],[-8,14.5],[-3,14.5],[0,13],[4,14],[8,13.5],[10,12],
+      [12,10],[13,8],[14,5],[14.5,2],[14,0],[14.5,-3],[13,-6],
+      [12,-9],[11,-11],[9,-13],[6,-14],[3,-14.5],[0,-14],[-3,-14.5],
+      [-6,-14],[-9,-13],[-11,-11],[-13,-8],[-14,-5],[-14.5,-2],
+      [-14,2],[-14.5,5],[-14,8],[-13,11],[-12,14],
+    ];
 
     const rng = (seed) => {
       let value = seed;
@@ -4482,15 +4420,45 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       }
     }
 
-    const boats = Array.from({ length: 18 }, (_, index) => ({
-      x: islandPoly[Math.floor(index / 18 * islandPoly.length)][0],
-      y: islandPoly[Math.floor(index / 18 * islandPoly.length)][1],
-      type: index % 4 === 0 ? 'sailboat' : 'speedboat',
-      phase: index / 18 * Math.PI * 2,
-      scale: index % 4 === 0 ? 1.6 : 1.3,
-    }));
+    const boats = [];
+    for (let i = 0; i < 18; i++) {
+      const baseAngle = (i / 18) * Math.PI * 2;
+      const angle = baseAngle + (-0.1 + rand() * 0.2);
+      
+      let radius = 12 + rand() * 3;
+      let bx = Math.cos(angle) * radius;
+      let by = Math.sin(angle) * radius;
+      
+      // Push the boat outwards until it is safely off the island (in the water)
+      while (isOnIsland(bx, by)) {
+        radius += 1.5;
+        bx = Math.cos(angle) * radius;
+        by = Math.sin(angle) * radius;
+      }
+      
+      boats.push({
+        x: bx,
+        y: by,
+        type: rand() > 0.5 ? 'speedboat' : 'sailboat',
+        phase: rand() * Math.PI * 2,
+        scale: (0.88 + rand() * 0.36) * 1.4,
+        heading: angle + Math.PI / 2,
+      });
+    }
 
-    const landmarks = ISLAND_LANDMARKS;
+    const landmarks = [
+      { x: 0, y: -1, type: 'crystal', label: 'Bukit Kristal', label_ms: 'Bukit Kristal', label_en: 'Crystal Hill', size: 1.65 },
+      { x: -8, y: 5, type: 'farm', label: 'Kebun', label_ms: 'Kebun', label_en: 'Farm', size: 1.25 },
+      { x: 6, y: 3, type: 'factory', label: 'Kilang', label_ms: 'Kilang', label_en: 'Factory', size: 1.25 },
+      { x: -5, y: -6, type: 'waterfall', label: 'Air Terjun', label_ms: 'Air Terjun', label_en: 'Waterfall', size: 1.30 },
+      { x: 8, y: -4, type: 'clinic', label: 'Klinik', label_ms: 'Klinik', label_en: 'Clinic', size: 1.20 },
+      { x: 5, y: -7, type: 'village', label: 'Kampung', label_ms: 'Kampung', label_en: 'Village', size: 1.25 },
+      { x: 8, y: 10, type: 'harbor', label: 'Pelabuhan', label_ms: 'Pelabuhan', label_en: 'Harbor', size: 1.22 },
+      { x: 14, y: 7, type: 'lighthouse', label: 'Rumah Api', label_ms: 'Rumah Api', label_en: 'Lighthouse', size: 1.25 },
+      { x: 6, y: 8, type: 'bridge', label: 'Jambatan', label_ms: 'Jambatan', label_en: 'Bridge', size: 1.16 },
+      { x: -9, y: 8, type: 'ranch', label: 'Ladang', label_ms: 'Ladang', label_en: 'Ranch', size: 1.18 },
+      { x: 10, y: 0, type: 'market', label: 'Pasar', label_ms: 'Pasar', label_en: 'Market', size: 1.18 },
+    ];
 
     const paths = [
       [{ x: 0, y: -1 }, { x: -4, y: 2 }, { x: -8, y: 5 }, { x: -12, y: 12 }],
@@ -4541,8 +4509,6 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       bridge: landmarkAssetPath('bridge'),
       ranch: landmarkAssetPath('ranch'),
       market: landmarkAssetPath('market'),
-      police: '/assets/rrgs/landmarks/civic-atlas.png',
-      fire: '/assets/rrgs/landmarks/civic-atlas.png',
     };
     const textures = Object.fromEntries(Object.entries(textureSources).map(([key, src]) => {
       const image = new Image();
@@ -4629,8 +4595,6 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     const roadTexture = makeRoadTexture();
     const LANDMARK_DRAW_BASE = 145;
     const landmarkAssetMeta = {
-      police: { crop: {right: 0.5}, preserveAlpha: true, drawScale: 1.25, labelFactor: .25 },
-      fire: { crop: {left: 0.5}, preserveAlpha: true, drawScale: 1.25, labelFactor: .25 },
       crystal: { drawScale: 1.28, shadowScale: 1.14, labelFactor: 0.36, crop: { left: 0.09, right: 0.09, top: 0.08, bottom: 0.18 }, fadeStart: 0.64 },
       farm: { drawScale: 1.08, shadowScale: 1.02, labelFactor: 0.33, crop: { left: 0.1, right: 0.1, top: 0.08, bottom: 0.22 }, fadeStart: 0.62 },
       factory: { drawScale: 1.14, shadowScale: 1.12, labelFactor: 0.35, crop: { left: 0.09, right: 0.09, top: 0.07, bottom: 0.2 }, fadeStart: 0.58, fadeMid: 0.8, maskOuter: 0.58 },
@@ -4661,7 +4625,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       return Math.abs(raw % 1) * Math.PI * 2;
     };
     const getLandmarkMotion = (landmark) => {
-      const meta = landmark.type === 'crystal' ? landmarkAnimationMeta.crystal : {};
+      const meta = landmarkAnimationMeta[landmark.type] || {};
       const phase = getStablePhase(landmark);
       const t = game.time * (meta.speed || 1) + phase;
       const fineT = game.time * ((meta.speed || 1) * 1.7) + phase * 0.67;
@@ -4700,11 +4664,6 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       const renderCtx = canvas.getContext('2d');
       renderCtx.drawImage(image, sx, sy, sw, sh, 0, 0, sw, sh);
 
-      if (meta.preserveAlpha) {
-        const processed = {canvas, width: sw, height: sh};
-        landmarkRenderCache.set(image, processed);
-        return processed;
-      }
       renderCtx.globalCompositeOperation = 'destination-in';
 
       const radial = renderCtx.createRadialGradient(
@@ -4786,7 +4745,6 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       players: (savedState && Array.isArray(savedState.players) && savedState.players.length > 0)
         ? savedState.players.map(p => ({ ...p, trail: [], motion: null, motionLift: 0, motionTilt: 0, motionStretch: 0, motionTransformRotation: 0, landingPulseAt: 0, drawX: p.x, drawY: p.y }))
         : makePlayers(),
-      landmarks,
       drawCard: savedState ? savedState.drawCard : null,
       lastActionCard: savedState ? savedState.lastActionCard : null,
       solutionPreview: savedState ? savedState.solutionPreview : null,
@@ -4810,13 +4768,6 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       canvas.height = Math.max(1, Math.floor(rect.height * dpr));
     };
     resize();
-    game.fitIsland = () => {
-      const rect = canvas.getBoundingClientRect();
-      game.zoom = Math.max(0.12, Math.min((rect.width - 70) / (MAP_W + 180), (rect.height - 250) / (MAP_H + 180)));
-      game.camX = game.camTargetX = MAP_W / 2;
-      game.camY = game.camTargetY = MAP_H / 2 - 35 / game.zoom;
-    };
-    game.fitIsland();
 
     const onPointerDown = (event) => {
       game.isDragging = true;
@@ -4847,30 +4798,12 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     const onPointerUp = (event) => {
       if (!game.isDragging) return;
       game.isDragging = false;
-      if (event.type !== 'pointercancel' && game.dragDistance < 6 && game.card && !game.gameOver && !game.animating) {
+      if (game.dragDistance < 6 && game.card && !game.gameOver && !game.animating) {
         game.selected = screenToGrid(event.clientX, event.clientY, game);
         game.message = lang === 'en'
           ? `Selected coordinate: (${game.selected.x}, ${game.selected.y}). Press Check Answer.`
           : `Pilihan koordinat: (${game.selected.x}, ${game.selected.y}). Tekan Semak Jawapan.`;
         syncHud(game);
-      } else if (event.type !== 'pointercancel' && game.dragDistance < 6 && !game.card && !game.gameOver && !game.animating) {
-        const point = screenToGrid(event.clientX, event.clientY, game);
-        const landmark = game.landmarks?.find((candidate) => Math.hypot(candidate.x - point.x, candidate.y - point.y) < 1.1);
-        const item = getRrgItemAt(point);
-        if (landmark) {
-          const messages = {
-            clinic: ['🏥', lang === 'en' ? 'Clinic' : 'Klinik', lang === 'en' ? 'Land here after a correct answer to receive RM75.' : 'Mendarat di sini selepas jawapan betul untuk menerima RM75.'],
-            market: ['🛒', lang === 'en' ? 'Market' : 'Pasar', lang === 'en' ? 'Correct landing gives RM30 supplies.' : 'Pendaratan betul memberi RM30 bekalan.'],
-            fire: ['🚒', lang === 'en' ? 'Fire Station' : 'Balai Bomba', lang === 'en' ? 'Landing here blocks the next two bombs.' : 'Mendarat di sini melindungi daripada dua bom seterusnya.'],
-            police: ['🚓', lang === 'en' ? 'Police Station' : 'Balai Polis', lang === 'en' ? 'Landing here gives RM20 and a safe-route briefing.' : 'Mendarat di sini memberi RM20 dan taklimat laluan selamat.'],
-            waterfall: ['💧', lang === 'en' ? 'Waterfall' : 'Air Terjun', lang === 'en' ? 'The waterfall is animated; use it as a landmark for your next move.' : 'Air terjun bergerak; gunakannya sebagai mercu tanda untuk langkah seterusnya.'],
-            crystal: ['💎', lang === 'en' ? 'Crystal Hill' : 'Bukit Kristal', lang === 'en' ? 'The central hazard zone. Plan your transformation carefully.' : 'Zon bahaya tengah. Rancang transformasi dengan teliti.'],
-          }[landmark.type] || ['📍', landmark.label, lang === 'en' ? 'A landmark on Dream Island.' : 'Mercu tanda di Pulau Idaman.'];
-          showPopup(messages[0], messages[1], messages[2]);
-        } else if (item) {
-          const label = lang === 'en' ? item.label_en : item.label;
-          showPopup(item.kind === 'penalty' ? '💣' : item.kind === 'reward' ? '💡' : '🎁', label, lang === 'en' ? 'Reach this coordinate after solving a transformation card.' : 'Selesaikan kad transformasi untuk sampai ke koordinat ini.');
-        }
       }
     };
     const onMouseLeave = (event) => {
@@ -4879,7 +4812,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     };
     const onWheel = (event) => {
       const delta = event.deltaY > 0 ? 0.9 : 1.1;
-      game.zoom = Math.max(0.12, Math.min(3, game.zoom * delta));
+      game.zoom = Math.max(0.34, Math.min(3, game.zoom * delta));
       event.preventDefault();
     };
     const onKeyDown = (event) => {
@@ -4894,21 +4827,20 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
 
     window.addEventListener('resize', resize);
     window.addEventListener('keydown', onKeyDown);
-    canvas.addEventListener('pointerdown', onPointerDown);
-    canvas.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('pointerup', onPointerUp);
-    window.addEventListener('pointercancel', onPointerUp);
+    canvas.addEventListener('mousedown', onPointerDown);
+    canvas.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
     canvas.addEventListener('mouseleave', onMouseLeave);
     canvas.addEventListener('wheel', onWheel, { passive: false });
 
     const makeIslandPath = (context) => {
       context.beginPath();
-      const points = islandPoly.map(([x, y]) => gridToPixel(x, y));
-      context.moveTo((points.at(-1).px + points[0].px) / 2, (points.at(-1).py + points[0].py) / 2);
-      points.forEach((point, i) => {
-        const next = points[(i + 1) % points.length];
-        context.quadraticCurveTo(point.px, point.py, (point.px + next.px) / 2, (point.py + next.py) / 2);
-      });
+      const first = gridToPixel(islandPoly[0][0], islandPoly[0][1]);
+      context.moveTo(first.px, first.py);
+      for (let i = 1; i < islandPoly.length; i++) {
+        const point = gridToPixel(islandPoly[i][0], islandPoly[i][1]);
+        context.lineTo(point.px, point.py);
+      }
       context.closePath();
     };
 
@@ -5178,7 +5110,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       // 4. Ultra-Smooth Game Engine Flow (Scrolling UV Texture)
       // By translating a repeating pattern matrix, we get continuous fluid motion!
       ctx.save();
-      if (isTextureReady(textures.water)) {
+      if (textures.water) {
         ctx.globalCompositeOperation = 'overlay'; // Blend with the cyan base
         const pattern = ctx.createPattern(textures.water, 'repeat');
         const matrix = new DOMMatrix();
@@ -5517,14 +5449,15 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     };
 
     const drawBoatShape = (boat) => {
-      const pose = boatPose(boat, game.time, islandPoly, isOnIsland);
-      const pos = gridToPixel(pose.x, pose.y);
+      const driftX = Math.cos(game.time * 0.22 + boat.phase) * 0.22;
+      const driftY = Math.sin(game.time * 0.18 + boat.phase * 0.8) * 0.16;
+      const pos = gridToPixel(boat.x + driftX, boat.y + driftY);
       const bob = Math.sin(game.time * 1.9 + boat.phase) * 2.4;
       const roll = Math.sin(game.time * 1.05 + boat.phase) * 0.055;
       
       ctx.save();
       ctx.translate(pos.px, pos.py + bob);
-      ctx.rotate(pose.heading + roll);
+      ctx.rotate(boat.heading + roll);
       ctx.scale(boat.scale, boat.scale);
 
       // --- Beautiful Figma-style Flowing Wake (Water trails) ---
@@ -5800,7 +5733,6 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       const generatedMetrics = drawGeneratedLandmarkAsset(landmark, motion);
       if (generatedMetrics) {
         ctx.restore();
-        if (!lmLabel) return;
         ctx.save();
         ctx.font = 'bold 12.5px Inter';
         ctx.textAlign = 'center';
@@ -6391,7 +6323,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     const draw = (timestamp) => {
       const dt = Math.min(0.05, (timestamp - game.lastTime) / 1000 || 1 / 60);
       game.lastTime = timestamp;
-      if (!ambientPausedRef.current) game.time += dt;
+      game.time += dt;
       const dpr = window.devicePixelRatio || 1;
       const camEase = game.isDragging ? 0.28 : game.animating ? 0.16 : 0.1;
       game.camX += (game.camTargetX - game.camX) * camEase;
@@ -6468,7 +6400,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       for (let i = 0; i < 28; i++) {
         const sx = ((i * 193 + game.time * 6) % (MAP_W + 480)) - 240;
         const sy = ((i * 127 + game.time * 4) % (MAP_H + 480)) - 240;
-        if (!isOnIsland(sx / CELL + GRID_MIN - 0.5, GRID_MAX + 0.5 - sy / CELL)) {
+        if (!isOnIsland(sx / CELL, sy / CELL)) {
           const pulse = 0.32 + Math.sin(game.time * 2.4 + i) * 0.32;
           const size = 1.0 + (i % 2) * 0.8;
           ctx.fillStyle = `rgba(224, 242, 254, ${pulse * 0.72})`;
@@ -6506,16 +6438,16 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
 
       makeIslandPath(ctx);
       const sandGrad = ctx.createLinearGradient(0, 0, MAP_W, MAP_H);
-      sandGrad.addColorStop(0, '#f4d89b');
-      sandGrad.addColorStop(0.45, '#eac17d');
-      sandGrad.addColorStop(1, '#d9ac69');
+      sandGrad.addColorStop(0, '#efd79a');
+      sandGrad.addColorStop(0.45, '#d8b26f');
+      sandGrad.addColorStop(1, '#c89555');
       ctx.fillStyle = sandGrad;
       ctx.fill();
 
       ctx.save();
       makeIslandPath(ctx);
       ctx.clip();
-      drawTiledImage(textures.sand, -80, -80, MAP_W + 160, MAP_H + 160, 360, 200, 0, 0, 0.44);
+      drawTiledImage(textures.sand, -80, -80, MAP_W + 160, MAP_H + 160, 360, 200, Math.sin(game.time * 0.18) * 4, 0, 0.86);
       ctx.globalAlpha = 0.28;
       ctx.fillStyle = sandGrad;
       ctx.fillRect(-80, -80, MAP_W + 160, MAP_H + 160);
@@ -6530,8 +6462,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       });
       ctx.globalAlpha = 1;
 
-      drawIslandGround(ctx, gridToPixel, CELL, game.time);
-      paths.forEach((pathPoints) => drawRoadPath(pathPoints, 20));
+      paths.forEach((pathPoints) => drawRoadPath(pathPoints, 34));
       drawRealisticRiverPath(riverPath, 48);
 
       stones.forEach((stone) => {
@@ -6852,8 +6783,6 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
           }
         });
       drawWaterfallUltraOverlay();
-      drawIslandLife(ctx, gridToPixel, game.time);
-      drawIslandLabels(ctx, gridToPixel, langRef.current);
       RRG_ITEMS.forEach((item) => drawItem(item, game.time));
       drawActiveTransformGuide();
       drawMotionTransformGuides();
@@ -7303,10 +7232,9 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
       if (game.raf) window.cancelAnimationFrame(game.raf);
       window.removeEventListener('resize', resize);
       window.removeEventListener('keydown', onKeyDown);
-      canvas.removeEventListener('pointerdown', onPointerDown);
-      canvas.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('pointerup', onPointerUp);
-      window.removeEventListener('pointercancel', onPointerUp);
+      canvas.removeEventListener('mousedown', onPointerDown);
+      canvas.removeEventListener('mousemove', onPointerMove);
+      window.removeEventListener('mouseup', onPointerUp);
       canvas.removeEventListener('mouseleave', onMouseLeave);
       canvas.removeEventListener('wheel', onWheel);
     };
@@ -7333,42 +7261,8 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
     : (lang === 'en' ? 'Not rolled' : 'Belum roll');
 
   return (
-    <div className={`rrg-canvas-game ${mapOnly ? 'rrg-map-overview' : ''}`}>
-      <canvas
-        ref={canvasRef}
-        className={`rrg-game-canvas ${viewMode === '3d' ? 'hidden' : ''}`}
-        aria-label="Running Rangers Game digital canvas"
-      />
-      {viewMode === '3d' && (
-        <iframe
-          ref={iframeRef}
-          src="/pulau-3d/index.html"
-          title="Pulau Idaman 3D Live Board"
-          className="rrg-game-canvas absolute inset-0 w-full h-full border-0 z-0"
-          onLoad={sendPlayersTo3D}
-        />
-      )}
-      <div className="rrg-map-tools" aria-label={lang === 'en' ? 'Map controls' : 'Kawalan peta'}>
-        <button
-          type="button"
-          onClick={() => setViewMode(v => v === '2d' ? '3d' : '2d')}
-          className="font-black text-xs px-3 py-1.5 rounded-full transition-all shadow-md flex items-center gap-1.5 border"
-          style={{
-            background: viewMode === '3d' ? 'linear-gradient(135deg, #0284c7, #2563eb)' : '#1e293b',
-            color: '#ffffff',
-            borderColor: viewMode === '3d' ? '#38bdf8' : '#475569',
-            boxShadow: viewMode === '3d' ? '0 0 14px rgba(14, 165, 233, 0.6)' : 'none',
-          }}
-        >
-          {viewMode === '3d' ? (lang === 'en' ? '🌐 3D Board (Click for 2D)' : '🌐 Mod 3D (Klik ke 2D)') : (lang === 'en' ? '🗺️ 2D Board (Click for 3D)' : '🗺️ Mod 2D (Klik ke 3D)')}
-        </button>
-        <button onClick={() => { setMapOnly(true); gameRef.current?.fitIsland?.(); }}>{lang === 'en' ? 'Whole island' : 'Seluruh pulau'}</button>
-        <button onClick={() => { const g=gameRef.current; if(g) { g.zoom = Math.max(g.zoom, .7); centerOnPlayer(g,g.players[g.currentPlayer],true); } }}>{lang === 'en' ? 'Player' : 'Pemain'}</button>
-        <button aria-pressed={!mapOnly} onClick={() => setMapOnly(v => !v)}>{mapOnly ? (lang === 'en' ? 'Show cards' : 'Lihat kad') : (lang === 'en' ? 'Hide cards' : 'Tutup kad')}</button>
-        <button aria-label="Zoom in" onClick={() => {const g=gameRef.current;if(g) g.zoom=Math.min(3,g.zoom*1.3);}}>+</button>
-        <button aria-label="Zoom out" onClick={() => {const g=gameRef.current;if(g) g.zoom=Math.max(.12,g.zoom/1.3);}}>−</button>
-        <button aria-pressed={ambientPaused} onClick={() => setAmbientPaused(v=>!v)}>{ambientPaused ? (lang === 'en' ? 'Play animation' : 'Main animasi') : (lang === 'en' ? 'Pause animation' : 'Henti animasi')}</button>
-      </div>
+    <div className="rrg-canvas-game">
+      <canvas ref={canvasRef} className="rrg-game-canvas" aria-label="Running Rangers Game digital canvas" />
       <div className="rrg-game-hud">
         <div className="rrg-hud-left">
           <div className="rrg-title-bar">🏝️ RRG — {lang === 'en' ? 'DREAM ISLAND' : 'PULAU IDAMAN'}</div>
@@ -7492,7 +7386,7 @@ const RRGCanvasGame = ({ lang = 'ms', sessionUser }) => {
         </div>
       )}
       <div className="rrg-dice-panel rrg-transform-actions">
-        <button type="button" className={hud.diceRolling ? 'roll-active' : ''} onClick={() => { setMapOnly(false); rollDice(); }} disabled={!!hud.card || hud.gameOver || hud.animating}>🎲 {lang === 'en' ? 'Roll Color' : 'Roll Warna'}</button>
+        <button type="button" className={hud.diceRolling ? 'roll-active' : ''} onClick={rollDice} disabled={!!hud.card || hud.gameOver || hud.animating}>🎲 {lang === 'en' ? 'Roll Color' : 'Roll Warna'}</button>
         <button type="button" onClick={buyHint} disabled={!hud.card || hud.hintLevel >= 2 || hud.gameOver || hud.animating || (activePlayer?.score ?? 0) < HINT_COST}>💡 Hint RM{HINT_COST}</button>
         <button type="button" onClick={submitAnswer} disabled={!hud.card || !hud.selected || hud.gameOver || hud.animating}>✅ {lang === 'en' ? 'Check' : 'Semak'}</button>
         <button type="button" onClick={() => resetGame()} disabled={hud.animating}>↻ Reset</button>
